@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav"
+    app:startDestination="@id/listCarsFragment">
+    <fragment
+        android:id="@+id/listCarsFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.ListCarsFragment"
+        android:label="fragment_list_cars"
+        tools:layout="@layout/fragment_list_cars" >
+        <action
+            android:id="@+id/action_listCarsFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_listCarsFragment_to_profileSetingsFragment"
+            app:destination="@id/profileSetingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
+    <fragment
+        android:id="@+id/listTracksFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.ListTracksFragment"
+        android:label="fragment_list_tracks"
+        tools:layout="@layout/fragment_list_tracks" >
+        <action
+            android:id="@+id/action_listTracksFragment_to_trackTripFragment"
+            app:destination="@id/trackTripFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/trackTripFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.TrackTripFragment"
+        android:label="fragment_track_trip"
+        tools:layout="@layout/fragment_track_trip" />
+    <fragment
+        android:id="@+id/profileSetingsFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.ProfileSetingsFragment"
+        android:label="fragment_profile_setings"
+        tools:layout="@layout/fragment_profile_setings" />
 </navigation>

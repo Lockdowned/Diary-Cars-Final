@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mList"
+        android:title="List"/>
+
+    <item
+        android:id="@+id/mAdd"
+        android:title="Add"/>
+
+    <item
+        android:id="@+id/mEdit"
+        android:title="Edit"/>
+
+    <item
+        android:id="@+id/mTracks"
+        android:title="Tracks"/>
+
+</menu>
