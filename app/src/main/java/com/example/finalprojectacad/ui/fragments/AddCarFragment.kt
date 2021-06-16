@@ -7,6 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.finalprojectacad.R
 
-class AddCarFragment : Fragment() {
+class AddCarFragment : Fragment(R.layout.fragment_add_car) {
 
 }

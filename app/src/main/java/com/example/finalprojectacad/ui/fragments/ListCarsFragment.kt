@@ -23,11 +23,7 @@ class ListCarsFragment : Fragment(R.layout.fragment_list_cars) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragBut = view.findViewById<Button>(R.id.buttonFragment)
-        fragBut.setOnClickListener {
-            val navigation = Navigation.findNavController(view)
-            navigation.navigate(R.id.action_listCarsFragment_to_registrationFragment)
-        }
+
     }
 
 }

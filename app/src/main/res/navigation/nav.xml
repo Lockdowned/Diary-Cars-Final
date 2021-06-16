@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav"
-    app:startDestination="@id/listCarsFragment">
+    app:startDestination="@id/addCarFragment">
     <fragment
         android:id="@+id/listCarsFragment"
         android:name="com.example.finalprojectacad.ui.fragments.ListCarsFragment"
@@ -40,4 +40,9 @@
         android:name="com.example.finalprojectacad.ui.fragments.ProfileSetingsFragment"
         android:label="fragment_profile_setings"
         tools:layout="@layout/fragment_profile_setings" />
+    <fragment
+        android:id="@+id/addCarFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.AddCarFragment"
+        android:label="fragment_add_car"
+        tools:layout="@layout/fragment_add_car" />
 </navigation>
