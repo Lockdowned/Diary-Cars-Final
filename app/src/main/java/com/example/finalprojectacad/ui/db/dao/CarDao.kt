@@ -17,7 +17,7 @@ interface CarDao {
     suspend fun insertBrand(brand: BrandRoom)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertModel(model: Insert)
+    suspend fun insertModel(model: ModelRoom)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransmission(transmission: TransmissionRoom)
@@ -28,16 +28,14 @@ interface CarDao {
     @Query("SELECT * FROM brand_table")
     fun getAllBrands(): Flow<List<BrandRoom>>
 
-    @Query("SELECT * FROM transmission_table")
-    fun getAllTransmissions(): Flow<List<TransmissionRoom>>
-
     @Query("SELECT * FROM model_table")
     fun getAllModels(): Flow<List<ModelRoom>>
 
+    @Query("SELECT * FROM model_table WHERE brand_id = :brandId")
+    fun getModelsByBrand(brandId: Int): Flow<List<ModelRoom>>
 
-//TO DO get fun one to M (brand to models)
-
-
+    @Query("SELECT * FROM transmission_table")
+    fun getAllTransmissions(): Flow<List<TransmissionRoom>>
 
 
     @Update
@@ -45,9 +43,6 @@ interface CarDao {
 
     @Delete
     suspend fun deleteCar(car: CarRoom)
-
-
-
 
 
 
