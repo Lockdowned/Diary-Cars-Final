@@ -1,4 +1,4 @@
-package com.example.finalprojectacad.ui.db.entity
+package com.example.finalprojectacad.db.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "car_table")
 data class CarRoom(
-    @ColumnInfo(name = "brand_id") var brandId: Int = 0,
-    @ColumnInfo(name = "model_Id") var modelId: Long = 0,
-    @ColumnInfo(name = "transmission_id") var transmissionId: Int = 0,
+    @ColumnInfo(name = "brand_name") var brandName: String = "",
+    @ColumnInfo(name = "model_name") var modelName: String = "",
+    @ColumnInfo(name = "transmission_name") var transmissionName: String = "",
     var engine: String = "",
     var year: Int = 0,
     var mileage: Int = 0,

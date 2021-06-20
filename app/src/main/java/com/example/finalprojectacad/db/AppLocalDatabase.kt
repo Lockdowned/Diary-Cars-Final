@@ -1,8 +1,10 @@
-package com.example.finalprojectacad.ui.db
+package com.example.finalprojectacad.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.finalprojectacad.ui.db.entity.*
+import com.example.finalprojectacad.db.dao.CarDao
+import com.example.finalprojectacad.db.dao.RouteDao
+import com.example.finalprojectacad.db.entity.*
 
 @Database(
     entities = [BrandRoom::class, CarRoom::class, ModelRoom::class,
@@ -10,4 +12,7 @@ import com.example.finalprojectacad.ui.db.entity.*
     version = 1,
     exportSchema = false)
 abstract class AppLocalDatabase: RoomDatabase() {
+
+    abstract fun  carDao(): CarDao
+    abstract fun routeDao(): RouteDao
 }

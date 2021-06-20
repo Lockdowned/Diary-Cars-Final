@@ -1,10 +1,10 @@
-package com.example.finalprojectacad.ui.db.dao
+package com.example.finalprojectacad.db.dao
 
 import androidx.room.*
-import com.example.finalprojectacad.ui.db.entity.BrandRoom
-import com.example.finalprojectacad.ui.db.entity.CarRoom
-import com.example.finalprojectacad.ui.db.entity.ModelRoom
-import com.example.finalprojectacad.ui.db.entity.TransmissionRoom
+import com.example.finalprojectacad.db.entity.BrandRoom
+import com.example.finalprojectacad.db.entity.CarRoom
+import com.example.finalprojectacad.db.entity.ModelRoom
+import com.example.finalprojectacad.db.entity.TransmissionRoom
 import kotlinx.coroutines.flow.Flow
 
 @Dao
