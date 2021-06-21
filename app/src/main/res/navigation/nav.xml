@@ -25,7 +25,7 @@
         android:id="@+id/listTracksFragment"
         android:name="com.example.finalprojectacad.ui.fragments.ListTracksFragment"
         android:label="fragment_list_tracks"
-        tools:layout="@layout/fragment_list_tracks" >
+        tools:layout="@layout/fragment_list_tracks">
         <action
             android:id="@+id/action_listTracksFragment_to_trackTripFragment"
             app:destination="@id/trackTripFragment" />
@@ -45,4 +45,9 @@
         android:name="com.example.finalprojectacad.ui.fragments.AddCarFragment"
         android:label="fragment_add_car"
         tools:layout="@layout/fragment_add_car" />
+    <fragment
+        android:id="@+id/editCarFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.EditCarFragment"
+        android:label="fragment_edit_car"
+        tools:layout="@layout/fragment_edit_car" />
 </navigation>

@@ -12,6 +12,7 @@ data class CarRoom(
     var engine: String = "",
     var year: Int = 0,
     var mileage: Int = 0,
+    @ColumnInfo(name = "img_id") var imgId: Int = -1,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "car_id") var carId: Int? = null
 )

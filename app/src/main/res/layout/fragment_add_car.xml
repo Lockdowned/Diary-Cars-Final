@@ -30,11 +30,15 @@
                 android:id="@+id/imageView"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerInside"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars" />
+                app:srcCompat="@drawable/promt_add_img"
+                tools:src="@drawable/promt_add_img"
+                tools:srcCompat="@drawable/promt_add_img" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout7"
