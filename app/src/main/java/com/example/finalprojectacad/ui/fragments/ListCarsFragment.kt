@@ -1,15 +1,11 @@
 package com.example.finalprojectacad.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,13 +15,11 @@ import com.example.finalprojectacad.databinding.FragmentListCarsBinding
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.*
+
+private const val TAG = "ListCarsFragment"
 
 @AndroidEntryPoint
 class ListCarsFragment : Fragment() {
-
-    private val TAG = "ListCarsFragment"
 
     private val viewModel: CarViewModel by activityViewModels()
 
