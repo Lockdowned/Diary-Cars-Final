@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.finalprojectacad.db.entity.BrandRoom
 import com.example.finalprojectacad.db.entity.CarRoom
 import com.example.finalprojectacad.db.entity.ModelRoom
+import com.example.finalprojectacad.db.entity.TransmissionRoom
 import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ class CarViewModel
     val allBrands: LiveData<List<BrandRoom>> = mainRepository.getAllBrands().asLiveData()
     val allModels: LiveData<List<ModelRoom>> = mainRepository.getAllModels().asLiveData()
     fun getModelsByBrand(brandId: Int) = mainRepository.getModelsByBrand(brandId).asLiveData()
+    val allTransmissions: LiveData<List<TransmissionRoom>> = mainRepository.getAllTransmissions().asLiveData()
 
     fun insertNewCar(car: CarRoom){
         viewModelScope.launch {

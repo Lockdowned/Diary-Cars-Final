@@ -3,12 +3,20 @@ package com.example.finalprojectacad.other.utilities
 import com.example.finalprojectacad.db.dao.CarDao
 import com.example.finalprojectacad.db.entity.BrandRoom
 import com.example.finalprojectacad.db.entity.CarRoom
+import com.example.finalprojectacad.db.entity.ModelRoom
+import com.example.finalprojectacad.db.entity.TransmissionRoom
 
 class PopulateDatabase() {
 
     suspend fun insertDB(carDao: CarDao) {
         brandList.forEach {
             carDao.insertBrand(it)
+        }
+        modelsList.forEach {
+            carDao.insertModel(it)
+        }
+        transmissionList.forEach {
+            carDao.insertTransmission(it)
         }
         carsList.forEach {
             carDao.insertCar(it)
@@ -81,6 +89,38 @@ class PopulateDatabase() {
         BrandRoom("Toyota"),
         BrandRoom("Volkswagen"),
         BrandRoom("Volvo"),
+    )
+
+    val modelsList = listOf<ModelRoom>(
+        ModelRoom(
+            "A3",
+            4
+        ),
+        ModelRoom(
+            "A4",
+            4
+        ),
+        ModelRoom(
+            "e-tron",
+            4),
+        ModelRoom(
+            "Continental GT",
+            5
+        ),
+        ModelRoom(
+            "Mulsanne",
+            5
+        ),
+        ModelRoom(
+            "Brooklands",
+            5
+        )
+    )
+
+    val transmissionList = listOf<TransmissionRoom>(
+        TransmissionRoom("stick"),
+        TransmissionRoom("auto"),
+        TransmissionRoom("hybrid")
     )
 
     val carsList = listOf<CarRoom>(
