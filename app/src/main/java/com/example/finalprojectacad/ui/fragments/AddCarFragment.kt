@@ -3,6 +3,8 @@ package com.example.finalprojectacad.ui.fragments
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,16 +13,29 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.db.entity.BrandRoom
 import com.example.finalprojectacad.db.entity.CarRoom
+import com.example.finalprojectacad.db.entity.ImageCarRoom
 import com.example.finalprojectacad.db.entity.ModelRoom
+import com.example.finalprojectacad.ui.activity.MainActivity
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.Provides
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.IOException
+import javax.inject.Inject
+import kotlin.random.Random
 
 private const val TAG = "AddCarFragment"
 
@@ -28,7 +43,9 @@ private const val TAG = "AddCarFragment"
 class AddCarFragment : Fragment() {
 
     private lateinit var binding: FragmentAddCarBinding
-    private val viewModel: CarViewModel by activityViewModels()
+    private val viewModel: CarViewModel by viewModels()
+
+    var choseImgUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +58,13 @@ class AddCarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getAllCars.observe( //todo -- do this in service
+            viewLifecycleOwner, Observer {
+                viewModel.listAllCars = it
+            }
+        )
+
 
         val brandListName = mutableListOf<String>()
         var brandList = listOf<BrandRoom>()
@@ -148,6 +172,7 @@ class AddCarFragment : Fragment() {
     }
 
     private fun collectAndInsertNewCar() {
+        copyToScopeStorageImg(viewModel.listAllCars.size)
         val newCar = CarRoom()
         binding.apply {
             val brand = textInputLayoutBrandNewCar.editText?.text
@@ -175,7 +200,47 @@ class AddCarFragment : Fragment() {
                 if (mileage.isNotEmpty()) newCar.mileage = mileage.toString().toInt()
             }
         }
+        clearAllField()
         viewModel.insertNewCar(newCar)
+    }
+
+    private fun clearAllField() {
+        binding.apply {
+            textInputLayoutBrandNewCar.editText?.text?.clear()
+            textInputLayoutModelNewCar.editText?.text?.clear()
+            textInputLayoutEngineNewCar.editText?.text?.clear()
+            textInputLayoutTransmissionNewCar.editText?.text?.clear()
+            textInputLayoutYearNewCar.editText?.text?.clear()
+            textInputLayoutMileageNewCar.editText?.text?.clear()
+
+            ivSelectImageCar.setImageResource(R.drawable.default_car)
+            choseImgUri = null
+        }
+
+    }
+
+
+    private fun copyToScopeStorageImg(carListSize: Int) {
+        GlobalScope.launch(Dispatchers.IO) {
+            var flagSuccessSave = false
+            choseImgUri?.let {
+                val currentIdCars = carListSize + 1
+                val act = activity as MainActivity
+                flagSuccessSave = act.saveImgCarToInternalStorage(currentIdCars.toString(), it)
+                if (flagSuccessSave) {
+                    val listScopeStorageImg = act.openSavedImg()
+                    val lastSavedImg = listScopeStorageImg.last() // mb need find by name file
+                    val imgRoom = ImageCarRoom(
+                        lastSavedImg.uri.toString(),
+                        "",
+                        currentIdCars)
+                    viewModel.insertNewImg(imgRoom)
+                }
+            }
+
+        }
+
+
     }
 
     private val regImageIntent = registerForActivityResult(
@@ -184,8 +249,11 @@ class AddCarFragment : Fragment() {
             val data: Intent? = result.data
              data?.data?.let {
                  binding.ivSelectImageCar.setImageURI(it)
+
+                 choseImgUri = it
              }
         }
     }
+
 
 }

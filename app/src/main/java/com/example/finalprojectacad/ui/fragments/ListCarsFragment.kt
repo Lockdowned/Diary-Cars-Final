@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +22,7 @@ private const val TAG = "ListCarsFragment"
 @AndroidEntryPoint
 class ListCarsFragment : Fragment() {
 
-    private val viewModel: CarViewModel by activityViewModels()
+    private val viewModel: CarViewModel by viewModels()
 
     private lateinit var binding: FragmentListCarsBinding
     

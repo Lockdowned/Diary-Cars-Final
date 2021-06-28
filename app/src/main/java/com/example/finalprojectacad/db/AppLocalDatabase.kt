@@ -8,7 +8,7 @@ import com.example.finalprojectacad.db.entity.*
 
 @Database(
     entities = [BrandRoom::class, CarRoom::class, ModelRoom::class,
-        PointRouteRoom::class, RouteRoom::class, TransmissionRoom::class],
+        PointRouteRoom::class, RouteRoom::class, TransmissionRoom::class, ImageCarRoom::class],
     version = 1,
     exportSchema = false)
 abstract class AppLocalDatabase: RoomDatabase() {

@@ -1,10 +1,7 @@
 package com.example.finalprojectacad.db.dao
 
 import androidx.room.*
-import com.example.finalprojectacad.db.entity.BrandRoom
-import com.example.finalprojectacad.db.entity.CarRoom
-import com.example.finalprojectacad.db.entity.ModelRoom
-import com.example.finalprojectacad.db.entity.TransmissionRoom
+import com.example.finalprojectacad.db.entity.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,6 +18,9 @@ interface CarDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransmission(transmission: TransmissionRoom)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertImg(img: ImageCarRoom)
 
     @Query("SELECT * FROM car_table")
     fun getAllCars(): Flow<List<CarRoom>>

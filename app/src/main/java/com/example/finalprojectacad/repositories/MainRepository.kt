@@ -1,10 +1,7 @@
 package com.example.finalprojectacad.repositories
 
 import com.example.finalprojectacad.db.dao.CarDao
-import com.example.finalprojectacad.db.entity.BrandRoom
-import com.example.finalprojectacad.db.entity.CarRoom
-import com.example.finalprojectacad.db.entity.ModelRoom
-import com.example.finalprojectacad.db.entity.TransmissionRoom
+import com.example.finalprojectacad.db.entity.*
 import javax.inject.Inject
 
 class MainRepository
@@ -26,6 +23,10 @@ class MainRepository
 
     suspend fun insertTransmission(transmission: TransmissionRoom) {
         carDao.insertTransmission(transmission)
+    }
+
+    suspend fun insertImg(img: ImageCarRoom) {
+        carDao.insertImg(img)
     }
 
     fun getAllCars() = carDao.getAllCars()

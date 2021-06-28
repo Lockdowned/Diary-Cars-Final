@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.finalprojectacad.db.entity.BrandRoom
-import com.example.finalprojectacad.db.entity.CarRoom
-import com.example.finalprojectacad.db.entity.ModelRoom
-import com.example.finalprojectacad.db.entity.TransmissionRoom
+import com.example.finalprojectacad.db.entity.*
 import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,6 +16,8 @@ class CarViewModel
     private val mainRepository: MainRepository
 ): ViewModel(){
 
+    lateinit var listAllCars: List<CarRoom>
+
 
     val getAllCars: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()
     val allBrands: LiveData<List<BrandRoom>> = mainRepository.getAllBrands().asLiveData()
@@ -29,6 +28,12 @@ class CarViewModel
     fun insertNewCar(car: CarRoom){
         viewModelScope.launch {
             mainRepository.insertCar(car)
+        }
+    }
+
+    fun insertNewImg(img: ImageCarRoom){
+        viewModelScope.launch {
+            mainRepository.insertImg(img)
         }
     }
 
@@ -56,8 +61,6 @@ change mutableListNameModels in adapter autoCompleteSetAdapter depended on brand
             mutableListModelsName.add(it.modelName)
         }
     }
-
-
 
 
 
