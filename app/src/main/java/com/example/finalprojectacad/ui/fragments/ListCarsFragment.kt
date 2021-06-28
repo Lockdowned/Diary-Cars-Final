@@ -65,6 +65,12 @@ class ListCarsFragment : Fragment() {
             }
         )
 
+        viewModel.getAllImages.observe(
+            viewLifecycleOwner, Observer {
+                viewModel.listAllImages = it
+            }
+        )
+
 
 
     }

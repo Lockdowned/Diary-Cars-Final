@@ -25,6 +25,9 @@ interface CarDao {
     @Query("SELECT * FROM car_table")
     fun getAllCars(): Flow<List<CarRoom>>
 
+    @Query("SELECT * FROM image_car_table")
+    fun getAllImages(): Flow<List<ImageCarRoom>>
+
     @Query("SELECT * FROM brand_table")
     fun getAllBrands(): Flow<List<BrandRoom>>
 

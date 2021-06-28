@@ -31,6 +31,8 @@ class MainRepository
 
     fun getAllCars() = carDao.getAllCars()
 
+    fun getAllImages() = carDao.getAllImages()
+
     fun getAllBrands() = carDao.getAllBrands()
 
     fun getAllModels() = carDao.getAllModels()

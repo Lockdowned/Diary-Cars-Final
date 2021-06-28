@@ -3,6 +3,7 @@ package com.example.finalprojectacad.adaptors
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -20,11 +21,15 @@ class CarsListAdaptor(
     inner class CarsListHolder(private val carItemBinding: ItemRvListCarsBinding):
             RecyclerView.ViewHolder(carItemBinding.root) {
         fun bind(carItem: CarRoom) {
+            val findImgRoom = viewModel.listAllImages.find { it.id == carItem.carId }
             carItemBinding.apply {
                 textViewBrand.text = carItem.brandName
                 textViewModel.text = carItem.modelName
                 textViewYear.text = carItem.year.toString()
                 textViewMilleage.text = carItem.mileage.toString()
+                findImgRoom?.let {
+                    imageViewCar.setImageURI(it.localImgCar.toUri())
+                }
             }
         }
     }

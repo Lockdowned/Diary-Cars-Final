@@ -19,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.db.entity.BrandRoom
@@ -148,6 +149,8 @@ class AddCarFragment : Fragment() {
                 if (!textInputLayoutBrandNewCar.editText!!.text.equals("")
                     && !textInputLayoutModelNewCar.editText!!.text.equals("")){
                     collectAndInsertNewCar()
+                    val navig = Navigation.findNavController(view)
+                    navig.navigate(R.id.action_addCarFragment_to_listCarsFragment)
                 } else {
                     Snackbar.make(
                         view,
@@ -231,7 +234,7 @@ class AddCarFragment : Fragment() {
                     val listScopeStorageImg = act.openSavedImg()
                     val lastSavedImg = listScopeStorageImg.last() // mb need find by name file
                     val imgRoom = ImageCarRoom(
-                        lastSavedImg.uri.toString(),
+                        lastSavedImg.toString(),
                         "",
                         currentIdCars)
                     viewModel.insertNewImg(imgRoom)

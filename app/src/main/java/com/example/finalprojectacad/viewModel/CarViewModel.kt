@@ -17,9 +17,11 @@ class CarViewModel
 ): ViewModel(){
 
     lateinit var listAllCars: List<CarRoom>
+    lateinit var listAllImages: List<ImageCarRoom>
 
 
     val getAllCars: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()
+    val getAllImages: LiveData<List<ImageCarRoom>> = mainRepository.getAllImages().asLiveData()
     val allBrands: LiveData<List<BrandRoom>> = mainRepository.getAllBrands().asLiveData()
     val allModels: LiveData<List<ModelRoom>> = mainRepository.getAllModels().asLiveData()
     fun getModelsByBrand(brandId: Int) = mainRepository.getModelsByBrand(brandId).asLiveData()

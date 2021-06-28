@@ -52,14 +52,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    suspend fun openSavedImg(): List<Img> {
+    suspend fun openSavedImg(): List<Uri> {
         return withContext(Dispatchers.IO) {
+            val listUri = mutableListOf<Uri>()
             val files = filesDir.listFiles()
             files?.filter { it.canRead() && it.isFile }?.map {
                 val bytes = it.readBytes()
                 val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                Img(it.absolutePath.toUri())
-            } ?: listOf()
+                listUri.add(it.absolutePath.toUri())
+            }
+            return@withContext listUri
         }
     }
 
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             val bmp =  MediaStore.Images.Media.getBitmap(this.contentResolver, imgUri) //deprecated
 
             openFileOutput("$filenameImgId.jpg", MODE_PRIVATE).use { stream ->
-                bmp.compress(Bitmap.CompressFormat.JPEG, 95, stream)
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             }
 
             true
@@ -79,8 +81,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    data class Img(
-        val uri: Uri
-    )
 
 }
