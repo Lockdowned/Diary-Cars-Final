@@ -32,6 +32,31 @@ class CarViewModel
         }
     }
 
+    lateinit var allModelsNameBeforeChange: List<String>
+    fun setAllModels(allModelsName: List<String>){
+        allModelsNameBeforeChange = allModelsName
+    }
+
+/*
+change mutableListNameModels in adapter autoCompleteSetAdapter depended on brand text
+ */
+    fun fillCorrectModelsByCar(
+        mutableListModelsName: MutableList<String>,
+        listModels: List<ModelRoom>,
+        listBrand: List<BrandRoom>,
+        carText: String,){
+        mutableListModelsName.clear()
+        if (carText.isEmpty()) return
+        val findIdBrand = listBrand.find { it.brandName == carText } ?: return
+        val findModelsByBrand = listModels.filter {
+            it.brandId == findIdBrand.brandId
+        }
+        if (findModelsByBrand.isEmpty()) return
+        findModelsByBrand.forEach {
+            mutableListModelsName.add(it.modelName)
+        }
+    }
+
 
 
 

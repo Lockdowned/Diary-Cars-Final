@@ -2,18 +2,18 @@ package com.example.finalprojectacad.ui.fragments
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Adapter
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.db.entity.BrandRoom
 import com.example.finalprojectacad.db.entity.CarRoom
@@ -43,18 +43,28 @@ class AddCarFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val brandListName = mutableListOf<String>()
-        var brandList: List<BrandRoom>? = null
+        var brandList = listOf<BrandRoom>()
 
         binding.apply {
+
+            ivSelectImageCar.setOnClickListener {
+                Intent(Intent.ACTION_OPEN_DOCUMENT).also {
+                    it.type = "image/*"
+                    regImageIntent.launch(it)
+                }
+            }
+
 
             viewModel.allBrands.observe(
                 viewLifecycleOwner, Observer { brandsListRoom->
                     brandList = brandsListRoom
+                    brandListName.clear()
                     brandsListRoom.forEach {
                         brandListName.add(it.brandName)
                     }
-                    autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
                 })
+
+            autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
 
             autoCompleteTextBrandNewCar.threshold = 2
 
@@ -70,43 +80,26 @@ class AddCarFragment : Fragment() {
                 activity?.hideKeyboard(view)
             }
 
-            val correctModels = mutableListOf<String>()
+            val allModelsName = mutableListOf<String>()
             var listModelsRoom = listOf<ModelRoom>()
-            viewModel.allModels.observe(
+            viewModel.allModels.observe( // why observer in UI
                 viewLifecycleOwner, Observer { modelsRoom ->
-                    correctModels.clear()
+                    val modelsName = mutableListOf<String>()
                     listModelsRoom = modelsRoom
                     modelsRoom.forEach {
-                        correctModels.add(it.modelName)
+                        modelsName.add(it.modelName)
                     }
+                    viewModel.setAllModels(modelsName)
                 })
 
-            autoCompleteTextModelNewCar.setOnClickListener {
-                if (textInputLayoutBrandNewCar.editText!!.text.isEmpty()) {
-                    autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(correctModels))
-                } else {
-                    val brandWriteText = textInputLayoutBrandNewCar.editText!!.text.toString()
-                    val findIdBrand = brandList?.find { it.brandName == brandWriteText }
-                    if (findIdBrand == null) {
-                        autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(correctModels))
-                    } else {
-                        val findCorrectModel = listModelsRoom.filter {
-                            it.brandId == findIdBrand.brandId
-                        }
-                        if (findCorrectModel.isEmpty()) {
-                            autoCompleteTextModelNewCar
-                                .setAdapter(autoCompleteSetAdapter(correctModels))
+            autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(allModelsName))
 
-                        } else {
-                            val findCorrectModelName = mutableListOf<String>()
-                            findCorrectModel.forEach {
-                                findCorrectModelName.add(it.modelName)
-                            }
-                            autoCompleteTextModelNewCar
-                                .setAdapter(autoCompleteSetAdapter(findCorrectModelName))
-                        }
-                    }
-                }
+            autoCompleteTextModelNewCar.setOnClickListener {
+                viewModel.fillCorrectModelsByCar(
+                    allModelsName,
+                    listModelsRoom,
+                    brandList,
+                    textInputLayoutBrandNewCar.editText!!.text.toString())
             }
 
             val transmissionList = mutableListOf<String>()
@@ -183,6 +176,16 @@ class AddCarFragment : Fragment() {
             }
         }
         viewModel.insertNewCar(newCar)
+    }
+
+    private val regImageIntent = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+             data?.data?.let {
+                 binding.ivSelectImageCar.setImageURI(it)
+             }
+        }
     }
 
 }
