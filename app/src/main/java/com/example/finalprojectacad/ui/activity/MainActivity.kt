@@ -1,5 +1,6 @@
 package com.example.finalprojectacad.ui.activity
 
+import android.Manifest
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,9 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import com.fondesa.kpermissions.request.PermissionRequest
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -24,6 +27,12 @@ import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
 import com.example.finalprojectacad.db.entity.ImageCarRoom
 import com.example.finalprojectacad.viewModel.CarViewModel
+import com.fondesa.kpermissions.PermissionStatus
+import com.fondesa.kpermissions.allGranted
+import com.fondesa.kpermissions.anyPermanentlyDenied
+import com.fondesa.kpermissions.anyShouldShowRationale
+import com.fondesa.kpermissions.extension.permissionsBuilder
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,15 +41,28 @@ import java.io.IOException
 import java.net.URI
 import kotlin.random.Random
 
+private const val TAG = "MainActivity"
+
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
     private val viewModel: CarViewModel by viewModels()
 
     lateinit var binding: ActivityMainBinding
 
+    private val request by lazy { // request for add permission from user
+        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE).build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
+//        request.send()//right now don't need
+
+
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -50,6 +72,15 @@ class MainActivity : AppCompatActivity() {
            bottomNavigationBar.setupWithNavController(navController)
         }
 
+    }
+
+
+    override fun onPermissionsResult(result: List<PermissionStatus>) {
+        when {
+            result.anyPermanentlyDenied() -> Log.d(TAG, "onPermissionsResult: Denied")
+            result.anyShouldShowRationale() -> Log.d(TAG, "onPermissionsResult: SHOW SWTH")
+            result.allGranted() -> Log.d(TAG, "onPermissionsResult: all Allow")
+        }
     }
 
     suspend fun openSavedImg(): List<Uri> {

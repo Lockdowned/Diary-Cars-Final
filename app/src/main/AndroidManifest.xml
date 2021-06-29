@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.finalprojectacad">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.finalprojectacad"
+    tools:ignore="ExtraText">
+
+    //tracking location by gps and cellphone connection(telephone rigs)
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    //for working maps on android version 8.3 or later
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
         android:name=".BaseApplication"
@@ -17,6 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
     </application>
 
 </manifest>
