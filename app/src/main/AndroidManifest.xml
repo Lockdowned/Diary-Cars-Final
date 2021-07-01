@@ -10,6 +10,12 @@
     //for working maps on android version 8.3 or later
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- Required for foreground services on P+. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    //mb not necessary
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
 
     <application
         android:name=".BaseApplication"
@@ -26,6 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".services.TrackingService"
+            android:foregroundServiceType="location"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

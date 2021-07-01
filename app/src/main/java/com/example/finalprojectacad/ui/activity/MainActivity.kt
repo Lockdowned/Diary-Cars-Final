@@ -1,45 +1,34 @@
 package com.example.finalprojectacad.ui.activity
 
 import android.Manifest
-import android.content.ContentResolver
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import com.fondesa.kpermissions.request.PermissionRequest
-import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
-import com.example.finalprojectacad.db.entity.ImageCarRoom
+import com.example.finalprojectacad.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.anyPermanentlyDenied
 import com.fondesa.kpermissions.anyShouldShowRationale
 import com.fondesa.kpermissions.extension.permissionsBuilder
-import com.google.android.material.snackbar.Snackbar
+import com.fondesa.kpermissions.request.PermissionRequest
+import com.google.android.gms.location.*
+import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
+import kotlinx.coroutines.*
 import java.io.IOException
-import java.net.URI
-import kotlin.random.Random
 
 private const val TAG = "MainActivity"
 
@@ -50,27 +39,104 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
     lateinit var binding: ActivityMainBinding
 
-    private val request by lazy { // request for add permission from user
-        permissionsBuilder(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE).build()
+    private val navHostFragment by lazy {
+        supportFragmentManager
+            .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
     }
+
+    private val request by lazy { // request for add permission from user
+        permissionsBuilder(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .build()
+    }
+
+
+    // The entry point to the Fused Location Provider.
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
-//        request.send()//right now don't need
-
-
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+
+
+//        request.send()
+//
+//        // Construct a FusedLocationProviderClient.
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+//
+//
+//        GlobalScope.launch {
+//            while (true) {
+//                getDeviceLocation()
+//                delay(5000)
+//            }
+//        }
+
+        navigateToTrackingFragment(intent)
+
+
+
+
+        supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         binding.apply {
            bottomNavigationBar.setupWithNavController(navController)
         }
+
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navigateToTrackingFragment(intent)
+    }
+
+
+    //function that create our app after we close app than open him from notification bar
+    private fun navigateToTrackingFragment(intent: Intent?) {
+        if (intent?.action == ACTION_SHOW_TRACKING_FRAGMENT) {
+            navHostFragment.navController.navigate(R.id.trackTripFragment)
+        }
+    }
+
+    private fun createLocationRequest() { // don't now where it need
+        val locationRequest = LocationRequest.create().apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun getDeviceLocation() {
+        Log.d(TAG, "HERE")
+
+        try {
+
+            val locationResult = fusedLocationProviderClient.lastLocation
+            locationResult.addOnCompleteListener(this) { task ->
+                if (task.isSuccessful){
+                    Log.d(TAG, "getDeviceLocation: TASK GPS SUCCESSFUL: ${task.result}")
+                    Log.d(TAG, "getDeviceLocation: LATLNG ${task.result.latitude}")
+                    Log.d(TAG, "getDeviceLocation: LONGLNG ${task.result.longitude}")
+                } else {
+                    Log.d(TAG, "getDeviceLocation: TASK GPS FAILED")
+                }
+            }
+        } catch (e: SecurityException){
+            Log.e(TAG, "getDeviceLocation: ${e.message}", e)
+        }
+
 
     }
 

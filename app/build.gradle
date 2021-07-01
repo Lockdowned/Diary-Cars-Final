@@ -103,14 +103,14 @@ dependencies {
 
     // Maps SDK for Android KTX Library
     implementation 'com.google.maps.android:maps-ktx:3.0.1'
-//    // Dependency to include Maps SDK for Android
-//    implementation 'com.google.android.gms:play-services-maps:17.0.1'
-//    // Location services!!! //mb for tracking
-//    implementation 'com.google.android.gms:play-services-location:18.0.0'
-//    //add more maps features like drawing area and others
-//    implementation 'com.google.maps.android:android-maps-utils:2.2.0'
-//    // Maps SDK for Android Utility Library KTX Library
-//    implementation 'com.google.maps.android:maps-utils-ktx:3.0.0'
+    // Dependency to include Maps SDK for Android
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    // Location services!!! //FusedLocationProvider - get current location(not update from gps)
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    //add more maps features like drawing area and others
+    implementation 'com.google.maps.android:android-maps-utils:2.2.0'
+    // Maps SDK for Android Utility Library KTX Library
+    implementation 'com.google.maps.android:maps-utils-ktx:3.0.0'
 
 
 

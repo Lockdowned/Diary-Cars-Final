@@ -1,6 +1,9 @@
 package com.example.finalprojectacad.ui.fragments
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +11,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
+import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.example.finalprojectacad.services.TrackingService
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -15,6 +22,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ktx.awaitMapLoad
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val TAG = "TrackTripFragment"
 
 @AndroidEntryPoint
 class TrackTripFragment : Fragment(){
@@ -35,6 +44,13 @@ class TrackTripFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
+        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+
+
+
+
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
         navBar.visibility = View.GONE
 
@@ -48,7 +64,7 @@ class TrackTripFragment : Fragment(){
         }
     }
 
-    override fun onStart() {
+        override fun onStart() {
         super.onStart()
         mapView.onStart()
     }
@@ -73,9 +89,15 @@ class TrackTripFragment : Fragment(){
         mapView.onDestroy()
     }
 
-    override fun onLowMemory() { // тot necessarily override
+    override fun onLowMemory() { // not necessarily override
         super.onLowMemory()
         mapView.onLowMemory()
     }
+
+    private fun sendCommandToService(action: String) =
+        Intent(requireContext(), TrackingService::class.java).also {
+            it.action = action
+            requireContext().startService(it)
+        }
 
 }

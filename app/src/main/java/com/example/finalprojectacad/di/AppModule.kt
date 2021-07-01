@@ -1,22 +1,20 @@
 package com.example.finalprojectacad.di
 
 import android.content.Context
-import androidx.room.CoroutinesRoom
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.finalprojectacad.other.Constants.LOCAL_DATABASE_NAME
 import com.example.finalprojectacad.db.AppLocalDatabase
 import com.example.finalprojectacad.db.dao.CarDao
-import com.example.finalprojectacad.db.entity.BrandRoom
 import com.example.finalprojectacad.other.utilities.PopulateDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.*
-import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Provider
 import javax.inject.Singleton
 
@@ -33,7 +31,7 @@ object AppModule {
         Room.databaseBuilder(
             appContext,
             AppLocalDatabase::class.java,
-            LOCAL_DATABASE_NAME
+            "local_db"
         ).addCallback(
             object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
