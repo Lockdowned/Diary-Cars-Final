@@ -196,7 +196,7 @@ class AddCarFragment : Fragment() {
             }
             val year = textInputLayoutYearNewCar.editText?.text
             year?.let {
-                if (year.isNotEmpty()) newCar.year = year.toString().toInt()
+                if (it.isNotEmpty()) newCar.year = it.toString().toInt()
             }
             val mileage = textInputLayoutMileageNewCar.editText?.text
             mileage?.let {
@@ -223,13 +223,14 @@ class AddCarFragment : Fragment() {
     }
 
 
+
     private fun copyToScopeStorageImg(carListSize: Int) {
         GlobalScope.launch(Dispatchers.IO) {
             var flagSuccessSave = false
             choseImgUri?.let {
                 val currentIdCars = carListSize + 1
                 val act = activity as MainActivity
-                flagSuccessSave = act.saveImgCarToInternalStorage(currentIdCars.toString(), it)
+                flagSuccessSave = act.saveImgCarToScopedStorage(currentIdCars.toString(), it)
                 if (flagSuccessSave) {
                     val listScopeStorageImg = act.openSavedImg()
                     val lastSavedImg = listScopeStorageImg.last() // mb need find by name file

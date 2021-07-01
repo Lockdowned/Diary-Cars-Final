@@ -7,14 +7,14 @@
     //tracking location by gps and cellphone connection(telephone rigs)
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
-    //for working maps on android version 8.3 or later
+    //for working maps on android version 8.3 or older
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!-- Required for foreground services on P+. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     //mb not necessary
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+<!--    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />-->
 
 
     <application

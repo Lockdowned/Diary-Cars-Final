@@ -17,7 +17,7 @@ class CarViewModel
 ): ViewModel(){
 
     lateinit var listAllCars: List<CarRoom>
-    lateinit var listAllImages: List<ImageCarRoom>
+    var listAllImages: List<ImageCarRoom> = listOf()
 
 
     val getAllCars: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()

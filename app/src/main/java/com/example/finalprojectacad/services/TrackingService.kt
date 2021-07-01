@@ -81,7 +81,9 @@ class TrackingService: LifecycleService() {
                 ACTION_STOP_SERVICE -> {
                     Log.d(TAG, "Stop service")
                 }
-                else -> {}
+                else -> {
+                    Log.d(TAG, "onStartCommand: else")
+                }
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -98,7 +100,7 @@ class TrackingService: LifecycleService() {
     private fun updateLocationTracking(isTracking: Boolean) {
         if (isTracking) {
             if (true) { //set check allow permission
-                val request = LocationRequest().apply {
+                val request = LocationRequest.create().apply {
                     interval = LOCATION_UPDATE_INTERVAL
                     fastestInterval = FASTEST_LOCATION_INTERVAL
                     priority = PRIORITY_HIGH_ACCURACY

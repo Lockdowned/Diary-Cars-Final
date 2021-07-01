@@ -21,7 +21,7 @@
         map:uiZoomControls="true" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/buttonStartStopTracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button6"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button4" />
+        app:layout_constraintStart_toEndOf="@+id/buttonStartStopTracking" />
 
     <Button
         android:id="@+id/button6"

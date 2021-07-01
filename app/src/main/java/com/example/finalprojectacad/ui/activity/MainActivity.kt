@@ -1,10 +1,8 @@
 package com.example.finalprojectacad.ui.activity
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -25,7 +23,6 @@ import com.fondesa.kpermissions.anyShouldShowRationale
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.io.IOException
@@ -63,18 +60,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
 
 
-//        request.send()
-//
-//        // Construct a FusedLocationProviderClient.
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-//
-//
-//        GlobalScope.launch {
-//            while (true) {
-//                getDeviceLocation()
-//                delay(5000)
-//            }
-//        }
+        request.send()
 
         navigateToTrackingFragment(intent)
 
@@ -102,45 +88,6 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
         }
     }
 
-    private fun createLocationRequest() { // don't now where it need
-        val locationRequest = LocationRequest.create().apply {
-            interval = 10000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-
-        val client: SettingsClient = LocationServices.getSettingsClient(this)
-        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
-
-    }
-
-
-    @SuppressLint("MissingPermission")
-    private fun getDeviceLocation() {
-        Log.d(TAG, "HERE")
-
-        try {
-
-            val locationResult = fusedLocationProviderClient.lastLocation
-            locationResult.addOnCompleteListener(this) { task ->
-                if (task.isSuccessful){
-                    Log.d(TAG, "getDeviceLocation: TASK GPS SUCCESSFUL: ${task.result}")
-                    Log.d(TAG, "getDeviceLocation: LATLNG ${task.result.latitude}")
-                    Log.d(TAG, "getDeviceLocation: LONGLNG ${task.result.longitude}")
-                } else {
-                    Log.d(TAG, "getDeviceLocation: TASK GPS FAILED")
-                }
-            }
-        } catch (e: SecurityException){
-            Log.e(TAG, "getDeviceLocation: ${e.message}", e)
-        }
-
-
-    }
-
-
     override fun onPermissionsResult(result: List<PermissionStatus>) {
         when {
             result.anyPermanentlyDenied() -> Log.d(TAG, "onPermissionsResult: Denied")
@@ -154,8 +101,6 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             val listUri = mutableListOf<Uri>()
             val files = filesDir.listFiles()
             files?.filter { it.canRead() && it.isFile }?.map {
-                val bytes = it.readBytes()
-                val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                 listUri.add(it.absolutePath.toUri())
             }
             return@withContext listUri
@@ -163,7 +108,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     }
 
 
-    fun saveImgCarToInternalStorage(filenameImgId: String, imgUri: Uri): Boolean{
+    fun saveImgCarToScopedStorage(filenameImgId: String, imgUri: Uri): Boolean{
         return try {
             val bmp =  MediaStore.Images.Media.getBitmap(this.contentResolver, imgUri) //deprecated
 
@@ -177,6 +122,5 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             false
         }
     }
-
 
 }

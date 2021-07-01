@@ -45,9 +45,9 @@ class TrackTripFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
 
-
-        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
-
+        binding.buttonStartStopTracking.setOnClickListener {
+            sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        }
 
 
 
