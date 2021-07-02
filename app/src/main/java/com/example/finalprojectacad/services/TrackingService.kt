@@ -34,6 +34,10 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val TAG = "TrackingService"
 
@@ -46,7 +50,11 @@ class TrackingService: LifecycleService() {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
+    private val timeRunInSeconds = MutableLiveData<Long>()
+
     companion object {
+        val timeRunInMillis = MutableLiveData<Long>()
+
         val isTracking = MutableLiveData<Boolean>()
         val pathPoints = MutableLiveData<MutableListPolylines>()
     }
@@ -73,7 +81,7 @@ class TrackingService: LifecycleService() {
                         isFirstStartForegroundService = false
                     } else {
                         Log.d(TAG, "Resume service")
-                        startForegroundService()//delete later
+                        startTimer()
                     }
                 }
                 ACTION_PAUSE_SERVICE -> {
@@ -91,14 +99,43 @@ class TrackingService: LifecycleService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
+    private var isTimerEnable = false
+    private var lapTime = 0L// time between pause
+    private var timeRun = 0L//all time from starting
+    private var timeStarted = 0L//begin lap time
+    private var lastSecondLapTime = 0L//end lap time
+
+    private fun startTimer() {
+        addEmptyPolyline()
+        isTracking.postValue(true)
+        timeStarted = System.currentTimeMillis()
+        isTimerEnable = true
+        CoroutineScope(Dispatchers.Main).launch {
+            while (isTracking.value!!) {
+                lapTime = System.currentTimeMillis() - timeStarted
+
+                timeRunInMillis.postValue(timeRun + lapTime)
+                if (timeRunInMillis.value!! >= lastSecondLapTime + 1000L) {
+                    timeRunInSeconds.postValue(timeRunInSeconds.value!! + 1)
+                    lastSecondLapTime += 1000L
+                }
+                delay(50)
+            }
+            timeRun += lapTime
+        }
+    }
+
     private fun pauseForegroundService() {
         isTracking.postValue(false)
+        isTimerEnable = false
     }
 
     private fun postInitialValues() {
-        //postValue - used and background process and if we insert(postValue) many tames observer triggered few times
+        //postValue - use thi method if you need set value from another thread(without main)
         isTracking.postValue(false)
         pathPoints.postValue(mutableListOf())
+        timeRunInSeconds.postValue(0L)
+        timeRunInMillis.postValue(0L)
     }
 
 
@@ -167,6 +204,7 @@ class TrackingService: LifecycleService() {
     )
 
     private fun startForegroundService() {
+        startTimer()
 
         addEmptyPolyline()
         isTracking.postValue(true)

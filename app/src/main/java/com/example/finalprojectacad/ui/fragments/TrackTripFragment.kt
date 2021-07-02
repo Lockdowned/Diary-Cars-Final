@@ -3,6 +3,7 @@ package com.example.finalprojectacad.ui.fragments
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.example.finalprojectacad.other.utilities.Utils
 import com.example.finalprojectacad.services.Polyline
 import com.example.finalprojectacad.services.TrackingService
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,10 +30,12 @@ class TrackTripFragment : Fragment(){
 
     private lateinit var binding: FragmentTrackTripBinding
     private lateinit var mapView: MapView
-    private lateinit var googleMap: GoogleMap
+    private var googleMap: GoogleMap? = null
 
     private var polylinesList = mutableListOf<Polyline>()
     private var isTracking: Boolean = false
+
+    private var curTimeMillis = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -132,12 +136,22 @@ class TrackTripFragment : Fragment(){
                 moveCameraToLastPoint()
             }
         )
+
+        TrackingService.timeRunInMillis.observe(
+            viewLifecycleOwner, Observer {
+                curTimeMillis = it
+                val formattedTime = Utils.getFormattedTime(curTimeMillis)
+                Log.d(TAG, "initializeObservers: drive time : $formattedTime")
+                //TO DO
+                //set formattedTime in fragment field
+            }
+        )
     }
 
 
     private fun moveCameraToLastPoint() {
         if (polylinesList.isNotEmpty() && polylinesList.last().isNotEmpty()) {
-            googleMap.animateCamera(
+            googleMap?.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     polylinesList.last().last(),
                     15f)
@@ -150,10 +164,10 @@ class TrackTripFragment : Fragment(){
             val preLastLng = polylinesList.last()[polylinesList.last().lastIndex - 1]
             val lastLatLng = polylinesList.last().last()
             val polylineOptions = PolylineOptions()
-                .color(Color.RED)
+                .color(Color.BLUE)
                 .add(preLastLng)
                 .add(lastLatLng)
-            googleMap.addPolyline(polylineOptions)
+            googleMap?.addPolyline(polylineOptions)
         }
     }
 
@@ -162,7 +176,7 @@ class TrackTripFragment : Fragment(){
             val polylineOptions = PolylineOptions()
                 .color(Color.BLUE)
                 .addAll(polyline)
-            googleMap.addPolyline(polylineOptions)
+            googleMap?.addPolyline(polylineOptions)
         }
 
     }
