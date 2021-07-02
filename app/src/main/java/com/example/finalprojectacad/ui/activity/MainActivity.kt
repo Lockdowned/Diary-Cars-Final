@@ -48,10 +48,6 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             .build()
     }
 
-
-    // The entry point to the Fused Location Provider.
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
