@@ -42,9 +42,9 @@ typealias MutableListPolylines = MutableList<Polyline>
 
 class TrackingService: LifecycleService() {
 
-    var isFirstStartForegroundService = true
+    private var isFirstStartForegroundService = true
 
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     companion object {
         val isTracking = MutableLiveData<Boolean>()
@@ -73,10 +73,12 @@ class TrackingService: LifecycleService() {
                         isFirstStartForegroundService = false
                     } else {
                         Log.d(TAG, "Resume service")
+                        startForegroundService()//delete later
                     }
                 }
                 ACTION_PAUSE_SERVICE -> {
                     Log.d(TAG, "Pause service")
+                    pauseForegroundService()
                 }
                 ACTION_STOP_SERVICE -> {
                     Log.d(TAG, "Stop service")
@@ -87,6 +89,10 @@ class TrackingService: LifecycleService() {
             }
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun pauseForegroundService() {
+        isTracking.postValue(false)
     }
 
     private fun postInitialValues() {
@@ -116,7 +122,7 @@ class TrackingService: LifecycleService() {
         }
     }
 
-    val locationCallBack = object : LocationCallback() { //!!!
+    private val locationCallBack = object : LocationCallback() { //!!!
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
             if (isTracking.value!!) {

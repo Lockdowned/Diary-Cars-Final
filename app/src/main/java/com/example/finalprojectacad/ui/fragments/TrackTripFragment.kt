@@ -1,26 +1,24 @@
 package com.example.finalprojectacad.ui.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
+import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.example.finalprojectacad.services.Polyline
 import com.example.finalprojectacad.services.TrackingService
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.maps.android.ktx.awaitMap
-import com.google.maps.android.ktx.awaitMapLoad
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "TrackTripFragment"
@@ -31,6 +29,9 @@ class TrackTripFragment : Fragment(){
     private lateinit var binding: FragmentTrackTripBinding
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
+
+    private var polylinesList = mutableListOf<Polyline>()
+    private var isTracking: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,8 +46,8 @@ class TrackTripFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
 
-        binding.buttonStartStopTracking.setOnClickListener {
-            sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        binding.buttonStartPause.setOnClickListener {
+            correctActionService()
         }
 
 
@@ -54,17 +55,21 @@ class TrackTripFragment : Fragment(){
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
         navBar.visibility = View.GONE
 
-        lifecycleScope.launchWhenCreated {
-            mapView = binding.fragmentTrackTrip
-            mapView.onCreate(savedInstanceState)
-
-            googleMap = mapView.awaitMap()
-            googleMap.awaitMapLoad()
-
+        mapView = binding.fragmentTrackTrip
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync {
+            googleMap = it
+            addAllPolylines()
         }
+
+        initializeObservers()
+
     }
 
-        override fun onStart() {
+
+
+
+    override fun onStart() {
         super.onStart()
         mapView.onStart()
     }
@@ -92,6 +97,74 @@ class TrackTripFragment : Fragment(){
     override fun onLowMemory() { // not necessarily override
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+
+    private fun correctActionService() {
+        if (isTracking) {
+            sendCommandToService(ACTION_PAUSE_SERVICE)
+        } else {
+            sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        }
+    }
+
+    private fun actualizeStateButtons(isTracking: Boolean) {
+        this.isTracking = isTracking
+        if (!isTracking) {
+            binding.buttonStartPause.text = "Start"
+            binding.buttonStopTracking.visibility = View.GONE
+        } else {
+            binding.buttonStartPause.text = "Pause"
+            binding.buttonStopTracking.visibility = View.VISIBLE
+        }
+    }
+
+    private fun initializeObservers() {
+        TrackingService.isTracking.observe(
+            viewLifecycleOwner, Observer {
+                actualizeStateButtons(it)
+            }
+        )
+
+        TrackingService.pathPoints.observe(
+            viewLifecycleOwner, Observer {
+                polylinesList = it
+                addLatestLatLngPoint()
+                moveCameraToLastPoint()
+            }
+        )
+    }
+
+
+    private fun moveCameraToLastPoint() {
+        if (polylinesList.isNotEmpty() && polylinesList.last().isNotEmpty()) {
+            googleMap.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    polylinesList.last().last(),
+                    15f)
+            )
+        }
+    }
+
+    private fun addLatestLatLngPoint() {
+        if (polylinesList.isNotEmpty() && polylinesList.last().size > 1) {
+            val preLastLng = polylinesList.last()[polylinesList.last().lastIndex - 1]
+            val lastLatLng = polylinesList.last().last()
+            val polylineOptions = PolylineOptions()
+                .color(Color.RED)
+                .add(preLastLng)
+                .add(lastLatLng)
+            googleMap.addPolyline(polylineOptions)
+        }
+    }
+
+    private fun addAllPolylines() {
+        for (polyline in polylinesList) {
+            val polylineOptions = PolylineOptions()
+                .color(Color.BLUE)
+                .addAll(polyline)
+            googleMap.addPolyline(polylineOptions)
+        }
+
     }
 
     private fun sendCommandToService(action: String) =
