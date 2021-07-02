@@ -13,6 +13,7 @@ import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.example.finalprojectacad.other.Constants.ACTION_STOP_SERVICE
 import com.example.finalprojectacad.other.utilities.Utils
 import com.example.finalprojectacad.services.Polyline
 import com.example.finalprojectacad.services.TrackingService
@@ -51,7 +52,11 @@ class TrackTripFragment : Fragment(){
 
 
         binding.buttonStartPause.setOnClickListener {
-            correctActionService()
+            startOrResumeActionService()
+        }
+
+        binding.buttonStopTracking.setOnClickListener {
+            stopTracking()
         }
 
 
@@ -103,7 +108,11 @@ class TrackTripFragment : Fragment(){
         mapView.onLowMemory()
     }
 
-    private fun correctActionService() {
+    private fun stopTracking() {
+        sendCommandToService(ACTION_STOP_SERVICE)
+    }
+
+    private fun startOrResumeActionService() {
         if (isTracking) {
             sendCommandToService(ACTION_PAUSE_SERVICE)
         } else {

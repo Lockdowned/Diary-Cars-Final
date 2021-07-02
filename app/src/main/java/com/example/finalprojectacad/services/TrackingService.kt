@@ -52,6 +52,7 @@ typealias MutableListPolylines = MutableList<Polyline>
 class TrackingService: LifecycleService() {
 
     private var isFirstStartForegroundService = true
+    private var isForegroundServiceStopped = false
 
     @Inject
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -106,6 +107,7 @@ class TrackingService: LifecycleService() {
                 }
                 ACTION_STOP_SERVICE -> {
                     Log.d(TAG, "Stop service")
+                    stopService()
                 }
                 else -> {
                     Log.d(TAG, "onStartCommand: else")
@@ -141,6 +143,15 @@ class TrackingService: LifecycleService() {
         }
     }
 
+    private fun stopService() { //clear all data(even what we require later)
+        isForegroundServiceStopped = true
+        isFirstStartForegroundService = true
+        pauseForegroundService()
+        postInitialValues()
+        stopForeground(true)
+        stopSelf()
+    }
+
     private fun pauseForegroundService() {
         isTracking.postValue(false)
         isTimerEnable = false
@@ -174,9 +185,11 @@ class TrackingService: LifecycleService() {
             isAccessible = true
             set(curNotificationBuilder, ArrayList<NotificationCompat.Action>())  //here we are clear all actions(notification)
         }
-        curNotificationBuilder = baseNotificationBuilder
-            .addAction(R.drawable.common_google_signin_btn_icon_light, notificationActionText, pendingIntent)
-        notificationManager.notify(NOTIFICATION_ID, curNotificationBuilder.build())
+        if (!isForegroundServiceStopped) { //check is in different keys
+            curNotificationBuilder = baseNotificationBuilder
+                .addAction(R.drawable.common_google_signin_btn_icon_light, notificationActionText, pendingIntent)
+            notificationManager.notify(NOTIFICATION_ID, curNotificationBuilder.build())
+        }
     }
 
 
@@ -251,9 +264,11 @@ class TrackingService: LifecycleService() {
 
         timeRunInSeconds.observe(
             this, Observer {
-                val notification = curNotificationBuilder
-                    .setContentText(Utils.getFormattedTime(it * 1000L))
-                notificationManager.notify(NOTIFICATION_ID, notification.build())
+                if (!isForegroundServiceStopped){ //check is in different keys
+                    val notification = curNotificationBuilder
+                        .setContentText(Utils.getFormattedTime(it * 1000L))
+                    notificationManager.notify(NOTIFICATION_ID, notification.build())
+                }
             }
         )
     }
