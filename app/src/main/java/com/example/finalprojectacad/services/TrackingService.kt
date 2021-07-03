@@ -52,7 +52,6 @@ typealias MutableListPolylines = MutableList<Polyline>
 class TrackingService: LifecycleService() {
 
     private var isFirstStartForegroundService = true
-    private var isForegroundServiceStopped = false
 
     @Inject
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -74,6 +73,8 @@ class TrackingService: LifecycleService() {
 
         val isTracking = MutableLiveData<Boolean>()
         val pathPoints = MutableLiveData<MutableListPolylines>()
+
+        var isForegroundServiceStopped = false //use this in fragment is ok?
     }
 
     override fun onCreate() {

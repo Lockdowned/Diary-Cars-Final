@@ -57,6 +57,7 @@ class TrackTripFragment : Fragment(){
 
         binding.buttonStopTracking.setOnClickListener {
             stopTracking()
+            googleMap?.clear()
         }
 
 
@@ -120,21 +121,24 @@ class TrackTripFragment : Fragment(){
         }
     }
 
-    private fun actualizeStateButtons(isTracking: Boolean) {
+    private fun actualizeStateButtons(isTracking: Boolean, isServiceStopped: Boolean) {
         this.isTracking = isTracking
-        if (!isTracking) {
+        if (!isTracking && isServiceStopped) {
             binding.buttonStartPause.text = "Start"
-            binding.buttonStopTracking.visibility = View.GONE
+            binding.buttonStopTracking.visibility = View.INVISIBLE
+        } else if (!isTracking) {
+            binding.buttonStartPause.text = "Resume"
         } else {
             binding.buttonStartPause.text = "Pause"
             binding.buttonStopTracking.visibility = View.VISIBLE
         }
+
     }
 
     private fun initializeObservers() {
         TrackingService.isTracking.observe(
             viewLifecycleOwner, Observer {
-                actualizeStateButtons(it)
+                actualizeStateButtons(it, TrackingService.isForegroundServiceStopped)
             }
         )
 
