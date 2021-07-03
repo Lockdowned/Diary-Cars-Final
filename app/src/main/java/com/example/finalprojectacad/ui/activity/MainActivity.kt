@@ -10,7 +10,11 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
@@ -36,10 +40,13 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
     lateinit var binding: ActivityMainBinding
 
+    // we need set navHostFragment so that then we could use Navigation.findNavController(view)
     private val navHostFragment by lazy {
         supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
     }
+
+    private lateinit var navController: NavController
 
     private val request by lazy { // request for add permission from user
         permissionsBuilder(
@@ -54,20 +61,16 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.apply {
+            navController = navHostFragment.findNavController()
+            bottomNavigationBar.setupWithNavController(navController)
+        }
 
 
         request.send()
 
         navigateToTrackingFragment(intent)
 
-
-
-
-        supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        val navController = navHostFragment.navController
-        binding.apply {
-           bottomNavigationBar.setupWithNavController(navController)
-        }
 
     }
 
@@ -80,7 +83,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     //function that create our app after we close app than open him from notification bar
     private fun navigateToTrackingFragment(intent: Intent?) {
         if (intent?.action == ACTION_SHOW_TRACKING_FRAGMENT) {
-            navHostFragment.navController.navigate(R.id.trackTripFragment)
+            navController.navigate(R.id.trackTripFragment)
         }
     }
 

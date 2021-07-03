@@ -1,12 +1,16 @@
 package com.example.finalprojectacad.di
 
 import android.content.Context
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.finalprojectacad.R
 import com.example.finalprojectacad.db.AppLocalDatabase
 import com.example.finalprojectacad.db.dao.CarDao
 import com.example.finalprojectacad.other.utilities.PopulateDatabase
+import com.example.finalprojectacad.ui.activity.MainActivity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,20 +50,9 @@ object AppModule {
             .build()
     } //return an provide AppLocalDatabase
 
-    private val localDatabaseCallback = object: RoomDatabase.Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-
-
-        }
-    }
-
     @Singleton
     @Provides
     fun provideCarDao(db: AppLocalDatabase): CarDao {
         return  db.carDao()
     }
-
-
-
 }

@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin' // Dagger Hilt Kotlin plugin
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'//for save map API in local.properties
+    id "androidx.navigation.safeargs.kotlin"
 }
 
 android {

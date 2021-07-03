@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav"
-    app:startDestination="@id/trackTripFragment"
+    app:startDestination="@id/listTracksFragment"
     tools:ignore="ExtraText">
 
-    <action android:id="@+id/action_global_trackingFragment"
-        app:destination="@+id/trackTripFragment"
-        app:launchSingleTop="true"/> //check what we open exist fragment(doesn't create)
+    //check what we open exist fragment(doesn't create)
 
     <fragment
         android:id="@+id/listCarsFragment"
