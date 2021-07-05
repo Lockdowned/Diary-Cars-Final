@@ -1,12 +1,16 @@
 package com.example.finalprojectacad.adaptors
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ItemRvListCarsBinding
 import com.example.finalprojectacad.db.entity.CarRoom
 import com.example.finalprojectacad.viewModel.CarViewModel
@@ -17,6 +21,9 @@ class CarsListAdaptor(
 ): ListAdapter<CarRoom, CarsListAdaptor.CarsListHolder>(CarsComparator()) {
 
     lateinit var context: Context
+
+    var chosenCar: CarRoom? = null
+    var previousCarView: View? = null
 
     inner class CarsListHolder(private val carItemBinding: ItemRvListCarsBinding):
             RecyclerView.ViewHolder(carItemBinding.root) {
@@ -42,7 +49,41 @@ class CarsListAdaptor(
     }
 
     override fun onBindViewHolder(holder: CarsListHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.apply {
+            val car = getItem(position)
+            bind(car)
+            viewModel.getChosenCar()?.let {
+                if (it == car) {
+                    holder.itemView.setBackgroundColor(Color.YELLOW)
+                    chosenCar = it
+                    previousCarView = holder.itemView
+                }
+            }
+            itemView.setOnClickListener { view ->
+                if (chosenCar == null) {
+                    chosenCar = car
+                    view.setBackgroundColor(Color.YELLOW)
+                    previousCarView = view
+                } else if (chosenCar == car) {
+                    view.setBackgroundColor(Color.WHITE)
+                    chosenCar = null
+                    previousCarView = null
+                    carChoiceChanger(null)
+                } else {
+                    previousCarView?.setBackgroundColor(Color.WHITE)
+                    view.setBackgroundColor(Color.YELLOW)
+                    chosenCar = car
+                    previousCarView = view
+                }
+
+                carChoiceChanger(car)
+            }
+        }
+
+    }
+
+    private fun carChoiceChanger(car: CarRoom?) {
+        viewModel.setChosenCar(car)
     }
 
 

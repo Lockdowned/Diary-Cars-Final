@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav"
-    app:startDestination="@id/listTracksFragment"
+    app:startDestination="@id/listCarsFragment"
     tools:ignore="ExtraText">
 
     //check what we open exist fragment(doesn't create)

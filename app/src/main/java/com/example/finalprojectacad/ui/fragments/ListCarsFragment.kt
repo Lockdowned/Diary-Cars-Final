@@ -20,13 +20,13 @@ import dagger.hilt.android.AndroidEntryPoint
 private const val TAG = "ListCarsFragment"
 
 @AndroidEntryPoint
-class ListCarsFragment : Fragment() {
+class ListCarsFragment : Fragment() { // our fragment are recreated from bottom navigate
 
-    private val viewModel: CarViewModel by viewModels()
+    private val viewModel: CarViewModel by activityViewModels()
 
     private lateinit var binding: FragmentListCarsBinding
     
-    var carsListAdaptor: CarsListAdaptor? = null
+    private var carsListAdaptor: CarsListAdaptor? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,9 +50,9 @@ class ListCarsFragment : Fragment() {
             val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
             navBar.visibility = View.VISIBLE
 
-            val navig = Navigation.findNavController(view)
+            val navigation = Navigation.findNavController(view)
             imageButton.setOnClickListener {
-                val navigation = navig.navigate(R.id.action_listCarsFragment_to_registrationFragment)
+                navigation.navigate(R.id.action_listCarsFragment_to_registrationFragment)
             }
 
             rvListCars.adapter = carsListAdaptor

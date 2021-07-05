@@ -44,7 +44,7 @@ private const val TAG = "AddCarFragment"
 class AddCarFragment : Fragment() {
 
     private lateinit var binding: FragmentAddCarBinding
-    private val viewModel: CarViewModel by viewModels()
+    private val viewModel: CarViewModel by activityViewModels()
 
     var choseImgUri: Uri? = null
 

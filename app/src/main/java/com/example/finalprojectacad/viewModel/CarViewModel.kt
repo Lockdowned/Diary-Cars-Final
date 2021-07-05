@@ -1,5 +1,6 @@
 package com.example.finalprojectacad.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -26,6 +27,8 @@ class CarViewModel
     val allModels: LiveData<List<ModelRoom>> = mainRepository.getAllModels().asLiveData()
     fun getModelsByBrand(brandId: Int) = mainRepository.getModelsByBrand(brandId).asLiveData()
     val allTransmissions: LiveData<List<TransmissionRoom>> = mainRepository.getAllTransmissions().asLiveData()
+
+    private var chosenCar: CarRoom? = null
 
     fun insertNewCar(car: CarRoom){
         viewModelScope.launch {
@@ -62,6 +65,14 @@ change mutableListNameModels in adapter autoCompleteSetAdapter depended on brand
         findModelsByBrand.forEach {
             mutableListModelsName.add(it.modelName)
         }
+    }
+
+    fun setChosenCar(car: CarRoom?) {
+        chosenCar = car
+    }
+
+    fun getChosenCar(): CarRoom? {
+        return chosenCar
     }
 
 

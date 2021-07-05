@@ -8,7 +8,7 @@
     tools:context=".ui.fragments.ListCarsFragment">
 
     <EditText
-        android:id="@+id/editTextSearchField"
+        android:id="@+id/textViewChosenCar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -27,7 +27,7 @@
         android:text="Filter"
         app:layout_constraintEnd_toStartOf="@+id/imageButton"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/editTextSearchField"
+        app:layout_constraintStart_toEndOf="@+id/textViewChosenCar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
