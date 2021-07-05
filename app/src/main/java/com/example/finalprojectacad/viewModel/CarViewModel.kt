@@ -17,7 +17,7 @@ class CarViewModel
     private val mainRepository: MainRepository
 ): ViewModel(){
 
-    lateinit var listAllCars: List<CarRoom>
+    var listAllCars: List<CarRoom> = listOf()
     var listAllImages: List<ImageCarRoom> = listOf()
 
 
@@ -28,22 +28,30 @@ class CarViewModel
     fun getModelsByBrand(brandId: Int) = mainRepository.getModelsByBrand(brandId).asLiveData()
     val allTransmissions: LiveData<List<TransmissionRoom>> = mainRepository.getAllTransmissions().asLiveData()
 
+    val allRoutesLiceData: LiveData<List<RouteRoom>> = mainRepository.getAllRoutes().asLiveData()
+
     private var chosenCar: CarRoom? = null
 
-    fun insertNewCar(car: CarRoom){
+    fun insertNewCar(car: CarRoom) {
         viewModelScope.launch {
             mainRepository.insertCar(car)
         }
     }
 
-    fun insertNewImg(img: ImageCarRoom){
+    fun insertNewImg(img: ImageCarRoom) {
         viewModelScope.launch {
             mainRepository.insertImg(img)
         }
     }
 
+    fun insertNewRoute(route: RouteRoom) {
+        viewModelScope.launch {
+            mainRepository.insertNewRoute(route)
+        }
+    }
+
     lateinit var allModelsNameBeforeChange: List<String>
-    fun setAllModels(allModelsName: List<String>){
+    fun setAllModels(allModelsName: List<String>) {
         allModelsNameBeforeChange = allModelsName
     }
 
@@ -74,7 +82,4 @@ change mutableListNameModels in adapter autoCompleteSetAdapter depended on brand
     fun getChosenCar(): CarRoom? {
         return chosenCar
     }
-
-
-
 }

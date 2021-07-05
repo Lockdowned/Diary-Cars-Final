@@ -1,12 +1,14 @@
 package com.example.finalprojectacad.repositories
 
 import com.example.finalprojectacad.db.dao.CarDao
+import com.example.finalprojectacad.db.dao.RouteDao
 import com.example.finalprojectacad.db.entity.*
 import javax.inject.Inject
 
 class MainRepository
 @Inject constructor(
-    private val carDao: CarDao
+    private val carDao: CarDao,
+    private val routeDao: RouteDao
 ){
 
     suspend fun insertCar(car: CarRoom) {
@@ -29,6 +31,10 @@ class MainRepository
         carDao.insertImg(img)
     }
 
+    suspend fun insertNewRoute(route: RouteRoom) {
+        routeDao.insertRoute(route)
+    }
+
     fun getAllCars() = carDao.getAllCars()
 
     fun getAllImages() = carDao.getAllImages()
@@ -40,6 +46,8 @@ class MainRepository
     fun getModelsByBrand(brandId: Int) = carDao.getModelsByBrand(brandId)
 
     fun getAllTransmissions() = carDao.getAllTransmissions()
+
+    fun getAllRoutes() = routeDao.getAllRoutes()
 
     suspend fun updateCar(car: CarRoom) {
         carDao.updateCar(car)

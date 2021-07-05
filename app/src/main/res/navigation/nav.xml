@@ -38,7 +38,11 @@
         android:id="@+id/trackTripFragment"
         android:name="com.example.finalprojectacad.ui.fragments.TrackTripFragment"
         android:label="fragment_track_trip"
-        tools:layout="@layout/fragment_track_trip" />
+        tools:layout="@layout/fragment_track_trip" >
+        <action
+            android:id="@+id/action_trackTripFragment_to_listTracksFragment"
+            app:destination="@id/listTracksFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileSetingsFragment"
         android:name="com.example.finalprojectacad.ui.fragments.ProfileSetingsFragment"

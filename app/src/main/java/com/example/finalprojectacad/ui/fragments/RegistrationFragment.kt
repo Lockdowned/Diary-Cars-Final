@@ -22,9 +22,6 @@ class RegistrationFragment : Fragment() {
     ): View? {
 
 
-        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
-        navBar.visibility = View.GONE
-
         binding = FragmentRegistrationBinding.inflate(layoutInflater, container, false)
         return binding.root
     }

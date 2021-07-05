@@ -20,7 +20,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
-import com.example.finalprojectacad.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_STOP_SERVICE
 import com.example.finalprojectacad.other.Constants.FASTEST_LOCATION_INTERVAL
@@ -29,7 +28,6 @@ import com.example.finalprojectacad.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.finalprojectacad.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.finalprojectacad.other.Constants.NOTIFICATION_ID
 import com.example.finalprojectacad.other.utilities.Utils
-import com.example.finalprojectacad.ui.activity.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -41,7 +39,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 private const val TAG = "TrackingService"
 
@@ -75,6 +77,9 @@ class TrackingService: LifecycleService() {
         val pathPoints = MutableLiveData<MutableListPolylines>()
 
         var isForegroundServiceStopped = false //use this in fragment is ok?
+
+        var startDriveTime: String = ""
+        var maxSpeed: Float = 0f
     }
 
     override fun onCreate() {
@@ -246,11 +251,19 @@ class TrackingService: LifecycleService() {
                 last().add(positionLatLng)
                 pathPoints.postValue(this)
             }
+            if (location.speed > maxSpeed) {
+                maxSpeed = location.speed
+            }
         }
     }
 
     private fun startForegroundService() {
         startTimer()
+
+        val systemTime = System.currentTimeMillis()
+        val formatter = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+        startDriveTime = formatter.format(systemTime)
+        Log.d(TAG, "startForegroundService: $startDriveTime")
 
         isTracking.postValue(true)
 

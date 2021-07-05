@@ -27,73 +27,83 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/textViewChosenVehicleRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@drawable/border_text_view"
             android:text="TextView"
-            app:layout_constraintEnd_toEndOf="@+id/textView15"
-            app:layout_constraintStart_toStartOf="@+id/textView15"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+            app:layout_constraintEnd_toEndOf="@+id/textViewStartDrivingTimeRv"
+            app:layout_constraintStart_toStartOf="@+id/textViewStartDrivingTimeRv"
+            app:layout_constraintTop_toBottomOf="@+id/textViewStartDrivingTimeRv" />
 
         <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/textViewDroveDistanceRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@drawable/border_text_view"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
             android:text="TextView"
-            app:layout_constraintEnd_toEndOf="@+id/textView15"
+            app:layout_constraintEnd_toEndOf="@+id/textViewStartDrivingTimeRv"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewChosenVehicleRv" />
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/textViewDurationDrivingRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@drawable/border_text_view"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView15"
+            app:layout_constraintEnd_toEndOf="@+id/textViewStartDrivingTimeRv"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView17"
+            app:layout_constraintTop_toBottomOf="@+id/textViewDroveDistanceRv"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/textView19"
+            android:id="@+id/textViewAvgSpeedRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/border_text_view"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView15"
+            app:layout_constraintStart_toEndOf="@+id/textViewStartDrivingTimeRv"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/textViewStartDrivingTimeRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:background="@drawable/border_text_view"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
             android:text="TextView"
-            app:layout_constraintEnd_toStartOf="@+id/textView19"
+            app:layout_constraintEnd_toStartOf="@+id/textViewAvgSpeedRv"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView20"
+            android:id="@+id/textViewMaxSpeedRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/border_text_view"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView19"
-            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+            app:layout_constraintStart_toStartOf="@+id/textViewAvgSpeedRv"
+            app:layout_constraintTop_toBottomOf="@+id/textViewChosenVehicleRv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

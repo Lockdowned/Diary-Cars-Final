@@ -9,6 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.db.AppLocalDatabase
 import com.example.finalprojectacad.db.dao.CarDao
+import com.example.finalprojectacad.db.dao.RouteDao
 import com.example.finalprojectacad.other.utilities.PopulateDatabase
 import com.example.finalprojectacad.ui.activity.MainActivity
 import dagger.Module
@@ -54,5 +55,11 @@ object AppModule {
     @Provides
     fun provideCarDao(db: AppLocalDatabase): CarDao {
         return  db.carDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRouteDao(db: AppLocalDatabase) : RouteDao {
+        return db.routeDao()
     }
 }

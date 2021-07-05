@@ -18,6 +18,9 @@ interface RouteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPointRoute(point: PointRouteRoom)
 
+    @Query("SELECT * FROM route_table")
+    fun getAllRoutes(): Flow<List<RouteRoom>>
+
     @Query("SELECT * FROM car_table WHERE car_id =:carId")
     fun getRoutesByCar(carId: Int): Flow<CarWithRoutes>
 }

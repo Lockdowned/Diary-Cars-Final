@@ -7,11 +7,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     // we need set navHostFragment so that then we could use Navigation.findNavController(view)
     private val navHostFragment by lazy {
         supportFragmentManager
-            .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+            .findFragmentById(R.id.mainNavFragment) as NavHostFragment
     }
 
     private lateinit var navController: NavController
@@ -64,6 +64,16 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
         binding.apply {
             navController = navHostFragment.findNavController()
             bottomNavigationBar.setupWithNavController(navController)
+
+            navController
+                .addOnDestinationChangedListener { _, destination, _ ->
+                when(destination.id) {
+                    R.id.listCarsFragment, R.id.addCarFragment,
+                    R.id.editCarFragment, R.id.listTracksFragment ->
+                        bottomNavigationBar.visibility = View.VISIBLE
+                    else -> bottomNavigationBar.visibility = View.GONE
+                }
+            }
         }
 
 
