@@ -27,7 +27,7 @@ import com.example.finalprojectacad.other.Constants.LOCATION_UPDATE_INTERVAL
 import com.example.finalprojectacad.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.finalprojectacad.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.finalprojectacad.other.Constants.NOTIFICATION_ID
-import com.example.finalprojectacad.other.utilities.Utils
+import com.example.finalprojectacad.other.utilities.RouteUtils
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -41,7 +41,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -280,7 +279,7 @@ class TrackingService: LifecycleService() {
             this, Observer {
                 if (!isForegroundServiceStopped){ //check is in different keys
                     val notification = curNotificationBuilder
-                        .setContentText(Utils.getFormattedTime(it * 1000L))
+                        .setContentText(RouteUtils.getFormattedTime(it * 1000L))
                     notificationManager.notify(NOTIFICATION_ID, notification.build())
                 }
             }

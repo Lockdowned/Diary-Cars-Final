@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileSetingsFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.ProfileSetingsFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.ProfileSettingsFragment"
         android:label="fragment_profile_setings"
         tools:layout="@layout/fragment_profile_setings" />
     <fragment

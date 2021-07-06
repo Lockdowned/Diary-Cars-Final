@@ -23,10 +23,10 @@
         android:id="@+id/bottomNavigationBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainNavFragment"
-        app:menu="@menu/main_bottom_menu_bar"
-        app:labelVisibilityMode="labeled"/> //need to be visible all button title
+        app:menu="@menu/main_bottom_menu_bar" /> //need to be visible all button title
 </androidx.constraintlayout.widget.ConstraintLayout>

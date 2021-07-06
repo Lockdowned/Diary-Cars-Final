@@ -18,7 +18,7 @@ import com.example.finalprojectacad.db.entity.RouteRoom
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_STOP_SERVICE
-import com.example.finalprojectacad.other.utilities.Utils
+import com.example.finalprojectacad.other.utilities.RouteUtils
 import com.example.finalprojectacad.services.Polyline
 import com.example.finalprojectacad.services.TrackingService
 import com.example.finalprojectacad.viewModel.CarViewModel
@@ -26,7 +26,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
@@ -136,7 +135,7 @@ class TrackTripFragment : Fragment(){
             accurateDistance += calculatePolylineLength(polyline)
         }
         val distance = accurateDistance.roundToInt()
-        val duration = Utils.getFormattedTime(wholeDrivingTimeInMillis)
+        val duration = RouteUtils.getFormattedTime(wholeDrivingTimeInMillis)
         val avgSpeed = ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
         val maxSpeed = TrackingService.maxSpeed
 
@@ -213,7 +212,7 @@ class TrackTripFragment : Fragment(){
         TrackingService.timeRunInMillis.observe(
             viewLifecycleOwner, Observer {
                 wholeDrivingTimeInMillis = it
-                val formattedTime = Utils.getFormattedTime(wholeDrivingTimeInMillis)
+                val formattedTime = RouteUtils.getFormattedTime(wholeDrivingTimeInMillis)
                 Log.d(TAG, "initializeObservers: drive time : $formattedTime")
 
                 showDurationTime(it)
@@ -238,7 +237,7 @@ class TrackTripFragment : Fragment(){
     }
 
     private fun showDurationTime(durationTime: Long) {
-        val formattedTime = Utils.getFormattedTime(durationTime)
+        val formattedTime = RouteUtils.getFormattedTime(durationTime)
         binding.textViewDurationDriving.text = "duration $formattedTime"
     }
 

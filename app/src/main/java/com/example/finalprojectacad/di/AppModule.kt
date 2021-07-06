@@ -12,6 +12,7 @@ import com.example.finalprojectacad.db.dao.CarDao
 import com.example.finalprojectacad.db.dao.RouteDao
 import com.example.finalprojectacad.other.utilities.PopulateDatabase
 import com.example.finalprojectacad.ui.activity.MainActivity
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,7 +60,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRouteDao(db: AppLocalDatabase) : RouteDao {
+    fun provideRouteDao(db: AppLocalDatabase): RouteDao {
         return db.routeDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
     }
 }

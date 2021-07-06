@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "619401893496",
+    "project_id": "diaryroutetracking",
+    "storage_bucket": "diaryroutetracking.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619401893496:android:5ebf88eead7334d5e03f8d",
+        "android_client_info": {
+          "package_name": "com.example.finalprojectacad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "619401893496-5rt1c90qbmrj85oh7vvcvktkm0ublutl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJnUFQpOgXbGWZw7o3NyZE_5Ux_PoTswM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "619401893496-5rt1c90qbmrj85oh7vvcvktkm0ublutl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

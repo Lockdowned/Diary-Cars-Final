@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.adaptors.CarsListAdaptor
 import com.example.finalprojectacad.databinding.FragmentListCarsBinding
+import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 private const val TAG = "ListCarsFragment"
 
@@ -27,6 +30,9 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
     private lateinit var binding: FragmentListCarsBinding
     
     private var carsListAdaptor: CarsListAdaptor? = null
+
+    @Inject
+    lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,8 +57,12 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
             navBar.visibility = View.VISIBLE
 
             val navigation = Navigation.findNavController(view)
-            imageButton.setOnClickListener {
-                navigation.navigate(R.id.action_listCarsFragment_to_registrationFragment)
+            imageButtonToAuthorizationOrSettings.setOnClickListener {
+                if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
+                    navigation.navigate(R.id.action_listCarsFragment_to_profileSetingsFragment)
+                } else {
+                    navigation.navigate(R.id.action_listCarsFragment_to_registrationFragment)
+                }
             }
 
             rvListCars.adapter = carsListAdaptor

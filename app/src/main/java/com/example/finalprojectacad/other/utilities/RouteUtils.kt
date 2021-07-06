@@ -2,7 +2,7 @@ package com.example.finalprojectacad.other.utilities
 
 import java.util.concurrent.TimeUnit
 
-object Utils {
+object RouteUtils {
     fun getFormattedTime(ms: Long, includeMillis: Boolean = false): String {
         var millisecond = ms
         val hours = TimeUnit.MILLISECONDS.toHours(millisecond)
