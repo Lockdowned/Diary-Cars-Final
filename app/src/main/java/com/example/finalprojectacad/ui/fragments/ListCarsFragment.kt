@@ -57,6 +57,7 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
             navBar.visibility = View.VISIBLE
 
             val navigation = Navigation.findNavController(view)
+
             imageButtonToAuthorizationOrSettings.setOnClickListener {
                 if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
                     navigation.navigate(R.id.action_listCarsFragment_to_profileSetingsFragment)

@@ -50,7 +50,7 @@ typealias Polyline = MutableList<LatLng>
 typealias MutableListPolylines = MutableList<Polyline>
 
 @AndroidEntryPoint
-class TrackingService: LifecycleService() {
+class TrackingService : LifecycleService() {
 
     private var isFirstStartForegroundService = true
 
@@ -66,7 +66,6 @@ class TrackingService: LifecycleService() {
 //    private val curNotificationBuilder: NotificationCompat.Builder by lazy {
 //        baseNotificationBuilder
 //    }
-
 
 
     companion object {
@@ -95,9 +94,9 @@ class TrackingService: LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
-            when(it.action) {
-                ACTION_START_OR_RESUME_SERVICE  -> {
-                    if(isFirstStartForegroundService){
+            when (it.action) {
+                ACTION_START_OR_RESUME_SERVICE -> {
+                    if (isFirstStartForegroundService) {
                         Log.d(TAG, "Start service")
                         startForegroundService()
                         isFirstStartForegroundService = false
@@ -184,15 +183,23 @@ class TrackingService: LifecycleService() {
             getService(this, 2, resumeIntent, FLAG_UPDATE_CURRENT)
         }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         curNotificationBuilder.javaClass.getDeclaredField("mActions").apply {
             isAccessible = true
-            set(curNotificationBuilder, ArrayList<NotificationCompat.Action>())  //here we are clear all actions(notification)
+            set(
+                curNotificationBuilder,
+                ArrayList<NotificationCompat.Action>()
+            )  //here we are clear all actions(notification)
         }
         if (!isForegroundServiceStopped) { //check is in different keys
             curNotificationBuilder = baseNotificationBuilder
-                .addAction(R.drawable.common_google_signin_btn_icon_light, notificationActionText, pendingIntent)
+                .addAction(
+                    R.drawable.common_google_signin_btn_icon_light,
+                    notificationActionText,
+                    pendingIntent
+                )
             notificationManager.notify(NOTIFICATION_ID, curNotificationBuilder.build())
         }
     }
@@ -225,8 +232,10 @@ class TrackingService: LifecycleService() {
                 result.locations.let { locations ->
                     for (location in locations) {
                         addPathPoint(location)
-                        Log.d(TAG,
-                            "NEW GPS COORDINATES ${location.latitude} & ${location.longitude}")
+                        Log.d(
+                            TAG,
+                            "NEW GPS COORDINATES ${location.latitude} & ${location.longitude}"
+                        )
                     }
                 }
             }
@@ -240,7 +249,7 @@ class TrackingService: LifecycleService() {
     } ?: pathPoints.postValue(mutableListOf(mutableListOf()))
 
 
-    private  fun addPathPoint(location: Location?) {
+    private fun addPathPoint(location: Location?) {
         location?.let {
             val positionLatLng = LatLng(
                 location.latitude,
@@ -267,7 +276,7 @@ class TrackingService: LifecycleService() {
         isTracking.postValue(true)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
-        as NotificationManager
+                as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(notificationManager)
@@ -277,7 +286,7 @@ class TrackingService: LifecycleService() {
 
         timeRunInSeconds.observe(
             this, Observer {
-                if (!isForegroundServiceStopped){ //check is in different keys
+                if (!isForegroundServiceStopped) { //check is in different keys
                     val notification = curNotificationBuilder
                         .setContentText(RouteUtils.getFormattedTime(it * 1000L))
                     notificationManager.notify(NOTIFICATION_ID, notification.build())

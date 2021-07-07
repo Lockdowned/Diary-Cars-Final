@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val TAG = "RegistrationFragment"
@@ -71,7 +72,9 @@ class RegistrationFragment : Fragment() {
                 }
 
             } catch (e: Exception) {
-                Log.e(TAG, "registerNewUser: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    Log.e(TAG, "registerNewUser: ${e.message}")
+                }
             }
         }
 
@@ -85,18 +88,19 @@ class RegistrationFragment : Fragment() {
                 auth.signInWithEmailAndPassword(email, password).await()
 
                 if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
-                    navigation.navigate(R.id.listCarsFragment)
+//                    navigation.navigate(R.id.listCarsFragment) // QUESTION!!! WHY if i do this i will crash when i navigate again to setting fragment
+                    navigation.popBackStack()
                 } else {
                     // show tmth
                 }
 
             } catch (e: Exception) {
-                Log.e(TAG, "registerNewUser: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    Log.e(TAG, "registerNewUser: ${e.message}")
+                }
             }
         }
     }
-
-
 
 
 }

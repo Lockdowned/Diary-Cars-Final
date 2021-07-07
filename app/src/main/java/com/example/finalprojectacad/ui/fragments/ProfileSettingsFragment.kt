@@ -37,7 +37,8 @@ class ProfileSettingsFragment : Fragment(R.layout.fragment_profile_setings) {
         binding.apply {
             buttonLogoutAccount.setOnClickListener {
                 auth.signOut()
-                navController.navigate(R.id.listCarsFragment)
+//                navController.navigate(R.id.listCarsFragment)
+                navController.popBackStack()
             }
         }
     }
