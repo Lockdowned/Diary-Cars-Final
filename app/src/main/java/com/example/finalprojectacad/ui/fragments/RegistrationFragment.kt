@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
+import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.databinding.FragmentRegistrationBinding
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +30,9 @@ class RegistrationFragment : Fragment() {
 
     @Inject
     lateinit var auth: FirebaseAuth
+
+    @Inject
+    lateinit var firebaseRequests: FirebaseRequests
 
     private lateinit var navigation: NavController
 
@@ -65,12 +69,7 @@ class RegistrationFragment : Fragment() {
             try {
                 auth.createUserWithEmailAndPassword(email, password).await()
 
-                if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
-                    navigation.navigate(R.id.listCarsFragment)
-                } else {
-                    // show tmth
-                }
-
+                moveToBackStack()
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e(TAG, "registerNewUser: ${e.message}")
@@ -87,18 +86,22 @@ class RegistrationFragment : Fragment() {
             try {
                 auth.signInWithEmailAndPassword(email, password).await()
 
-                if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
-//                    navigation.navigate(R.id.listCarsFragment) // QUESTION!!! WHY if i do this i will crash when i navigate again to setting fragment
-                    navigation.popBackStack()
-                } else {
-                    // show tmth
-                }
-
+                moveToBackStack()
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e(TAG, "registerNewUser: ${e.message}")
                 }
             }
+        }
+    }
+
+    private suspend fun moveToBackStack() {
+        if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
+            firebaseRequests.setUserData()
+//                    navigation.navigate(R.id.listCarsFragment) // QUESTION!!! WHY if i do this i will crash when i navigate again to setting fragment
+            navigation.popBackStack()
+        } else {
+            // show tmth
         }
     }
 

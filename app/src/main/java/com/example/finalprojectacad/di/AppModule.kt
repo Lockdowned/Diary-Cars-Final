@@ -1,22 +1,24 @@
 package com.example.finalprojectacad.di
 
 import android.content.Context
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.finalprojectacad.R
-import com.example.finalprojectacad.db.AppLocalDatabase
-import com.example.finalprojectacad.db.dao.CarDao
-import com.example.finalprojectacad.db.dao.RouteDao
+import com.example.finalprojectacad.data.localDB.AppLocalDatabase
+import com.example.finalprojectacad.data.localDB.dao.CarDao
+import com.example.finalprojectacad.data.localDB.dao.RouteDao
+import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.other.utilities.PopulateDatabase
-import com.example.finalprojectacad.ui.activity.MainActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -69,4 +71,14 @@ object AppModule {
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
+
+
+    @Singleton
+    @Provides
+    fun provideFireStorageCurrentUser(
+        auth: FirebaseAuth): FirebaseRequests {
+        return FirebaseRequests(auth)
+    }
+
+
 }

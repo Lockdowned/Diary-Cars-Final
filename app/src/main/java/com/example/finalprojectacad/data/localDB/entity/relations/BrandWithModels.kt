@@ -1,9 +1,9 @@
-package com.example.finalprojectacad.db.entity.relations
+package com.example.finalprojectacad.data.localDB.entity.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.finalprojectacad.db.entity.BrandRoom
-import com.example.finalprojectacad.db.entity.ModelRoom
+import com.example.finalprojectacad.data.localDB.entity.BrandRoom
+import com.example.finalprojectacad.data.localDB.entity.ModelRoom
 
 data class BrandWithModels (
     @Embedded

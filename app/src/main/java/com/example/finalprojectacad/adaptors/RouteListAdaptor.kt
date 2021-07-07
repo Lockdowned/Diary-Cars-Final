@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalprojectacad.databinding.ItemRvListTracksBinding
-import com.example.finalprojectacad.db.entity.RouteRoom
+import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.viewModel.CarViewModel
 
 class RouteListAdaptor(

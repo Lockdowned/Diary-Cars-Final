@@ -1,10 +1,10 @@
 package com.example.finalprojectacad.other.utilities
 
-import com.example.finalprojectacad.db.dao.CarDao
-import com.example.finalprojectacad.db.entity.BrandRoom
-import com.example.finalprojectacad.db.entity.CarRoom
-import com.example.finalprojectacad.db.entity.ModelRoom
-import com.example.finalprojectacad.db.entity.TransmissionRoom
+import com.example.finalprojectacad.data.localDB.dao.CarDao
+import com.example.finalprojectacad.data.localDB.entity.BrandRoom
+import com.example.finalprojectacad.data.localDB.entity.CarRoom
+import com.example.finalprojectacad.data.localDB.entity.ModelRoom
+import com.example.finalprojectacad.data.localDB.entity.TransmissionRoom
 
 class PopulateDatabase() {
 

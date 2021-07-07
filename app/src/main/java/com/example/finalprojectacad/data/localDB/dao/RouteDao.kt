@@ -1,12 +1,12 @@
-package com.example.finalprojectacad.db.dao
+package com.example.finalprojectacad.data.localDB.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.finalprojectacad.db.entity.PointRouteRoom
-import com.example.finalprojectacad.db.entity.RouteRoom
-import com.example.finalprojectacad.db.entity.relations.CarWithRoutes
+import com.example.finalprojectacad.data.localDB.entity.PointRouteRoom
+import com.example.finalprojectacad.data.localDB.entity.RouteRoom
+import com.example.finalprojectacad.data.localDB.entity.relations.CarWithRoutes
 import kotlinx.coroutines.flow.Flow
 
 @Dao

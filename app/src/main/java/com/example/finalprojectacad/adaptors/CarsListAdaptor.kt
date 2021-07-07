@@ -5,16 +5,13 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ItemRvListCarsBinding
-import com.example.finalprojectacad.db.entity.CarRoom
+import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.viewModel.CarViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
 class CarsListAdaptor(
     private val viewModel: CarViewModel

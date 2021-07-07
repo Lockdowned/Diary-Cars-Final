@@ -1,4 +1,4 @@
-package com.example.finalprojectacad.db.entity
+package com.example.finalprojectacad.data.localDB.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

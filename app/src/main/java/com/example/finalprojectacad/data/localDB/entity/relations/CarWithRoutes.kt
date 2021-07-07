@@ -1,9 +1,9 @@
-package com.example.finalprojectacad.db.entity.relations
+package com.example.finalprojectacad.data.localDB.entity.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.finalprojectacad.db.entity.CarRoom
-import com.example.finalprojectacad.db.entity.RouteRoom
+import com.example.finalprojectacad.data.localDB.entity.CarRoom
+import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 
 data class CarWithRoutes(
     @Embedded

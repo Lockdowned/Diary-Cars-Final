@@ -1,18 +1,21 @@
 package com.example.finalprojectacad.repositories
 
-import com.example.finalprojectacad.db.dao.CarDao
-import com.example.finalprojectacad.db.dao.RouteDao
-import com.example.finalprojectacad.db.entity.*
+import com.example.finalprojectacad.data.localDB.dao.CarDao
+import com.example.finalprojectacad.data.localDB.dao.RouteDao
+import com.example.finalprojectacad.data.localDB.entity.*
+import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import javax.inject.Inject
 
 class MainRepository
 @Inject constructor(
     private val carDao: CarDao,
-    private val routeDao: RouteDao
+    private val routeDao: RouteDao,
+    private val firebaseRequests: FirebaseRequests
 ){
 
     suspend fun insertCar(car: CarRoom) {
         carDao.insertCar(car)
+        firebaseRequests.insertNewCar(car)
     }
 
     suspend fun insertBrand(brand: BrandRoom) {

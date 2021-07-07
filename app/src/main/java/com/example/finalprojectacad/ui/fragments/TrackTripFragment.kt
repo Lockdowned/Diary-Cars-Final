@@ -14,7 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
-import com.example.finalprojectacad.db.entity.RouteRoom
+import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_STOP_SERVICE

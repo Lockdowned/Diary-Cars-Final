@@ -7,10 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
+import com.example.finalprojectacad.data.localDB.entity.TransmissionRoom
 import com.example.finalprojectacad.databinding.FragmentProfileSetingsBinding
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -20,6 +27,7 @@ class ProfileSettingsFragment : Fragment(R.layout.fragment_profile_setings) {
     lateinit var auth: FirebaseAuth
 
     private lateinit var binding: FragmentProfileSetingsBinding
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +48,17 @@ class ProfileSettingsFragment : Fragment(R.layout.fragment_profile_setings) {
 //                navController.navigate(R.id.listCarsFragment)
                 navController.popBackStack()
             }
+        }
+
+
+        doStmth()
+    }
+
+    private fun doStmth() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val taskCollection = Firebase.firestore.collection("User: ${auth.currentUser!!.uid}")
+            val trand = TransmissionRoom("HAI", 3242)
+            taskCollection.add(trand)
         }
     }
 

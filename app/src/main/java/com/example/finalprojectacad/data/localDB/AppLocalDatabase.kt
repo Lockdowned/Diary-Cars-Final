@@ -1,10 +1,10 @@
-package com.example.finalprojectacad.db
+package com.example.finalprojectacad.data.localDB
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.finalprojectacad.db.dao.CarDao
-import com.example.finalprojectacad.db.dao.RouteDao
-import com.example.finalprojectacad.db.entity.*
+import com.example.finalprojectacad.data.localDB.dao.CarDao
+import com.example.finalprojectacad.data.localDB.dao.RouteDao
+import com.example.finalprojectacad.data.localDB.entity.*
 
 @Database(
     entities = [BrandRoom::class, CarRoom::class, ModelRoom::class,

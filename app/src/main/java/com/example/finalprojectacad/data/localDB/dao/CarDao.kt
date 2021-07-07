@@ -1,7 +1,7 @@
-package com.example.finalprojectacad.db.dao
+package com.example.finalprojectacad.data.localDB.dao
 
 import androidx.room.*
-import com.example.finalprojectacad.db.entity.*
+import com.example.finalprojectacad.data.localDB.entity.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
