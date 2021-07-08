@@ -52,7 +52,7 @@ class AddCarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getAllCars.observe( //todo -- do this in service
+        viewModel.getAllCars.observe(
             viewLifecycleOwner, Observer {
                 viewModel.listAllCars = it
             }

@@ -48,6 +48,11 @@ interface CarDao {
     suspend fun deleteCar(car: CarRoom)
 
 
+    @Query("SELECT * FROM car_table")
+    fun getAllCarsOnce(): List<CarRoom>
+
+
+
 
 
 }

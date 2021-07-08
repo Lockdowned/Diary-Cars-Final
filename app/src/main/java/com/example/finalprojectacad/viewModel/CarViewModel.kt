@@ -5,16 +5,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.finalprojectacad.data.localDB.entity.*
+import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
+import com.example.finalprojectacad.other.utilities.SyncDatabasesClass
 import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @HiltViewModel
 class CarViewModel
 @Inject constructor(
-    private val mainRepository: MainRepository
-): ViewModel(){
+    private val mainRepository: MainRepository,
+    private val firebaseRequests: FirebaseRequests
+) : ViewModel() {
+
 
     var listAllCars: List<CarRoom> = listOf()
     var listAllImages: List<ImageCarRoom> = listOf()
@@ -25,15 +31,29 @@ class CarViewModel
     val allBrands: LiveData<List<BrandRoom>> = mainRepository.getAllBrands().asLiveData()
     val allModels: LiveData<List<ModelRoom>> = mainRepository.getAllModels().asLiveData()
     fun getModelsByBrand(brandId: Int) = mainRepository.getModelsByBrand(brandId).asLiveData()
-    val allTransmissions: LiveData<List<TransmissionRoom>> = mainRepository.getAllTransmissions().asLiveData()
+    val allTransmissions: LiveData<List<TransmissionRoom>> =
+        mainRepository.getAllTransmissions().asLiveData()
 
     val allRoutesLiceData: LiveData<List<RouteRoom>> = mainRepository.getAllRoutes().asLiveData()
 
     private var chosenCar: CarRoom? = null
 
+    init {
+        syncDatabases()
+    }
+
+    fun syncDatabases() {
+        SyncDatabasesClass(
+            firebaseRequests,
+            mainRepository
+        ).syncOnce()
+    }
+
     fun insertNewCar(car: CarRoom) {
-        viewModelScope.launch {
-            mainRepository.insertCar(car)
+        viewModelScope.launch(Dispatchers.IO) {
+            supervisorScope { //should i do this with other db command
+                mainRepository.insertCar(car)
+            }
         }
     }
 
@@ -44,7 +64,7 @@ class CarViewModel
     }
 
     fun insertNewRoute(route: RouteRoom) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             mainRepository.insertNewRoute(route)
         }
     }
@@ -54,14 +74,15 @@ class CarViewModel
         allModelsNameBeforeChange = allModelsName
     }
 
-/*
-change mutableListNameModels in adapter autoCompleteSetAdapter depended on brand text
- */
+    /*
+    change mutableListNameModels in adapter autoCompleteSetAdapter depended on brand text
+     */
     fun fillCorrectModelsByCar(
         mutableListModelsName: MutableList<String>,
         listModels: List<ModelRoom>,
         listBrand: List<BrandRoom>,
-        carText: String,){
+        carText: String,
+    ) {
         mutableListModelsName.clear()
         if (carText.isEmpty()) return
         val findIdBrand = listBrand.find { it.brandName == carText } ?: return

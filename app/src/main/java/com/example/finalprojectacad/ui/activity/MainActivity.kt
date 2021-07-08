@@ -16,11 +16,15 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
 import com.example.finalprojectacad.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
+import com.example.finalprojectacad.other.utilities.SyncDatabasesClass
 import com.example.finalprojectacad.viewModel.CarViewModel
+import com.example.finalprojectacad.workers.SyncDatabaseWorker
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.anyPermanentlyDenied
@@ -64,7 +68,9 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        RemoteSynchronizeUtils.checkLoginUser(auth)
+//        val workManager = WorkManager.getInstance(application)
+//        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>().build()
+//        workManager.beginWith(testWorker).enqueue()
 
 
         binding = ActivityMainBinding.inflate(layoutInflater)

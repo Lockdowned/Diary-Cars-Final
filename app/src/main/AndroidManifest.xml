@@ -33,6 +33,11 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />
+
         <service android:name=".services.TrackingService"
             android:foregroundServiceType="location"/>
 

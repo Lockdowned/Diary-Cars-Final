@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.TransmissionRoom
+import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.databinding.FragmentProfileSetingsBinding
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +26,9 @@ class ProfileSettingsFragment : Fragment(R.layout.fragment_profile_setings) {
 
     @Inject
     lateinit var auth: FirebaseAuth
+
+    @Inject
+    lateinit var firebaseRequests: FirebaseRequests
 
     private lateinit var binding: FragmentProfileSetingsBinding
 
@@ -45,13 +49,13 @@ class ProfileSettingsFragment : Fragment(R.layout.fragment_profile_setings) {
         binding.apply {
             buttonLogoutAccount.setOnClickListener {
                 auth.signOut()
-//                navController.navigate(R.id.listCarsFragment)
+                firebaseRequests.setUserData()
+
                 navController.popBackStack()
             }
         }
 
-
-        doStmth()
+//        doStmth()
     }
 
     private fun doStmth() {

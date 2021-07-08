@@ -1,9 +1,6 @@
 package com.example.finalprojectacad.data.localDB.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.finalprojectacad.data.localDB.entity.PointRouteRoom
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.data.localDB.entity.relations.CarWithRoutes
@@ -23,4 +20,10 @@ interface RouteDao {
 
     @Query("SELECT * FROM car_table WHERE car_id =:carId")
     fun getRoutesByCar(carId: Int): Flow<CarWithRoutes>
+
+    @Query("SELECT * FROM route_table")
+    fun getAllRoutesOnce(): List<RouteRoom>
+
+    @Update
+    fun updateRoute(route: RouteRoom)
 }

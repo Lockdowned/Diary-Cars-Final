@@ -15,7 +15,7 @@ class MainRepository
 
     suspend fun insertCar(car: CarRoom) {
         carDao.insertCar(car)
-        firebaseRequests.insertNewCar(car)
+        firebaseRequests.insertNewCar(carDao.getAllCarsOnce().last())
     }
 
     suspend fun insertBrand(brand: BrandRoom) {
@@ -36,6 +36,7 @@ class MainRepository
 
     suspend fun insertNewRoute(route: RouteRoom) {
         routeDao.insertRoute(route)
+        firebaseRequests.insertNewRoute(routeDao.getAllRoutesOnce().last())
     }
 
     fun getAllCars() = carDao.getAllCars()
@@ -58,6 +59,30 @@ class MainRepository
 
     suspend fun deleteCar(car: CarRoom) {
         carDao.deleteCar(car)
+    }
+
+    fun getAllCarsOnce(): List<CarRoom> {
+        return carDao.getAllCarsOnce()
+    }
+
+    fun getAllRoutesOnce(): List<RouteRoom> {
+        return routeDao.getAllRoutesOnce()
+    }
+
+    suspend fun insertRoomCar(car: CarRoom) {
+        carDao.insertCar(car)
+    }
+
+    suspend fun updateRoomCar(car: CarRoom) {
+        carDao.updateCar(car)
+    }
+
+    suspend fun insertRoomRoute(route: RouteRoom) {
+        routeDao.insertRoute(route)
+    }
+
+    suspend fun updateRoomRoute(route: RouteRoom) {
+        routeDao.updateRoute(route)
     }
 
 }
