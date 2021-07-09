@@ -10,14 +10,10 @@ import com.example.finalprojectacad.data.localDB.dao.RouteDao
 import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.other.utilities.PopulateDatabase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -34,29 +30,30 @@ object AppModule {
     fun provideLocalDatabase(
         @ApplicationContext appContext: Context,
         carDaoProvider: Provider<CarDao> // how we can get dao provider before than we create db
-    ) = synchronized(this){ // i almost sure that is scope need synchronize(yes, but how is actually work)
-        Room.databaseBuilder(
-            appContext,
-            AppLocalDatabase::class.java,
-            "local_db"
-        ).addCallback(
-            object : RoomDatabase.Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                    //initialize database first time
-                    CoroutineScope(SupervisorJob()).launch {
-                        PopulateDatabase().insertDB(carDaoProvider.get())
+    ) =
+        synchronized(this) { // i almost sure that is scope need synchronize(yes, but how is actually work)
+            Room.databaseBuilder(
+                appContext,
+                AppLocalDatabase::class.java,
+                "local_db"
+            ).addCallback(
+                object : RoomDatabase.Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
+                        //initialize database first time
+                        CoroutineScope(SupervisorJob()).launch {
+                            PopulateDatabase().insertDB(carDaoProvider.get())
+                        }
                     }
                 }
-            }
-        )
-            .build()
-    } //return an provide AppLocalDatabase
+            )
+                .build()
+        } //return an provide AppLocalDatabase
 
     @Singleton
     @Provides
     fun provideCarDao(db: AppLocalDatabase): CarDao {
-        return  db.carDao()
+        return db.carDao()
     }
 
     @Singleton
@@ -75,8 +72,10 @@ object AppModule {
     @Singleton
     @Provides
     fun provideFireStorageCurrentUser(
-        auth: FirebaseAuth): FirebaseRequests {
-        return FirebaseRequests(auth)
+        auth: FirebaseAuth,
+        @ApplicationContext appContext: Context
+    ): FirebaseRequests {
+        return FirebaseRequests(auth, appContext)
     }
 
 

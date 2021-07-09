@@ -1,11 +1,13 @@
 package com.example.finalprojectacad.data.remoteDB
 
+import android.content.Context
 import android.util.Log
 import androidx.core.net.toUri
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.ImageCarRoom
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
+import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
@@ -17,9 +19,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.io.File
 
 class FirebaseRequests(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val appContext: Context
 ) {
 
     var userDataCars: CollectionReference? = auth.currentUser?.let {
@@ -28,11 +33,11 @@ class FirebaseRequests(
     var userDataRoutes: CollectionReference? = auth.currentUser?.let {
         return@let Firebase.firestore.collection("Routes user: ${auth.currentUser?.uid}")
     }
-    var userDataImg: CollectionReference? = auth.currentUser?.let {
+    var userDataCarImg: CollectionReference? = auth.currentUser?.let {
         return@let Firebase.firestore.collection("Images user: ${auth.currentUser?.uid}")
     }
 
-    var userDataImgStorage: StorageReference? = auth.currentUser?.let {
+    var userDataCarImgStorage: StorageReference? = auth.currentUser?.let {
         Firebase.storage.reference.child("Images user: ${auth.uid}")
     }
 
@@ -40,13 +45,13 @@ class FirebaseRequests(
         if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
             userDataCars = Firebase.firestore.collection("Cars user: ${auth.currentUser?.uid}")
             userDataRoutes = Firebase.firestore.collection("Routes user: ${auth.currentUser?.uid}")
-            userDataImg = Firebase.firestore.collection("Images user: ${auth.currentUser?.uid}")
-            userDataImgStorage = Firebase.storage.reference.child("Images user: ${auth.uid}")
+            userDataCarImg = Firebase.firestore.collection("Images user: ${auth.currentUser?.uid}")
+            userDataCarImgStorage = Firebase.storage.reference.child("Images user: ${auth.uid}")
         } else {
             userDataCars = null
             userDataRoutes = null
-            userDataImg = null
-            userDataImgStorage = null
+            userDataCarImg = null
+            userDataCarImgStorage = null
         }
 
     }
@@ -69,10 +74,8 @@ class FirebaseRequests(
 
     fun insertCarImg(carImg: ImageCarRoom) {
         CoroutineScope(Dispatchers.IO).launch {
-            userDataImg?.add(carImg)
-//            userDataImgStorage?.child("/${carImg.id}")?.putFile(carImg.imgCar.toUri())?.await()
-            val a = "content://com.android.providers.media.documents/document/image%3A36"
-            userDataImgStorage?.child("/${carImg.id}")?.putFile(a.toUri())?.await()
+            userDataCarImg?.add(carImg)
+            userDataCarImgStorage?.child("/${carImg.id}")?.putFile(carImg.imgCar.toUri())?.await()
         }
     }
 
@@ -94,6 +97,18 @@ class FirebaseRequests(
                     .get().await()
                 if (necessaryDoc.documents.isNotEmpty()) {
                     routesUser.document(necessaryDoc.first().id).set(route)
+                }
+            }
+        }
+    }
+
+    fun updateCarImg(img: ImageCarRoom) {
+        CoroutineScope(Dispatchers.IO).launch {
+            userDataCarImg?.let { imagesCarUser ->
+                val necessaryDoc = imagesCarUser.whereEqualTo("id", img.id)
+                    .get().await()
+                if (necessaryDoc.documents.isNotEmpty()) {
+                    imagesCarUser.document(necessaryDoc.first().id).set(img)
                 }
             }
         }
@@ -131,6 +146,33 @@ class FirebaseRequests(
         }?.await()
         return list
     }
+
+    suspend fun getAllCarImg(): List<ImageCarRoom> {
+        val list = mutableListOf<ImageCarRoom>()
+        userDataCarImg?.get()?.addOnSuccessListener { notDeserializedListImg ->
+            for (document in notDeserializedListImg) {
+                val imgItem = document.toObject<ImageCarRoom>()
+                list.add(imgItem)
+            }
+        }?.await()
+        return list
+    }
+
+    suspend fun saveToScopeFromRemote(img: ImageCarRoom) {
+        val tempFileImg = File.createTempFile("images", "jpg")
+        userDataCarImgStorage?.child("/${img.id}")?.let {
+            it.getFile(tempFileImg).addOnSuccessListener {
+                Log.d("HEY", "saveToScopeFromRemote: ${tempFileImg.toURI()}")
+                SaveImgToScopedStorage.save(appContext, img.id, tempFileImg.toUri())
+            }
+
+        }
+
+
+
+    }
+
+
 
 
 }

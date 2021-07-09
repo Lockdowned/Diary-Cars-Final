@@ -125,9 +125,10 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
         return withContext(Dispatchers.IO) {
             val listUri = mutableListOf<Uri>()
             val files = filesDir.listFiles()
-            files?.filter { it.canRead() && it.isFile }?.map { // HOW GET REAL ABSOLUTE PATH
-                Log.d("HERE", "openSavedImg: ${it.path}")
-                listUri.add(it.absolutePath.toUri())
+            files?.filter { it.canRead() && it.isFile }?.map {
+                val path = it.absolutePath
+                val realAbsolutePath = "file:$path"
+                listUri.add(realAbsolutePath.toUri())
             }
             return@withContext listUri
         }

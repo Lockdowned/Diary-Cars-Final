@@ -8,5 +8,5 @@ import androidx.room.PrimaryKey
 data class ImageCarRoom(
     @ColumnInfo (name = "img_car") var imgCar: String = "",
     var timestamp: Long = -1,
-    @PrimaryKey val id: Int
+    @PrimaryKey var id: Int = -1
 )

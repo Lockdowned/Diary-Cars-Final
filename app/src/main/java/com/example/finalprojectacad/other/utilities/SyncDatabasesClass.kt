@@ -1,6 +1,7 @@
 package com.example.finalprojectacad.other.utilities
 
 import android.util.Log
+import com.example.finalprojectacad.data.localDB.entity.ImageCarRoom
 import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.repositories.MainRepository
 import kotlinx.coroutines.*
@@ -31,19 +32,49 @@ class SyncDatabasesClass(
         var carRoomList = mainRepository.getAllCarsOnce()
         var fireStoreCarList = firebaseRequests.getAllCars()
 
+        var carImgList = mainRepository.getAllImgOnce()
+        var fireStoreCarImgList = firebaseRequests.getAllCarImg()
+
         if (fireStoreCarList.isEmpty()) {
             for (localCar in carRoomList) {
                 firebaseRequests.insertNewCar(localCar)
             }
+            for (localImg in carImgList) {
+                firebaseRequests.insertCarImg(localImg)
+            }
         } else {
             for (remoteCar in fireStoreCarList) {
                 val matchCar = carRoomList.find { it.carId == remoteCar.carId }
+
+                var requireImgCar: ImageCarRoom? = null
+
                 if (matchCar == null) {
                     mainRepository.insertRoomCar(remoteCar)
+                    if (remoteCar.flagPresenceImg) {
+                        requireImgCar = fireStoreCarImgList.find {it.id == remoteCar.carId}
+                        requireImgCar?.let {
+                            mainRepository.insertRoomImgCar(it) //need add img to scoped storage
+                        }
+                    }
                 } else if (matchCar.timestamp < remoteCar.timestamp) {
                     mainRepository.updateRoomCar(remoteCar)
+                    if (remoteCar.flagPresenceImg) {
+                        requireImgCar = fireStoreCarImgList.find {it.id == remoteCar.carId}
+                        requireImgCar?.let { imgCar ->
+                            val requireCompareImg = carImgList.find { it.id == imgCar.id }
+                            if (requireCompareImg != null && requireCompareImg.timestamp < requireImgCar!!.timestamp) {
+                                mainRepository.updateRoomCarImg(requireImgCar!!)
+                            }
+                        }
+                    }
                 } else {
                     firebaseRequests.updateCar(matchCar)
+                    if (matchCar.flagPresenceImg) {
+                        requireImgCar = carImgList.find { it.id == matchCar.carId }
+                        requireImgCar?.let {
+                            firebaseRequests.updateCarImg(it)
+                        }
+                    }
                 }
             }
             carRoomList = mainRepository.getAllCarsOnce()

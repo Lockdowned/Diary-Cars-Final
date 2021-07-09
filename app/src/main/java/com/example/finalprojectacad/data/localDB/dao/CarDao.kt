@@ -44,6 +44,9 @@ interface CarDao {
     @Update
     suspend fun updateCar(car: CarRoom)
 
+    @Update
+    suspend fun updateCarImg(img: ImageCarRoom)
+
     @Delete
     suspend fun deleteCar(car: CarRoom)
 

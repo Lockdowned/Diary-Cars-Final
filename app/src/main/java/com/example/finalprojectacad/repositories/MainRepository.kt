@@ -1,16 +1,20 @@
 package com.example.finalprojectacad.repositories
 
+import android.content.Context
+import androidx.core.net.toUri
 import com.example.finalprojectacad.data.localDB.dao.CarDao
 import com.example.finalprojectacad.data.localDB.dao.RouteDao
 import com.example.finalprojectacad.data.localDB.entity.*
 import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
+import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
+import java.io.File
 import javax.inject.Inject
 
 class MainRepository
 @Inject constructor(
     private val carDao: CarDao,
     private val routeDao: RouteDao,
-    private val firebaseRequests: FirebaseRequests
+    private val firebaseRequests: FirebaseRequests,
 ){
 
     suspend fun insertCar(car: CarRoom) {
@@ -84,6 +88,20 @@ class MainRepository
 
     suspend fun updateRoomRoute(route: RouteRoom) {
         routeDao.updateRoute(route)
+    }
+
+    fun getAllImgOnce(): List<ImageCarRoom> {
+        return carDao.getAllImgOnce()
+    }
+
+    suspend fun insertRoomImgCar(img: ImageCarRoom) {
+        carDao.insertImg(img)
+        firebaseRequests.saveToScopeFromRemote(img)
+    }
+
+
+    suspend fun updateRoomCarImg(img: ImageCarRoom) {
+        carDao.updateCarImg(img)
     }
 
 }

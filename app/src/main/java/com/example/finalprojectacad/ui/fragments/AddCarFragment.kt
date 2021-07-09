@@ -22,6 +22,7 @@ import com.example.finalprojectacad.data.localDB.entity.BrandRoom
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.ImageCarRoom
 import com.example.finalprojectacad.data.localDB.entity.ModelRoom
+import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.example.finalprojectacad.ui.activity.MainActivity
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -226,7 +227,8 @@ class AddCarFragment : Fragment() {
             choseImgUri?.let {
                 val currentIdCars = carListSize + 1
                 val act = activity as MainActivity
-                flagSuccessSave = act.saveImgCarToScopedStorage(currentIdCars.toString(), it)
+//                flagSuccessSave = act.saveImgCarToScopedStorage(currentIdCars.toString(), it)
+                flagSuccessSave = SaveImgToScopedStorage.save(requireContext(), currentIdCars, it)
                 if (flagSuccessSave) {
                     val listScopeStorageImg = act.openSavedImg()
                     val lastSavedImg = listScopeStorageImg.last() // mb need find by name file
