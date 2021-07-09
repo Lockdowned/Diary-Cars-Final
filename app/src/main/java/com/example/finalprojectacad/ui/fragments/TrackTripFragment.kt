@@ -1,6 +1,7 @@
 package com.example.finalprojectacad.ui.fragments
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
@@ -13,26 +14,29 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
-import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
+import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_STOP_SERVICE
 import com.example.finalprojectacad.other.utilities.RouteUtils
+import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.example.finalprojectacad.services.Polyline
 import com.example.finalprojectacad.services.TrackingService
+import com.example.finalprojectacad.ui.activity.MainActivity
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import kotlin.math.roundToInt
 
 private const val TAG = "TrackTripFragment"
 
 @AndroidEntryPoint
-class TrackTripFragment : Fragment(){
+class TrackTripFragment : Fragment() {
 
     private lateinit var binding: FragmentTrackTripBinding
     private val viewModel: CarViewModel by activityViewModels()
@@ -91,8 +95,6 @@ class TrackTripFragment : Fragment(){
     }
 
 
-
-
     override fun onStart() {
         super.onStart()
         mapView.onStart()
@@ -129,32 +131,102 @@ class TrackTripFragment : Fragment(){
     }
 
     private fun saveRouteInDb() {
-        val startDriveTime = TrackingService.startDriveTime
-        var accurateDistance = 0.0
-        for (polyline in polylinesList){
-            accurateDistance += calculatePolylineLength(polyline)
+        CoroutineScope(Dispatchers.IO).launch {
+
+            val startDriveTime = TrackingService.startDriveTime
+            var accurateDistance = 0.0
+            for (polyline in polylinesList) {
+                accurateDistance += calculatePolylineLength(polyline)
+            }
+            val distance = accurateDistance.roundToInt()
+            val duration = RouteUtils.getFormattedTime(wholeDrivingTimeInMillis)
+            val avgSpeed =
+                ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
+            val maxSpeed = TrackingService.maxSpeed
+            var imgRoute = ""
+
+            var bitmapImg: Bitmap? = null
+
+            googleMap?.snapshot { bmp ->
+                bitmapImg = bmp
+            }
+
+
+            async {
+                bitmapImg?.let {
+                    val currentId = viewModel.getAllRoutesOnce().size + 1
+                    if (SaveImgToScopedStorage.saveFromBitmap(
+                            requireContext(),
+                            currentId,
+                            it
+                        )
+                    ) {
+                        val act = activity as MainActivity
+                        val listScopeStorageImg = act.openSavedImg()
+                        val lastSavedImg =
+                            listScopeStorageImg.last() // mb need find by name file
+                        Log.d(TAG, "saveRouteInDb: ")
+
+                        imgRoute = lastSavedImg.toString()
+                    }
+                }
+            }.await()
+
+
+
+
+
+
+//            async {
+//
+//                googleMap?.snapshot { bmp ->
+//                    bitmapImg = bmp
+//                    bmp?.let { guaranteedBmp ->
+//                        launch {
+//                            val currentId = viewModel.getAllRoutesOnce().size + 1
+//                            if (SaveImgToScopedStorage.saveFromBitmap(
+//                                    requireContext(),
+//                                    currentId,
+//                                    guaranteedBmp
+//                                )
+//                            ) {
+//                                val act = activity as MainActivity
+//                                val listScopeStorageImg = act.openSavedImg()
+//                                val lastSavedImg =
+//                                    listScopeStorageImg.last() // mb need find by name file
+//                                Log.d(TAG, "saveRouteInDb: ")
+//
+//                                imgRoute = lastSavedImg.toString()
+//                            }
+//                        }
+//                    }
+//
+//
+//                }
+//            }.await()
+
+
+
+
+            val routeRoom = RouteRoom(
+                carId,
+                startDriveTime,
+                distance,
+                duration,
+                avgSpeed,
+                maxSpeed,
+                imgRoute
+            )
+            Log.d(TAG, "Route Room : $routeRoom")
+
+            viewModel.insertNewRoute(routeRoom)
         }
-        val distance = accurateDistance.roundToInt()
-        val duration = RouteUtils.getFormattedTime(wholeDrivingTimeInMillis)
-        val avgSpeed = ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
-        val maxSpeed = TrackingService.maxSpeed
 
-        val routeRoom = RouteRoom(
-            carId,
-            startDriveTime,
-            distance,
-            duration,
-            avgSpeed,
-            maxSpeed
-        )
-        Log.d(TAG, "Route Room : $routeRoom")
-
-        viewModel.insertNewRoute(routeRoom)
     }
 
-    private fun calculatePolylineLength(polyline: Polyline): Double  {
+    private fun calculatePolylineLength(polyline: Polyline): Double {
         var summaryDistance = 0.0
-        for (i in 0..polyline.size - 2){
+        for (i in 0..polyline.size - 2) {
             val firstPoint = polyline[i]
             val endPoint = polyline[i + 1]
 
@@ -225,11 +297,12 @@ class TrackTripFragment : Fragment(){
 
     private fun showDistanceAndAverageSpeed() {
         var accurateDistance = 0.0
-        for (polyline in polylinesList){
+        for (polyline in polylinesList) {
             accurateDistance += calculatePolylineLength(polyline)
         }
         val distance = accurateDistance.roundToInt()
-        val avgSpeed = ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
+        val avgSpeed =
+            ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
         binding.apply {
             textViewDistanceDriving.text = "distance: $distance m"
             textViewAverageSpeed.text = "avg speed: $avgSpeed km/h"
@@ -247,7 +320,8 @@ class TrackTripFragment : Fragment(){
             googleMap?.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     polylinesList.last().last(),
-                    15f)
+                    15f
+                )
             )
         }
     }

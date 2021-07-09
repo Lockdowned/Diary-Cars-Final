@@ -5,8 +5,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
-import com.example.finalprojectacad.data.localDB.entity.ImageCarRoom
 import java.io.IOException
 
 object SaveImgToScopedStorage {
@@ -28,15 +26,28 @@ object SaveImgToScopedStorage {
     fun save(appContext: Context, id: Int, uriImg: Uri): Boolean {
 
         return try {
-            val bmp =  MediaStore.Images.Media.getBitmap(appContext.contentResolver, uriImg)
+            val bmp = MediaStore.Images.Media.getBitmap(appContext.contentResolver, uriImg)
 
             appContext.openFileOutput("$id.jpg", AppCompatActivity.MODE_PRIVATE).use { stream ->
                 bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             }
             true
-        } catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
             false
         }
+    }
+
+    fun saveFromBitmap(appContext: Context, id: Int, bmp: Bitmap): Boolean {
+        return try {
+            appContext.openFileOutput("Route_$id.jpg", AppCompatActivity.MODE_PRIVATE)
+                .use { stream -> bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                }
+            true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        }
+
     }
 }

@@ -227,7 +227,6 @@ class AddCarFragment : Fragment() {
             choseImgUri?.let {
                 val currentIdCars = carListSize + 1
                 val act = activity as MainActivity
-//                flagSuccessSave = act.saveImgCarToScopedStorage(currentIdCars.toString(), it)
                 flagSuccessSave = SaveImgToScopedStorage.save(requireContext(), currentIdCars, it)
                 if (flagSuccessSave) {
                     val listScopeStorageImg = act.openSavedImg()

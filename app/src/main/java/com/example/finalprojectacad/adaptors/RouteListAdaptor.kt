@@ -2,6 +2,7 @@ package com.example.finalprojectacad.adaptors
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,8 @@ class RouteListAdaptor(
                         textViewDurationDrivingRv.text = "duration: ${routeItem.duration}"
                         textViewAvgSpeedRv.text = "avg speed: ${routeItem.avgSpeed} km/h"
                         textViewMaxSpeedRv.text = "max speed: ${routeItem.maxSpeed} km/h"
+                        if (routeItem.imgRoute.isNotEmpty())
+                        imageViewRouteImg.setImageURI(routeItem.imgRoute.toUri())
                     }
                 }
             }

@@ -22,6 +22,8 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 
+private const val TAG = "FirebaseRequests"
+
 class FirebaseRequests(
     private val auth: FirebaseAuth,
     private val appContext: Context
@@ -160,10 +162,12 @@ class FirebaseRequests(
 
     suspend fun saveToScopeFromRemote(img: ImageCarRoom) {
         val tempFileImg = File.createTempFile("images", "jpg")
-        userDataCarImgStorage?.child("/${img.id}")?.let {
+        userDataCarImgStorage?.child("/${img.id}")?.let { it ->
             it.getFile(tempFileImg).addOnSuccessListener {
                 Log.d("HEY", "saveToScopeFromRemote: ${tempFileImg.toURI()}")
                 SaveImgToScopedStorage.save(appContext, img.id, tempFileImg.toUri())
+            }.addOnFailureListener { ex ->
+                Log.d(TAG, "Exception : ${ex.message}")
             }
 
         }

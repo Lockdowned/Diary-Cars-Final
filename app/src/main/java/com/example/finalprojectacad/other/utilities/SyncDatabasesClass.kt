@@ -46,7 +46,7 @@ class SyncDatabasesClass(
             for (remoteCar in fireStoreCarList) {
                 val matchCar = carRoomList.find { it.carId == remoteCar.carId }
 
-                var requireImgCar: ImageCarRoom? = null
+                var requireImgCar: ImageCarRoom?
 
                 if (matchCar == null) {
                     mainRepository.insertRoomCar(remoteCar)
@@ -130,17 +130,63 @@ class SyncDatabasesClass(
                     supervisorScope {
                         value?.let {
                             var carRoomList = mainRepository.getAllCarsOnce()
-                            var updatedFireStoreCarList = firebaseRequests.getAllCars()
+                            var fireStoreCarList = firebaseRequests.getAllCars()
 
-                            for (carRemote in updatedFireStoreCarList) {
-                                val matchCar = carRoomList.find { it.carId == carRemote.carId}
+                            var carImgList = mainRepository.getAllImgOnce()
+                            var fireStoreCarImgList = firebaseRequests.getAllCarImg()
+
+                            for (remoteCar in fireStoreCarList) {
+                                val matchCar = carRoomList.find { it.carId == remoteCar.carId}
+
+                                var requireImgCar: ImageCarRoom?
+
                                 if (matchCar == null) {
-                                    mainRepository.insertRoomCar(carRemote)
-                                } else if (matchCar.timestamp < carRemote.timestamp) {
-                                    mainRepository.updateRoomCar(carRemote)
+                                    mainRepository.insertRoomCar(remoteCar)
+                                    if (remoteCar.flagPresenceImg) {
+                                        requireImgCar = fireStoreCarImgList.find {it.id == remoteCar.carId}
+                                        requireImgCar?.let {
+                                            val img = ImageCarRoom()
+                                            mainRepository.insertRoomImgCar(it)
+                                        }
+                                    }
+                                } else if (matchCar.timestamp < remoteCar.timestamp) {
+                                    mainRepository.updateRoomCar(remoteCar)
+                                    if (remoteCar.flagPresenceImg) {
+                                        requireImgCar = fireStoreCarImgList.find {it.id == remoteCar.carId}
+                                        requireImgCar?.let { imgCar ->
+                                            val requireCompareImg = carImgList.find { it.id == imgCar.id }
+                                            if (requireCompareImg != null && requireCompareImg.timestamp < requireImgCar!!.timestamp) {
+                                                mainRepository.updateRoomCarImg(requireImgCar!!)
+                                            }
+                                        }
+                                    }
                                 } else {
                                     firebaseRequests.updateCar(matchCar)
+                                    if (matchCar.flagPresenceImg) {
+                                        requireImgCar = carImgList.find { it.id == matchCar.carId }
+                                        requireImgCar?.let {
+                                            firebaseRequests.updateCarImg(it)
+                                        }
+                                    }
                                 }
+                                carRoomList = mainRepository.getAllCarsOnce()
+                                if (carRoomList.size > fireStoreCarList.size) {
+                                    for (localCar in carRoomList) {
+                                        val matchCar = fireStoreCarList.find { it.carId == localCar.carId }
+                                        if (matchCar == null) {
+                                            firebaseRequests.insertNewCar(localCar)
+                                        }
+                                    }
+                                }
+                                carImgList = mainRepository.getAllImgOnce()
+                                if (carImgList.size > fireStoreCarImgList.size)
+                                    for (localImg in carImgList) {
+                                        val matchImg = fireStoreCarImgList.find { it.id == localImg.id }
+                                        if (matchImg == null) {
+                                            firebaseRequests.insertCarImg(localImg)
+                                        }
+                                    }
+
                             }
                         }
                     }

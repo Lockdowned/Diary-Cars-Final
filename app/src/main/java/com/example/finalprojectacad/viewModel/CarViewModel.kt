@@ -102,4 +102,8 @@ class CarViewModel
     fun getChosenCar(): CarRoom? {
         return chosenCar
     }
+
+    fun getAllRoutesOnce(): List<RouteRoom> {
+        return mainRepository.getAllRoutesOnce()
+    }
 }

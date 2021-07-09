@@ -121,17 +121,16 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
         }
     }
 
-    suspend fun openSavedImg(): List<Uri> {
-        return withContext(Dispatchers.IO) {
-            val listUri = mutableListOf<Uri>()
-            val files = filesDir.listFiles()
-            files?.filter { it.canRead() && it.isFile }?.map {
-                val path = it.absolutePath
-                val realAbsolutePath = "file:$path"
-                listUri.add(realAbsolutePath.toUri())
-            }
-            return@withContext listUri
+    fun openSavedImg(): List<Uri> {
+        val listUri = mutableListOf<Uri>()
+        val files = filesDir.listFiles()
+        files?.filter { it.canRead() && it.isFile }?.map {
+            val path = it.absolutePath
+            val realAbsolutePath = "file:$path"
+            listUri.add(realAbsolutePath.toUri())
         }
+        return listUri
+
     }
 
 

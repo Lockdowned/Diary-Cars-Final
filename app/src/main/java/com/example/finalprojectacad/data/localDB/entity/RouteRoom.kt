@@ -12,6 +12,7 @@ data class RouteRoom(
     var duration: String = "",
     @ColumnInfo(name = "avg_speed") var avgSpeed: Float = 0f, //km/h
     @ColumnInfo(name = "max_speed") var maxSpeed: Float = 0f, //km/h
+    @ColumnInfo (name = "img_route")var imgRoute: String = "",
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "route_id") var routeId: Int? = null
 )

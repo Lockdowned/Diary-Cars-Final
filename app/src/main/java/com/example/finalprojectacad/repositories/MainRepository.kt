@@ -95,8 +95,8 @@ class MainRepository
     }
 
     suspend fun insertRoomImgCar(img: ImageCarRoom) {
-        carDao.insertImg(img)
         firebaseRequests.saveToScopeFromRemote(img)
+        carDao.insertImg(img)
     }
 
 
