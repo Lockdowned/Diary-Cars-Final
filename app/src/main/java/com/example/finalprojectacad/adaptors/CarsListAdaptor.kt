@@ -32,7 +32,7 @@ class CarsListAdaptor(
                 textViewYear.text = carItem.year.toString()
                 textViewMilleage.text = carItem.mileage.toString()
                 findImgRoom?.let {
-                    imageViewCar.setImageURI(it.localImgCar.toUri())
+                    imageViewCar.setImageURI(it.imgCar.toUri())
                 }
             }
         }

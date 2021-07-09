@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.FileUtils
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -124,7 +125,8 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
         return withContext(Dispatchers.IO) {
             val listUri = mutableListOf<Uri>()
             val files = filesDir.listFiles()
-            files?.filter { it.canRead() && it.isFile }?.map {
+            files?.filter { it.canRead() && it.isFile }?.map { // HOW GET REAL ABSOLUTE PATH
+                Log.d("HERE", "openSavedImg: ${it.path}")
                 listUri.add(it.absolutePath.toUri())
             }
             return@withContext listUri

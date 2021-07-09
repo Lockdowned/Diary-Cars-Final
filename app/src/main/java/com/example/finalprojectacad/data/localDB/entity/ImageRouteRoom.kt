@@ -4,9 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "image_car_table")
-data class ImageCarRoom(
-    @ColumnInfo (name = "img_car") var imgCar: String = "",
-    var timestamp: Long = -1,
+@Entity(tableName = "image_route_room")
+data class ImageRouteRoom(
+    @ColumnInfo (name = "img_route")var imgRoute: String = "",
     @PrimaryKey val id: Int
 )

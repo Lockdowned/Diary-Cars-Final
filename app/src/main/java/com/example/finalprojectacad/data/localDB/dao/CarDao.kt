@@ -51,6 +51,9 @@ interface CarDao {
     @Query("SELECT * FROM car_table")
     fun getAllCarsOnce(): List<CarRoom>
 
+    @Query("SELECT * FROM image_car_table")
+    fun getAllImgOnce(): List<ImageCarRoom>
+
 
 
 

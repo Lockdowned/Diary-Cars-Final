@@ -32,6 +32,7 @@ class MainRepository
 
     suspend fun insertImg(img: ImageCarRoom) {
         carDao.insertImg(img)
+        firebaseRequests.insertCarImg(img)
     }
 
     suspend fun insertNewRoute(route: RouteRoom) {

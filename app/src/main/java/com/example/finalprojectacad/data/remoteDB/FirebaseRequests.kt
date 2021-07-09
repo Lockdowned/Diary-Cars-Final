@@ -1,8 +1,9 @@
 package com.example.finalprojectacad.data.remoteDB
 
-import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
+import com.example.finalprojectacad.data.localDB.entity.ImageCarRoom
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.google.firebase.auth.FirebaseAuth
@@ -21,13 +22,17 @@ class FirebaseRequests(
     private val auth: FirebaseAuth
 ) {
 
-    private var userDataCars: CollectionReference? = auth.currentUser?.let {
+    var userDataCars: CollectionReference? = auth.currentUser?.let {
         return@let Firebase.firestore.collection("Cars user: ${auth.currentUser?.uid}")
     }
-    private var userDataRoutes: CollectionReference? = auth.currentUser?.let {
+    var userDataRoutes: CollectionReference? = auth.currentUser?.let {
         return@let Firebase.firestore.collection("Routes user: ${auth.currentUser?.uid}")
     }
-    private var userDataImg: StorageReference? = auth.currentUser?.let {
+    var userDataImg: CollectionReference? = auth.currentUser?.let {
+        return@let Firebase.firestore.collection("Images user: ${auth.currentUser?.uid}")
+    }
+
+    var userDataImgStorage: StorageReference? = auth.currentUser?.let {
         Firebase.storage.reference.child("Images user: ${auth.uid}")
     }
 
@@ -35,9 +40,13 @@ class FirebaseRequests(
         if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
             userDataCars = Firebase.firestore.collection("Cars user: ${auth.currentUser?.uid}")
             userDataRoutes = Firebase.firestore.collection("Routes user: ${auth.currentUser?.uid}")
+            userDataImg = Firebase.firestore.collection("Images user: ${auth.currentUser?.uid}")
+            userDataImgStorage = Firebase.storage.reference.child("Images user: ${auth.uid}")
         } else {
             userDataCars = null
             userDataRoutes = null
+            userDataImg = null
+            userDataImgStorage = null
         }
 
     }
@@ -55,6 +64,15 @@ class FirebaseRequests(
     fun insertNewRoute(route: RouteRoom) {
         CoroutineScope(Dispatchers.IO).launch {
             userDataRoutes?.add(route)
+        }
+    }
+
+    fun insertCarImg(carImg: ImageCarRoom) {
+        CoroutineScope(Dispatchers.IO).launch {
+            userDataImg?.add(carImg)
+//            userDataImgStorage?.child("/${carImg.id}")?.putFile(carImg.imgCar.toUri())?.await()
+            val a = "content://com.android.providers.media.documents/document/image%3A36"
+            userDataImgStorage?.child("/${carImg.id}")?.putFile(a.toUri())?.await()
         }
     }
 
@@ -112,12 +130,6 @@ class FirebaseRequests(
             }
         }?.await()
         return list
-    }
-
-    suspend fun insertImg(fileName: Int, currentFile: Uri) {
-        userDataImg?.let { userDataImgPath ->
-            userDataImgPath.child("/$fileName").putFile(currentFile).await()
-        }
     }
 
 

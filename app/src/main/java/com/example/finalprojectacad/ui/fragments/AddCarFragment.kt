@@ -194,6 +194,10 @@ class AddCarFragment : Fragment() {
             mileage?.let {
                 if (mileage.isNotEmpty()) newCar.mileage = mileage.toString().toInt()
             }
+            choseImgUri?.let {
+                newCar.flagPresenceImg = true
+            }
+            newCar.timestamp = System.currentTimeMillis()
         }
         clearAllField()
         viewModel.insertNewCar(newCar)
@@ -226,17 +230,16 @@ class AddCarFragment : Fragment() {
                 if (flagSuccessSave) {
                     val listScopeStorageImg = act.openSavedImg()
                     val lastSavedImg = listScopeStorageImg.last() // mb need find by name file
+
                     val imgRoom = ImageCarRoom(
                         lastSavedImg.toString(),
-                        "",
+                        System.currentTimeMillis(),
                         currentIdCars)
                     viewModel.insertNewImg(imgRoom)
                 }
             }
 
         }
-
-
     }
 
     private val regImageIntent = registerForActivityResult(
@@ -245,7 +248,6 @@ class AddCarFragment : Fragment() {
             val data: Intent? = result.data
              data?.data?.let {
                  binding.ivSelectImageCar.setImageURI(it)
-
                  choseImgUri = it
              }
         }

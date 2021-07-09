@@ -10,9 +10,10 @@ data class CarRoom(
     @ColumnInfo(name = "model_name") var modelName: String = "",
     @ColumnInfo(name = "transmission_name") var transmissionName: String = "",
     var engine: String = "",
-    var year: Int = 0,
-    var mileage: Int = 0,
-    @ColumnInfo(name = "img_id") var imgId: Int = -1,
+    var year: Int = -1,
+    var mileage: Int = -1,
+    var timestamp: Long = -1,
+    @ColumnInfo(name = "flag_presence_img") var flagPresenceImg: Boolean = false,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "car_id") var carId: Int? = null
 )
