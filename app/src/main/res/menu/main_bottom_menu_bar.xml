@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/listCarsFragment"
-        android:title="List"/>
+        android:icon="@drawable/ic_cars_bottom_foreground"
+        android:title="List" />
 
     <item
-        android:id="@+id/addCarFragment"
-        android:title="StartTracking"/>
+        android:id="@+id/trackTripFragment"
+        android:icon="@drawable/ic_start_tracking"
+        android:title="Start tracking" />
 
     <item
         android:id="@+id/listTracksFragment"
-        android:title="Tracks"/>
+        android:icon="@drawable/ic_routes_list_foreground"
+        android:title="Tracks" />
 
 </menu>

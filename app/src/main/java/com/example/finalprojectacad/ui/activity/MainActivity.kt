@@ -84,8 +84,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             navController
                 .addOnDestinationChangedListener { _, destination, _ ->
                 when(destination.id) {
-                    R.id.listCarsFragment, R.id.addCarFragment,
-                    R.id.editCarFragment, R.id.listTracksFragment ->
+                    R.id.listCarsFragment, R.id.listTracksFragment ->
                         bottomNavigationBar.visibility = View.VISIBLE
                     else -> bottomNavigationBar.visibility = View.GONE
                 }

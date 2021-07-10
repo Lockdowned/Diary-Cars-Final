@@ -1,7 +1,6 @@
 package com.example.finalprojectacad.ui.fragments
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
@@ -9,11 +8,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
-import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
@@ -30,7 +29,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private const val TAG = "TrackTripFragment"
@@ -62,7 +64,12 @@ class TrackTripFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        carId = arguments?.getInt("carId")!!
+        val navigation = Navigation.findNavController(view)
+        if (viewModel.getChosenCar() == null){
+            Toast.makeText(requireContext(), "Need chose a car", Toast.LENGTH_SHORT).show()
+            navigation.popBackStack()
+        }
+        carId = viewModel.getChosenCar()!!.carId!!
 
 
         binding.apply {
@@ -76,8 +83,8 @@ class TrackTripFragment : Fragment() {
 
             val navigation = Navigation.findNavController(view)
             buttonBackToListRoute.setOnClickListener {
-//                requireActivity().supportFragmentManager.popBackStack()//why crash if again track(probably now)
-                navigation.navigate(R.id.action_trackTripFragment_to_listTracksFragment)
+//                requireActivity().supportFragmentManager.popBackStack()//why crash if again track(probably know)
+                navigation.popBackStack()
             }
         }
 
@@ -145,81 +152,60 @@ class TrackTripFragment : Fragment() {
             val maxSpeed = TrackingService.maxSpeed
             var imgRoute = ""
 
-            var bitmapImg: Bitmap? = null
-
             googleMap?.snapshot { bmp ->
-                bitmapImg = bmp
+                if (bmp == null) {
+                    val routeRoom = RouteRoom(
+                        carId,
+                        startDriveTime,
+                        distance,
+                        duration,
+                        avgSpeed,
+                        maxSpeed,
+                        imgRoute
+                    )
+                    Log.d(TAG, "Route Room : $routeRoom")
+
+                    viewModel.insertNewRoute(routeRoom)
+                }
+                bmp?.let { bitmapImg ->
+                    launch(Dispatchers.IO) {
+                        val currentId = viewModel.getAllRoutesOnce().size + 1
+                        if (SaveImgToScopedStorage.saveFromBitmap(
+                                requireContext(),
+                                currentId,
+                                bitmapImg
+                            )
+                        ) {
+                            val act = activity as MainActivity
+                            val listScopeStorageImg = act.openSavedImg()
+                            val lastSavedImg =
+                                listScopeStorageImg.last() // mb need find by name file
+                            Log.d(TAG, "saveRouteInDb: ")
+
+                            imgRoute = lastSavedImg.toString()
+
+                            val routeRoom = RouteRoom(
+                                carId,
+                                startDriveTime,
+                                distance,
+                                duration,
+                                avgSpeed,
+                                maxSpeed,
+                                imgRoute
+                            )
+                            Log.d(TAG, "Route Room : $routeRoom")
+
+                            viewModel.insertNewRoute(routeRoom)
+                        }
+                    }
+                }
+
+
             }
 
 
-            async {
-                bitmapImg?.let {
-                    val currentId = viewModel.getAllRoutesOnce().size + 1
-                    if (SaveImgToScopedStorage.saveFromBitmap(
-                            requireContext(),
-                            currentId,
-                            it
-                        )
-                    ) {
-                        val act = activity as MainActivity
-                        val listScopeStorageImg = act.openSavedImg()
-                        val lastSavedImg =
-                            listScopeStorageImg.last() // mb need find by name file
-                        Log.d(TAG, "saveRouteInDb: ")
-
-                        imgRoute = lastSavedImg.toString()
-                    }
-                }
-            }.await()
 
 
-
-
-
-
-//            async {
-//
-//                googleMap?.snapshot { bmp ->
-//                    bitmapImg = bmp
-//                    bmp?.let { guaranteedBmp ->
-//                        launch {
-//                            val currentId = viewModel.getAllRoutesOnce().size + 1
-//                            if (SaveImgToScopedStorage.saveFromBitmap(
-//                                    requireContext(),
-//                                    currentId,
-//                                    guaranteedBmp
-//                                )
-//                            ) {
-//                                val act = activity as MainActivity
-//                                val listScopeStorageImg = act.openSavedImg()
-//                                val lastSavedImg =
-//                                    listScopeStorageImg.last() // mb need find by name file
-//                                Log.d(TAG, "saveRouteInDb: ")
-//
-//                                imgRoute = lastSavedImg.toString()
-//                            }
-//                        }
-//                    }
-//
-//
-//                }
-//            }.await()
-
-
-
-
-            val routeRoom = RouteRoom(
-                carId,
-                startDriveTime,
-                distance,
-                duration,
-                avgSpeed,
-                maxSpeed,
-                imgRoute
-            )
-            Log.d(TAG, "Route Room : $routeRoom")
-
-            viewModel.insertNewRoute(routeRoom)
         }
 
     }

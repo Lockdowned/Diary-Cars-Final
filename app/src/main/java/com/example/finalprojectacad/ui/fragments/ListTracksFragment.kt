@@ -57,7 +57,7 @@ class ListTracksFragment : Fragment() {
                 } else {
                     val bundle = Bundle()
                     bundle.putInt("carId", chosenCar!!.carId!!)
-                    navController.navigate(R.id.action_listTracksFragment_to_trackTripFragment, bundle)
+//                    navController.navigate(R.id.action_listTracksFragment_to_trackTripFragment, bundle)
                 }
             }
         }

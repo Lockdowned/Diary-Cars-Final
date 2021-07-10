@@ -66,6 +66,10 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
                 }
             }
 
+            imageButtonToCarAddFragment.setOnClickListener {
+                navigation.navigate(R.id.action_listCarsFragment_to_addCarFragment)
+            }
+
             rvListCars.adapter = carsListAdaptor
             rvListCars.layoutManager = LinearLayoutManager(context)
         }

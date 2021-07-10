@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_listCarsFragment_to_profileSetingsFragment"
             app:destination="@id/profileSetingsFragment" />
+        <action
+            android:id="@+id/action_listCarsFragment_to_addCarFragment"
+            app:destination="@id/addCarFragment" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
@@ -29,20 +32,12 @@
         android:id="@+id/listTracksFragment"
         android:name="com.example.finalprojectacad.ui.fragments.ListTracksFragment"
         android:label="fragment_list_tracks"
-        tools:layout="@layout/fragment_list_tracks">
-        <action
-            android:id="@+id/action_listTracksFragment_to_trackTripFragment"
-            app:destination="@id/trackTripFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_list_tracks"/>
     <fragment
         android:id="@+id/trackTripFragment"
         android:name="com.example.finalprojectacad.ui.fragments.TrackTripFragment"
         android:label="fragment_track_trip"
-        tools:layout="@layout/fragment_track_trip" >
-        <action
-            android:id="@+id/action_trackTripFragment_to_listTracksFragment"
-            app:destination="@id/listTracksFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_track_trip" />
     <fragment
         android:id="@+id/profileSetingsFragment"
         android:name="com.example.finalprojectacad.ui.fragments.ProfileSettingsFragment"
