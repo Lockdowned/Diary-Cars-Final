@@ -143,7 +143,7 @@ class AddCarFragment : Fragment() {
                     && !textInputLayoutModelNewCar.editText!!.text.equals("")){
                     collectAndInsertNewCar()
                     val navig = Navigation.findNavController(view)
-                    navig.navigate(R.id.action_addCarFragment_to_listCarsFragment)
+                    navig.navigate(R.id.listCarsFragment)
                 } else {
                     Snackbar.make(
                         view,

@@ -15,11 +15,8 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import java.io.File
 
 private const val TAG = "FirebaseRequests"
@@ -160,23 +157,31 @@ class FirebaseRequests(
         return list
     }
 
+    private var count = 1
+
     suspend fun saveToScopeFromRemote(img: ImageCarRoom) {
+
         val tempFileImg = File.createTempFile("images", "jpg")
         userDataCarImgStorage?.child("/${img.id}")?.let { it ->
             it.getFile(tempFileImg).addOnSuccessListener {
-                Log.d("HEY", "saveToScopeFromRemote: ${tempFileImg.toURI()}")
+                Log.d(TAG, "saveToScopeFromRemote: ${tempFileImg.toURI()}")
                 SaveImgToScopedStorage.save(appContext, img.id, tempFileImg.toUri())
+                count = 1
             }.addOnFailureListener { ex ->
                 Log.d(TAG, "Exception : ${ex.message}")
+                if (count < 3) {
+                    count++
+                    GlobalScope.launch {
+                        delay(2000)
+                        saveToScopeFromRemote(img)
+                    }
+                }
             }
+
 
         }
 
-
-
     }
-
-
 
 
 }
