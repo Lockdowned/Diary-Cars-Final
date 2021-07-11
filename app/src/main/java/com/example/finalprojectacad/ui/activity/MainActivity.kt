@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                                 bottomNavigationBar.selectedItemId = R.id.listCarsFragment
                                 false
                             } else {
-                                navController.navigate(R.id.listCarsFragment)
+                                navController.navigate(R.id.trackTripFragment)
                                 true
                             }
 
