@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -52,6 +51,8 @@ class TrackTripFragment : Fragment() {
 
     private var carId: Int = -1
 
+    private var allRoutesList: List<RouteRoom>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,6 +64,10 @@ class TrackTripFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.allRoutes.observe(viewLifecycleOwner , Observer { list ->
+            allRoutesList = list
+        })
 
         val navigation = Navigation.findNavController(view)
         if (viewModel.getChosenCar() == null){
@@ -152,6 +157,20 @@ class TrackTripFragment : Fragment() {
             val maxSpeed = TrackingService.maxSpeed
             var imgRoute = ""
 
+//            async {
+//                googleMap?.snapshot { bmp ->
+//                    if (bmp == null) {
+//                        val routeRoom = RouteRoom(
+//                            carId,
+//                            startDriveTime,
+//                            distance,
+//                            duration,
+//                            avgSpeed,
+//
+//
+//
+//            }.await()
+
             googleMap?.snapshot { bmp ->
                 if (bmp == null) {
                     val routeRoom = RouteRoom(
@@ -168,36 +187,37 @@ class TrackTripFragment : Fragment() {
                     viewModel.insertNewRoute(routeRoom)
                 }
                 bmp?.let { bitmapImg ->
-                    launch(Dispatchers.IO) {
-                        val currentId = viewModel.getAllRoutesOnce().size + 1
-                        if (SaveImgToScopedStorage.saveFromBitmap(
-                                requireContext(),
-                                currentId,
-                                bitmapImg
-                            )
-                        ) {
-                            val act = activity as MainActivity
-                            val listScopeStorageImg = act.openSavedImg()
-                            val lastSavedImg =
-                                listScopeStorageImg.last() // mb need find by name file
-                            Log.d(TAG, "saveRouteInDb: ")
+                    Log.d(TAG, "saveRouteInDb: SOME bitmap")
 
-                            imgRoute = lastSavedImg.toString()
+                    val currentId = allRoutesList!!.size + 1
+                    if (SaveImgToScopedStorage.saveFromBitmap(
+                            requireContext(),
+                            currentId,
+                            bitmapImg
+                        )
+                    ) {
+                        val act = activity as MainActivity
+                        val listScopeStorageImg = act.openSavedImg()
+                        val lastSavedImg =
+                            listScopeStorageImg.last() // mb need find by name file
+                        Log.d(TAG, "saveRouteInDb: ")
 
-                            val routeRoom = RouteRoom(
-                                carId,
-                                startDriveTime,
-                                distance,
-                                duration,
-                                avgSpeed,
-                                maxSpeed,
-                                imgRoute
-                            )
-                            Log.d(TAG, "Route Room : $routeRoom")
+                        imgRoute = lastSavedImg.toString()
 
-                            viewModel.insertNewRoute(routeRoom)
-                        }
+                        val routeRoom = RouteRoom(
+                            carId,
+                            startDriveTime,
+                            distance,
+                            duration,
+                            avgSpeed,
+                            maxSpeed,
+                            imgRoute
+                        )
+                        Log.d(TAG, "Route Room : $routeRoom")
+
+                        viewModel.insertNewRoute(routeRoom)
                     }
+
                 }
 
 

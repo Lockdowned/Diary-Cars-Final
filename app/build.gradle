@@ -105,8 +105,12 @@ dependencies {
     implementation "androidx.room:room-ktx:2.3.0"
 
     //Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
+//    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
+//    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
+    implementation("androidx.navigation:navigation-fragment:2.4.0-alpha04")
+    implementation("androidx.navigation:navigation-ui:2.4.0-alpha04")
+//    implementation("androidx.navigation:navigation-:2.4.0-alpha04")
+
 
 
 

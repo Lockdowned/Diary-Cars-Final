@@ -1,12 +1,13 @@
 package com.example.finalprojectacad.ui.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,11 +51,7 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
             carsListAdaptor = CarsListAdaptor(viewModel)
         }
 
-
-
         binding.apply {
-            val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
-            navBar.visibility = View.VISIBLE
 
             val navigation = Navigation.findNavController(view)
 
@@ -88,6 +85,22 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
         )
 
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val searchText = binding.textViewSearchBarCarsList.text.toString()
+        outState.putString("searchText", searchText)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+
+        val savedSearchText = savedInstanceState?.getString("searchText")
+        savedSearchText?.let {
+            binding.textViewSearchBarCarsList.setText(it)
+        }
     }
 
 }

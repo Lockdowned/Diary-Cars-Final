@@ -9,10 +9,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.finalprojectacad.R
 import com.example.finalprojectacad.adaptors.RouteListAdaptor
 import com.example.finalprojectacad.databinding.FragmentListTracksBinding
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
+import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,7 +69,7 @@ class ListTracksFragment : Fragment() {
             }
         )
 
-        viewModel.allRoutesLiceData.observe(
+        viewModel.allRoutes.observe(
             viewLifecycleOwner, Observer {
                 routeListAdaptor.submitList(it)
             }

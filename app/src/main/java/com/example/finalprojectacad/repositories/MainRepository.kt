@@ -70,7 +70,7 @@ class MainRepository
         return carDao.getAllCarsOnce()
     }
 
-    fun getAllRoutesOnce(): List<RouteRoom> {
+    suspend fun getAllRoutesOnce(): List<RouteRoom> {
         return routeDao.getAllRoutesOnce()
     }
 
@@ -86,7 +86,7 @@ class MainRepository
         routeDao.insertRoute(route)
     }
 
-    suspend fun updateRoomRoute(route: RouteRoom) {
+    fun updateRoomRoute(route: RouteRoom) {
         routeDao.updateRoute(route)
     }
 

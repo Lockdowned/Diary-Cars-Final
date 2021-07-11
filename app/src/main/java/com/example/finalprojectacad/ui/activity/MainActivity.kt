@@ -12,7 +12,9 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -81,12 +83,23 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             navController = navHostFragment.findNavController()
             bottomNavigationBar.setupWithNavController(navController)
 
+//            val nav = Navigation.findNavController(binding.root)
+
+//            nav.navigate(selectedBottomNavRoute) {
+//                launchSingleTop = true
+//                restoreState = true
+//                popUpTo(navController.graph.startDestinationId) {
+//                    saveState = true
+//                }
+//            }
+
+
             navController
                 .addOnDestinationChangedListener { _, destination, _ ->
                 when(destination.id) {
                     R.id.listCarsFragment, R.id.listTracksFragment ->
-                        bottomNavigationBar.visibility = View.VISIBLE
-                    else -> bottomNavigationBar.visibility = View.GONE
+                        bottomNavigationBar.isVisible = true
+                    else -> bottomNavigationBar.isVisible = false
                 }
             }
         }

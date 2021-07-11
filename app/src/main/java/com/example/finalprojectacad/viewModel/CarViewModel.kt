@@ -10,6 +10,7 @@ import com.example.finalprojectacad.other.utilities.SyncDatabasesClass
 import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
@@ -34,7 +35,7 @@ class CarViewModel
     val allTransmissions: LiveData<List<TransmissionRoom>> =
         mainRepository.getAllTransmissions().asLiveData()
 
-    val allRoutesLiceData: LiveData<List<RouteRoom>> = mainRepository.getAllRoutes().asLiveData()
+    val allRoutes: LiveData<List<RouteRoom>> = mainRepository.getAllRoutes().asLiveData()
 
     private var chosenCar: CarRoom? = null
 
@@ -103,7 +104,4 @@ class CarViewModel
         return chosenCar
     }
 
-    fun getAllRoutesOnce(): List<RouteRoom> {
-        return mainRepository.getAllRoutesOnce()
-    }
 }
