@@ -7,7 +7,7 @@
         android:title="List" />
 
     <item
-        android:id="@+id/trackTripFragment"
+        android:id="@+id/trackTrip"
         android:icon="@drawable/ic_start_tracking"
         android:title="Start tracking" />
 

@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.finalprojectacad.adaptors.CarsListAdaptor
+import com.example.finalprojectacad.adaptors.RouteListAdaptor
 import com.example.finalprojectacad.data.localDB.entity.*
 import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.other.utilities.SyncDatabasesClass
@@ -102,6 +104,18 @@ class CarViewModel
 
     fun getChosenCar(): CarRoom? {
         return chosenCar
+    }
+
+    private var tempCarsAdaptor: CarsListAdaptor? = null
+
+    fun createOrGetCarsRVAdaptor(): CarsListAdaptor {
+       return tempCarsAdaptor ?: CarsListAdaptor(this)
+    }
+
+    private var tempRoutesAdaptor: RouteListAdaptor? = null
+
+    fun createOrGetRoutesRVAdaptor(): RouteListAdaptor {
+        return tempRoutesAdaptor ?: RouteListAdaptor(this)
     }
 
 }

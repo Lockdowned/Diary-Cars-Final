@@ -24,11 +24,11 @@ import javax.inject.Inject
 private const val TAG = "ListCarsFragment"
 
 @AndroidEntryPoint
-class ListCarsFragment : Fragment() { // our fragment are recreated from bottom navigate
+class ListCarsFragment : Fragment() {
 
     private val viewModel: CarViewModel by activityViewModels()
 
-    private lateinit var binding: FragmentListCarsBinding
+    private var binding: FragmentListCarsBinding? = null
     
     private var carsListAdaptor: CarsListAdaptor? = null
 
@@ -41,17 +41,15 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentListCarsBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (carsListAdaptor == null){
-            carsListAdaptor = CarsListAdaptor(viewModel)
-        }
+        carsListAdaptor = viewModel.createOrGetCarsRVAdaptor()
 
-        binding.apply {
+        binding?.apply {
 
             val navigation = Navigation.findNavController(view)
 
@@ -90,8 +88,11 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        val searchText = binding.textViewSearchBarCarsList.text.toString()
-        outState.putString("searchText", searchText)
+        val searchText = binding?.textViewSearchBarCarsList?.text?.toString()
+        searchText?.let {
+            outState.putString("searchText", searchText)
+        }
+
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -99,8 +100,13 @@ class ListCarsFragment : Fragment() { // our fragment are recreated from bottom 
 
         val savedSearchText = savedInstanceState?.getString("searchText")
         savedSearchText?.let {
-            binding.textViewSearchBarCarsList.setText(it)
+            binding?.textViewSearchBarCarsList?.setText(it)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
 }

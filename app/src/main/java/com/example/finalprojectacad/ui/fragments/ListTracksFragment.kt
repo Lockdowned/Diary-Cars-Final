@@ -20,9 +20,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ListTracksFragment : Fragment() {
 
-    private lateinit var binding: FragmentListTracksBinding
+    private var binding: FragmentListTracksBinding? = null
     private val viewModel: CarViewModel by activityViewModels()
     private var chosenCar: CarRoom? = null
+    private var routeListAdaptor: RouteListAdaptor? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,35 +31,24 @@ class ListTracksFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentListTracksBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val routeListAdaptor = RouteListAdaptor(viewModel)
+        routeListAdaptor = viewModel.createOrGetRoutesRVAdaptor()
 
 
-
-
-        val navController = Navigation.findNavController(view)
-        binding.apply {
+        binding?.apply {
 
             recyclerViewListRoutes.adapter = routeListAdaptor
             recyclerViewListRoutes.layoutManager = LinearLayoutManager(context)
 
 
             chosenCar = viewModel.getChosenCar()
-            textViewChosenCar.text = "${chosenCar?.brandName} ${chosenCar?.modelName}"
-
-            buttonToTrackingFragment.setOnClickListener {
-                if (chosenCar == null) {
-                    Snackbar.make(it, "Need to choose a car", Snackbar.LENGTH_LONG).show()
-                } else {
-                    val bundle = Bundle()
-                    bundle.putInt("carId", chosenCar!!.carId!!)
-//                    navController.navigate(R.id.action_listTracksFragment_to_trackTripFragment, bundle)
-                }
+            if (chosenCar != null) {
+                textViewChosenCar.text = "${chosenCar?.brandName} ${chosenCar?.modelName}"
             }
         }
 
@@ -71,12 +61,15 @@ class ListTracksFragment : Fragment() {
 
         viewModel.allRoutes.observe(
             viewLifecycleOwner, Observer {
-                routeListAdaptor.submitList(it)
+                routeListAdaptor?.submitList(it)
             }
         )
 
+    }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
 }

@@ -9,15 +9,19 @@ import android.os.FileUtils
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -35,6 +39,7 @@ import com.fondesa.kpermissions.anyShouldShowRationale
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.google.android.gms.location.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -80,18 +85,42 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
         setContentView(binding.root)
 
         binding.apply {
+
+
+
+
+//            bottomNavigationBar.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+//                var selectedFragment: Fragment? = null
+//                when (item.itemId) {
+//                    com.google.android.gms.location.R.id.navigation_News -> {
+//                        selectedFragment = ItemoneFragment.newInstance()
+//                        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+//                        transaction.replace(com.google.android.gms.location.R.id.content, selectedFragment)
+//                        transaction.addToBackStack(null)
+//                        transaction.commit()
+//                        return@OnNavigationItemSelectedListener true
+//                    }
+//                    com.google.android.gms.location.R.id.navigation_profile -> {
+//                        selectedFragment = ItemtwoFragment.newInstance()
+//                        transaction = supportFragmentManager.beginTransaction()
+//                        transaction.replace(com.google.android.gms.location.R.id.content, selectedFragment)
+//                        transaction.addToBackStack(null)
+//                        transaction.commit()
+//                        return@OnNavigationItemSelectedListener true
+//                    }
+//                }
+//                val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+//                transaction.replace(com.google.android.gms.location.R.id.content, selectedFragment)
+//                transaction.commit()
+//                true
+//            })
+
+
+
+
             navController = navHostFragment.findNavController()
             bottomNavigationBar.setupWithNavController(navController)
 
-//            val nav = Navigation.findNavController(binding.root)
-
-//            nav.navigate(selectedBottomNavRoute) {
-//                launchSingleTop = true
-//                restoreState = true
-//                popUpTo(navController.graph.startDestinationId) {
-//                    saveState = true
-//                }
-//            }
 
 
             navController
@@ -102,7 +131,31 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                     else -> bottomNavigationBar.isVisible = false
                 }
             }
+
+
+            bottomNavigationBar.setOnItemSelectedListener {
+                if (NavigationUI.onNavDestinationSelected(it, navController)) {
+                    true
+                } else {
+                    when (it.itemId) {
+                        R.id.trackTrip -> {
+                            if (viewModel.getChosenCar() == null) {
+                                Toast.makeText(this@MainActivity, "Need chose a car", Toast.LENGTH_SHORT).show()
+                                bottomNavigationBar.selectedItemId = R.id.listCarsFragment
+                                false
+                            } else {
+                                navController.navigate(R.id.listCarsFragment)
+                                true
+                            }
+
+                        }
+                        else -> false
+                    }
+                }
+            }
         }
+
+
 
 
         request.send()
