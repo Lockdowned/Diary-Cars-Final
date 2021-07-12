@@ -109,6 +109,7 @@ class CarViewModel
 
     fun setChosenCar(car: CarRoom?) {
         chosenCar = car
+        chosenCarMutableLifeData.value = chosenCar
     }
 
     fun getChosenCar(): CarRoom? {
@@ -184,6 +185,8 @@ class CarViewModel
     }.also {
        this.routeSortType = routeSortType
     }
+
+    val chosenCarMutableLifeData = MutableLiveData<CarRoom?>()
 
 
 }

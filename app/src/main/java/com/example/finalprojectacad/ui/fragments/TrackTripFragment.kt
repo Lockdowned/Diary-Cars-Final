@@ -151,7 +151,7 @@ class TrackTripFragment : Fragment() {
                 accurateDistance += calculatePolylineLength(polyline)
             }
             val distance = accurateDistance.roundToInt()
-            val duration = RouteUtils.getFormattedTime(wholeDrivingTimeInMillis)
+            val duration = wholeDrivingTimeInMillis
             val avgSpeed =
                 ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
             val maxSpeed = TrackingService.maxSpeed

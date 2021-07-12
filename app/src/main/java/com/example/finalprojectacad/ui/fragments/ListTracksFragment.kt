@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalprojectacad.adaptors.RouteListAdaptor
 import com.example.finalprojectacad.databinding.FragmentListTracksBinding
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
+import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.other.enums.RouteSortType
 import com.example.finalprojectacad.viewModel.CarViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +24,8 @@ class ListTracksFragment : Fragment() {
     private val viewModel: CarViewModel by activityViewModels()
     private var chosenCar: CarRoom? = null
     private var routeListAdaptor: RouteListAdaptor? = null
+
+    private var routeSortedList: List<RouteRoom>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +43,12 @@ class ListTracksFragment : Fragment() {
 
 
         binding?.apply {
+
+
+            imageButtonListTrackClearChosenCar.setOnClickListener {
+                viewModel.setChosenCar(null)
+                textViewChosenCar.text = "Routes of all cars"
+            }
 
             recyclerViewListRoutes.adapter = routeListAdaptor
             recyclerViewListRoutes.layoutManager = LinearLayoutManager(context)
@@ -78,31 +87,49 @@ class ListTracksFragment : Fragment() {
             }
         }
 
-
         viewModel.getAllCars.observe(
             viewLifecycleOwner, Observer {
                 viewModel.listAllCars = it
             }
         )
 
-//        viewModel.allRoutes.observe(
-//            viewLifecycleOwner, Observer {
-//                routeListAdaptor?.submitList(it)
-//            }
-//        )
-
-
-
         viewModel.routesSorted.observe(
             viewLifecycleOwner, Observer {
-                routeListAdaptor?.submitList(it)
+                routeSortedList = it
+                setCorrectRouteInAdaptor(viewModel.getChosenCar())
             })
+
+        viewModel.chosenCarMutableLifeData.observe(
+            viewLifecycleOwner, Observer {
+                setCorrectRouteInAdaptor(viewModel.getChosenCar())
+            }
+        )
 
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    private fun setCorrectRouteInAdaptor(chosenCarRoom: CarRoom?) {
+        if (chosenCarRoom == null) {
+            routeListAdaptor?.submitList(routeSortedList)
+        } else {
+            val routeByCurrentCar = mutableListOf<RouteRoom>()
+            routeSortedList?.let { routeList ->
+                for (route in routeList) {
+                    if(route.carId == chosenCarRoom.carId) {
+                        routeByCurrentCar.add(route)
+                    }
+                }
+            }
+            routeListAdaptor?.submitList(routeByCurrentCar)
+
+        }
+
+
+
     }
 
 }

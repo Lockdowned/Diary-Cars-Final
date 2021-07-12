@@ -76,7 +76,7 @@ class TrackingService : LifecycleService() {
 
         var isForegroundServiceStopped = false //use this in fragment is ok?
 
-        var startDriveTime: String = ""
+        var startDriveTime: Long = -1
         var maxSpeed: Float = 0f
     }
 
@@ -268,9 +268,7 @@ class TrackingService : LifecycleService() {
     private fun startForegroundService() {
         startTimer()
 
-        val systemTime = System.currentTimeMillis()
-        val formatter = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-        startDriveTime = formatter.format(systemTime)
+        startDriveTime = System.currentTimeMillis()
         Log.d(TAG, "startForegroundService: $startDriveTime")
 
         isTracking.postValue(true)

@@ -6,9 +6,14 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.ItemRvListTracksBinding
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
+import com.example.finalprojectacad.other.utilities.RouteUtils
+import com.example.finalprojectacad.services.TrackingService
 import com.example.finalprojectacad.viewModel.CarViewModel
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 class RouteListAdaptor(
     private val viewModel: CarViewModel
@@ -17,19 +22,26 @@ class RouteListAdaptor(
 
     inner class RoutesListHolder(private val routeItemBinding: ItemRvListTracksBinding):
             RecyclerView.ViewHolder(routeItemBinding.root) {
-                fun bind(routeItem:  RouteRoom) {
+                fun bind(routeItem: RouteRoom) {
                     routeItemBinding.apply {
-                        textViewStartDrivingTimeRv.text = "Start time: ${routeItem.startDriveTime}"
-                        val car = viewModel.listAllCars.find { it.carId == routeItem.carId }
+                        val formatterStartTime = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                        val formattedStartTime = formatterStartTime.format(routeItem.startDriveTime)
+                        textViewStartDrivingTimeRv.text = "Start time: ${formattedStartTime}"
+                        var car: CarRoom? = viewModel.getChosenCar()
+                        if (car == null) {
+                            car = viewModel.listAllCars.find { it.carId == routeItem.carId }
+                        }
                         car?.let {
                             textViewChosenVehicleRv.text = "${it.brandName} ${it.modelName}"
                         }
                         textViewDroveDistanceRv.text = "distance: ${routeItem.distance} metres"
-                        textViewDurationDrivingRv.text = "duration: ${routeItem.duration}"
+                        val formattedDurationTime = RouteUtils.getFormattedTime(routeItem.duration)
+                        textViewDurationDrivingRv.text = "duration: ${formattedDurationTime}"
                         textViewAvgSpeedRv.text = "avg speed: ${routeItem.avgSpeed} km/h"
                         textViewMaxSpeedRv.text = "max speed: ${routeItem.maxSpeed} km/h"
-                        if (routeItem.imgRoute.isNotEmpty())
-                        imageViewRouteImg.setImageURI(routeItem.imgRoute.toUri())
+                        if (routeItem.imgRoute.isNotEmpty()) {
+                            imageViewRouteImg.setImageURI(routeItem.imgRoute.toUri())
+                        }
                     }
                 }
             }
