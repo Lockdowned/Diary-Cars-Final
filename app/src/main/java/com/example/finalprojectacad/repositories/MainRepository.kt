@@ -1,6 +1,7 @@
 package com.example.finalprojectacad.repositories
 
 import android.content.Context
+import android.util.Log
 import androidx.core.net.toUri
 import com.example.finalprojectacad.data.localDB.dao.CarDao
 import com.example.finalprojectacad.data.localDB.dao.RouteDao
@@ -16,6 +17,10 @@ class MainRepository
     private val routeDao: RouteDao,
     private val firebaseRequests: FirebaseRequests,
 ){
+
+    fun testExistence() {
+        Log.d("HEY", "testExistence: MainRepository true")
+    }
 
     suspend fun insertCar(car: CarRoom) {
         carDao.insertCar(car)

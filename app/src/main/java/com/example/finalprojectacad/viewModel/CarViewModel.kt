@@ -38,16 +38,6 @@ class CarViewModel
 
     private var chosenCar: CarRoom? = null
 
-    init {
-        syncDatabases()
-    }
-
-    fun syncDatabases() {
-        SyncDatabasesClass(
-            firebaseRequests,
-            mainRepository
-        ).syncOnce()
-    }
 
     fun insertNewCar(car: CarRoom) {
         viewModelScope.launch(Dispatchers.IO) {

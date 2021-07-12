@@ -56,7 +56,7 @@ class FirebaseRequests(
     }
 
     fun testExistence() {
-        Log.d("HEY", "haha: ")
+        Log.d("HEY", "testExistence: FirebaseRequests true")
     }
 
     fun insertNewCar(car: CarRoom) {

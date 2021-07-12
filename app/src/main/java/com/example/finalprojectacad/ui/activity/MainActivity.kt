@@ -76,47 +76,15 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        val workManager = WorkManager.getInstance(application)
-//        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>().build()
-//        workManager.beginWith(testWorker).enqueue()
+        val workManager = WorkManager.getInstance(application)
+        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>().build()
+        workManager.beginWith(testWorker).enqueue()
 
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.apply {
-
-
-
-
-//            bottomNavigationBar.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
-//                var selectedFragment: Fragment? = null
-//                when (item.itemId) {
-//                    com.google.android.gms.location.R.id.navigation_News -> {
-//                        selectedFragment = ItemoneFragment.newInstance()
-//                        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-//                        transaction.replace(com.google.android.gms.location.R.id.content, selectedFragment)
-//                        transaction.addToBackStack(null)
-//                        transaction.commit()
-//                        return@OnNavigationItemSelectedListener true
-//                    }
-//                    com.google.android.gms.location.R.id.navigation_profile -> {
-//                        selectedFragment = ItemtwoFragment.newInstance()
-//                        transaction = supportFragmentManager.beginTransaction()
-//                        transaction.replace(com.google.android.gms.location.R.id.content, selectedFragment)
-//                        transaction.addToBackStack(null)
-//                        transaction.commit()
-//                        return@OnNavigationItemSelectedListener true
-//                    }
-//                }
-//                val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-//                transaction.replace(com.google.android.gms.location.R.id.content, selectedFragment)
-//                transaction.commit()
-//                true
-//            })
-
-
-
 
             navController = navHostFragment.findNavController()
             bottomNavigationBar.setupWithNavController(navController)
