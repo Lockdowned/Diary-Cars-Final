@@ -26,4 +26,21 @@ interface RouteDao {
 
     @Update
     fun updateRoute(route: RouteRoom)
+
+    @Query("SELECT * FROM route_table ORDER BY start_drive_time DESC")
+    fun getAllRoutesSortedByDate(): Flow<List<RouteRoom>>
+
+    @Query("SELECT * FROM route_table ORDER BY distance DESC")
+    fun getAllRoutesSortedByDistance(): Flow<List<RouteRoom>>
+
+    @Query("SELECT * FROM route_table ORDER BY duration DESC")
+    fun getAllRoutesSortedByDuration(): Flow<List<RouteRoom>>
+
+    @Query("SELECT * FROM route_table ORDER BY avg_speed DESC")
+    fun getAllRoutesSortedByAvgSpeed(): Flow<List<RouteRoom>>
+
+    @Query("SELECT * FROM route_table ORDER BY max_speed DESC")
+    fun getAllRoutesSortedByMaxSpeed(): Flow<List<RouteRoom>>
+
+
 }

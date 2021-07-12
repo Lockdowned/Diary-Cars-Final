@@ -1,13 +1,11 @@
 package com.example.finalprojectacad.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.finalprojectacad.adaptors.CarsListAdaptor
 import com.example.finalprojectacad.adaptors.RouteListAdaptor
 import com.example.finalprojectacad.data.localDB.entity.*
 import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
+import com.example.finalprojectacad.other.enums.RouteSortType
 import com.example.finalprojectacad.other.utilities.SyncDatabasesClass
 import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -127,6 +125,64 @@ class CarViewModel
 
     fun createOrGetRoutesRVAdaptor(): RouteListAdaptor {
         return tempRoutesAdaptor ?: RouteListAdaptor(this)
+    }
+
+    private val routesSortedByDate = mainRepository.getAllRoutesSortedByDate().asLiveData()
+    private val routesSortedByDistance = mainRepository.getAllRoutesSortedByDistance().asLiveData()
+    private val routesSortedByDuration = mainRepository.getAllRoutesSortedByDuration().asLiveData()
+    private val routesSortedByAvgSpeed = mainRepository.getAllRoutesSortedByAvgSpeed().asLiveData()
+    private val routesSortedByMaxSpeed = mainRepository.getAllRoutesSortedByMaxSpeed().asLiveData()
+
+    val routesSorted = MediatorLiveData<List<RouteRoom>>()
+
+    var routeSortType = RouteSortType.DATE
+
+    init {
+        routesSorted.addSource(routesSortedByDate) { result ->
+            if (routeSortType == RouteSortType.DATE) {
+                result?.let {
+                    routesSorted.value = it
+                }
+            }
+        }
+        routesSorted.addSource(routesSortedByDistance) { result ->
+            if (routeSortType == RouteSortType.DISTANCE) {
+                result?.let {
+                    routesSorted.value = it
+                }
+            }
+        }
+        routesSorted.addSource(routesSortedByDuration) { result ->
+            if (routeSortType == RouteSortType.DURATION) {
+                result?.let {
+                    routesSorted.value = it
+                }
+            }
+        }
+        routesSorted.addSource(routesSortedByAvgSpeed) { result ->
+            if (routeSortType == RouteSortType.AVG_SPEED) {
+                result?.let {
+                    routesSorted.value = it
+                }
+            }
+        }
+        routesSorted.addSource(routesSortedByMaxSpeed) { result ->
+            if (routeSortType == RouteSortType.MAX_SPEED) {
+                result?.let {
+                    routesSorted.value = it
+                }
+            }
+        }
+    }
+
+    fun sortRoutes(routeSortType: RouteSortType) = when(routeSortType) {
+        RouteSortType.DATE -> routesSortedByDate.value?.let { routesSorted.value = it }
+        RouteSortType.DISTANCE -> routesSortedByDistance.value?.let { routesSorted.value = it }
+        RouteSortType.DURATION -> routesSortedByDuration.value?.let { routesSorted.value = it }
+        RouteSortType.AVG_SPEED -> routesSortedByAvgSpeed.value?.let { routesSorted.value = it }
+        RouteSortType.MAX_SPEED -> routesSortedByMaxSpeed.value?.let { routesSorted.value = it }
+    }.also {
+       this.routeSortType = routeSortType
     }
 
 

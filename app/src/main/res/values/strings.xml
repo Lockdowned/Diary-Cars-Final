@@ -2,4 +2,12 @@
     <string name="app_name">FinalProjectAcad</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="sort_filter_routes">
+        <item>Date</item>
+        <item>Distance</item>
+        <item>Duration</item>
+        <item>Avg speed</item>
+        <item>Max speed</item>
+    </string-array>
 </resources>

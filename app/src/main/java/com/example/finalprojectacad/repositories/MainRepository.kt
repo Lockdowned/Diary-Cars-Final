@@ -104,4 +104,10 @@ class MainRepository
         carDao.updateCarImg(img)
     }
 
+    fun getAllRoutesSortedByDate() = routeDao.getAllRoutesSortedByDate()
+    fun getAllRoutesSortedByDistance() = routeDao.getAllRoutesSortedByDistance()
+    fun getAllRoutesSortedByDuration() = routeDao.getAllRoutesSortedByDuration()
+    fun getAllRoutesSortedByAvgSpeed() = routeDao.getAllRoutesSortedByAvgSpeed()
+    fun getAllRoutesSortedByMaxSpeed() = routeDao.getAllRoutesSortedByMaxSpeed()
+
 }
