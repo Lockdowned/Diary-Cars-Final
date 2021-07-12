@@ -48,10 +48,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Brand"
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayoutModelNewCar"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageButtonAddBrandInDB"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivSelectImageCar">
@@ -70,10 +70,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Model"
                 app:layout_constraintBottom_toTopOf="@+id/textInputLayoutEngineNewCar"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageButtonAddModelInDB"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayoutBrandNewCar">
@@ -169,6 +169,31 @@
                     android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/imageButtonAddBrandInDB"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="?android:attr/colorBackground"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_add_brand_or_model_foreground"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutBrandNewCar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayoutBrandNewCar" />
+
+            <ImageButton
+                android:id="@+id/imageButtonAddModelInDB"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/colorBackground"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_add_brand_or_model_foreground"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutModelNewCar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayoutModelNewCar" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

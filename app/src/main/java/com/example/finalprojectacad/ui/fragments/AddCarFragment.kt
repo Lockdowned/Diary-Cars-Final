@@ -1,6 +1,7 @@
 package com.example.finalprojectacad.ui.fragments
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,6 +29,7 @@ import com.example.finalprojectacad.ui.activity.MainActivity
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -65,6 +68,36 @@ class AddCarFragment : Fragment() {
 
         binding.apply {
 
+            imageButtonAddBrandInDB.setOnClickListener {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
+                    if (textInputLayoutBrandNewCar.editText?.text.isNullOrEmpty()) {
+                        Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT).show()
+                    } else if (brandAlreadyExistInDb(brandText, brandListName)){
+                        Toast.makeText(context, "This brand already exist", Toast.LENGTH_SHORT).show()
+                    } else {
+                        addBrandInDbDialog(brandText)
+                    }
+                }
+            }
+
+            imageButtonAddModelInDB.setOnClickListener {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
+                    val modelText = textInputLayoutModelNewCar.editText?.text.toString()
+                    if (textInputLayoutModelNewCar.editText?.text.isNullOrEmpty()){
+                        Toast.makeText(context, "Please fill model text field", Toast.LENGTH_SHORT).show()
+                    } else if (textInputLayoutBrandNewCar.editText?.text.isNullOrEmpty()) {
+                        Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT).show()
+                    } else if (!brandAlreadyExistInDb(brandText, brandListName)) {
+                        Toast.makeText(context, "At the begin add brand name", Toast.LENGTH_SHORT).show()
+                    } else {
+                        addModelInDbDialog(modelText, brandText, brandList)
+                    }
+                }
+            }
+
+
             ivSelectImageCar.setOnClickListener {
                 Intent(Intent.ACTION_OPEN_DOCUMENT).also {
                     it.type = "image/*"
@@ -80,9 +113,10 @@ class AddCarFragment : Fragment() {
                     brandsListRoom.forEach {
                         brandListName.add(it.brandName)
                     }
+                    autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
                 })
 
-            autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
+
 
             autoCompleteTextBrandNewCar.threshold = 2
 
@@ -100,7 +134,7 @@ class AddCarFragment : Fragment() {
 
             val allModelsName = mutableListOf<String>()
             var listModelsRoom = listOf<ModelRoom>()
-            viewModel.allModels.observe( // why observer in UI
+            viewModel.allModels.observe(
                 viewLifecycleOwner, Observer { modelsRoom ->
                     val modelsName = mutableListOf<String>()
                     listModelsRoom = modelsRoom
@@ -118,6 +152,7 @@ class AddCarFragment : Fragment() {
                     listModelsRoom,
                     brandList,
                     textInputLayoutBrandNewCar.editText!!.text.toString())
+                autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(allModelsName))
             }
 
             val transmissionList = mutableListOf<String>()
@@ -154,6 +189,54 @@ class AddCarFragment : Fragment() {
             }
         }
        
+    }
+
+    private fun brandAlreadyExistInDb(writtenBrand: String, brandListName: List<String>): Boolean {
+        for (brandName in brandListName) {
+            if (writtenBrand == brandName){
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun addBrandInDbDialog(brandName: String) {
+        val dialog = AlertDialog.Builder(context)
+        dialog.run {
+            setMessage("Insert this brand: $brandName in database?")
+            setPositiveButton("Yes"){ _, _ ->
+                Log.d(TAG, "addBrandInDBDialog: ")
+                val newBrandRoom = BrandRoom(brandName)
+                viewModel.insertNewBrand(newBrandRoom)
+            }
+            setNegativeButton("No"){ _, _ -> }
+        }
+        val alertDialog = dialog.create()
+        alertDialog.show()
+    }
+
+    private fun addModelInDbDialog(modelName: String, brandName: String, listBrandRoom: List<BrandRoom>) {
+        val dialog = AlertDialog.Builder(context)
+        dialog.run {
+            setMessage("Insert this brand: $modelName in database?")
+            setPositiveButton("Yes"){ _, _ ->
+                Log.d(TAG, "addBrandInDBDialog: ")
+                var brandId: Int? = null
+                for (brand in listBrandRoom) {
+                    if (brandName == brand.brandName) {
+                        brandId = brand.brandId
+                    }
+                }
+                brandId?.let { idBrand ->
+                    val newModelRoom = ModelRoom(modelName, idBrand)
+                    viewModel.insertNewModel(newModelRoom)
+                    Log.d(TAG, "addModelInDbDialog: new model insert in db model: $newModelRoom")
+                }
+            }
+            setNegativeButton("No"){ _, _ -> }
+        }
+        val alertDialog = dialog.create()
+        alertDialog.show()
     }
 
     private fun autoCompleteSetAdapter(list: List<String>): ArrayAdapter<String>{

@@ -12,7 +12,6 @@ import com.example.finalprojectacad.other.utilities.SyncDatabasesClass
 import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
@@ -72,6 +71,18 @@ class CarViewModel
         }
     }
 
+    fun insertNewBrand(brand: BrandRoom) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepository.insertBrand(brand)
+        }
+    }
+
+    fun insertNewModel(model: ModelRoom) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepository.insertModel(model)
+        }
+    }
+
     lateinit var allModelsNameBeforeChange: List<String>
     fun setAllModels(allModelsName: List<String>) {
         allModelsNameBeforeChange = allModelsName
@@ -117,5 +128,6 @@ class CarViewModel
     fun createOrGetRoutesRVAdaptor(): RouteListAdaptor {
         return tempRoutesAdaptor ?: RouteListAdaptor(this)
     }
+
 
 }
