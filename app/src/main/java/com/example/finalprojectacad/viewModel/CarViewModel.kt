@@ -38,6 +38,16 @@ class CarViewModel
 
     private var chosenCar: CarRoom? = null
 
+    private var carToEdit: CarRoom? = null
+
+    fun setCarToEdit(car: CarRoom?) {
+        carToEdit = car
+    }
+
+    fun getCarToEdit(): CarRoom? {
+        return carToEdit
+    }
+
 
     fun insertNewCar(car: CarRoom) {
         viewModelScope.launch(Dispatchers.IO) {

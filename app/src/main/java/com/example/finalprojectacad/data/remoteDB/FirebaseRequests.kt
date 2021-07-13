@@ -26,31 +26,39 @@ class FirebaseRequests(
     private val appContext: Context
 ) {
 
-    var userDataCars: CollectionReference? = auth.currentUser?.let {
-        return@let Firebase.firestore.collection("Cars user: ${auth.currentUser?.uid}")
-    }
-    var userDataRoutes: CollectionReference? = auth.currentUser?.let {
-        return@let Firebase.firestore.collection("Routes user: ${auth.currentUser?.uid}")
-    }
-    var userDataCarImg: CollectionReference? = auth.currentUser?.let {
-        return@let Firebase.firestore.collection("Images user: ${auth.currentUser?.uid}")
+    var userDataCars: CollectionReference? = auth.currentUser?.let { firebaseUser ->
+        return@let Firebase.firestore.collection("Cars user: ${firebaseUser.uid}")
     }
 
-    var userDataCarImgStorage: StorageReference? = auth.currentUser?.let {
-        Firebase.storage.reference.child("Images user: ${auth.uid}")
+    var userDataCarImg: CollectionReference? = auth.currentUser?.let { firebaseUser ->
+        return@let Firebase.firestore.collection("Images user: ${firebaseUser.uid}")
+    }
+
+    var userDataCarImgStorage: StorageReference? = auth.currentUser?.let { firebaseUser ->
+        return@let Firebase.storage.reference.child("Images user: ${firebaseUser.uid}")
+    }
+
+    var userDataRoutes: CollectionReference? = auth.currentUser?.let { firebaseUser ->
+        return@let Firebase.firestore.collection("Routes user: ${firebaseUser.uid}")
+    }
+
+    var userDataRouteImgStorage: StorageReference? = auth.currentUser?.let { firebaseUser ->
+        return@let Firebase.storage.reference.child("Images routes user: ${firebaseUser.uid}")
     }
 
     fun setUserData() {
         if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
             userDataCars = Firebase.firestore.collection("Cars user: ${auth.currentUser?.uid}")
-            userDataRoutes = Firebase.firestore.collection("Routes user: ${auth.currentUser?.uid}")
             userDataCarImg = Firebase.firestore.collection("Images user: ${auth.currentUser?.uid}")
-            userDataCarImgStorage = Firebase.storage.reference.child("Images user: ${auth.uid}")
+            userDataCarImgStorage = Firebase.storage.reference.child("Images user: ${auth.currentUser?.uid}")
+            userDataRoutes = Firebase.firestore.collection("Routes user: ${auth.currentUser?.uid}")
+            userDataRouteImgStorage = Firebase.storage.reference.child("Images routes user: ${auth.currentUser?.uid}")
         } else {
             userDataCars = null
-            userDataRoutes = null
             userDataCarImg = null
             userDataCarImgStorage = null
+            userDataRoutes = null
+            userDataRouteImgStorage = null
         }
 
     }
@@ -68,6 +76,7 @@ class FirebaseRequests(
     fun insertNewRoute(route: RouteRoom) {
         CoroutineScope(Dispatchers.IO).launch {
             userDataRoutes?.add(route)
+            userDataRouteImgStorage?.child("/${route.routeId}")?.putFile(route.imgRoute.toUri())?.await()
         }
     }
 
@@ -113,16 +122,6 @@ class FirebaseRequests(
         }
     }
 
-    fun deleteCar(car: CarRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
-            userDataCars?.let { carsUser ->
-                val necessaryDoc = carsUser.whereEqualTo("id", car.carId).get().await()
-                if (necessaryDoc.documents.isNotEmpty()) {
-                    carsUser.document(necessaryDoc.first().id).set(car)
-                }
-            }
-        }
-    }
 
     suspend fun getAllCars(): List<CarRoom> {
         val list = mutableListOf<CarRoom>()

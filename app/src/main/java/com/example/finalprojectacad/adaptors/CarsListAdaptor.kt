@@ -2,13 +2,16 @@ package com.example.finalprojectacad.adaptors
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ItemRvListCarsBinding
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.viewModel.CarViewModel
@@ -74,6 +77,12 @@ class CarsListAdaptor(
                 }
 
                 carChoiceChanger(car)
+            }
+            itemView.setOnLongClickListener { view ->
+                val navigation = Navigation.findNavController(view)
+                viewModel.setCarToEdit(car)
+                navigation.navigate(R.id.action_listCarsFragment_to_addCarFragment)
+                true
             }
         }
 

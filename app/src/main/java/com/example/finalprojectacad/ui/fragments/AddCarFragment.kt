@@ -39,10 +39,11 @@ private const val TAG = "AddCarFragment"
 @AndroidEntryPoint
 class AddCarFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddCarBinding
+    private var binding: FragmentAddCarBinding? = null
     private val viewModel: CarViewModel by activityViewModels()
 
     var choseImgUri: Uri? = null
+    var carToEdit: CarRoom? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,11 +51,13 @@ class AddCarFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddCarBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setDataIfEditCar()
 
         viewModel.getAllCars.observe(
             viewLifecycleOwner, Observer {
@@ -62,11 +65,10 @@ class AddCarFragment : Fragment() {
             }
         )
 
-
         val brandListName = mutableListOf<String>()
         var brandList = listOf<BrandRoom>()
 
-        binding.apply {
+        binding?.apply {
 
             imageButtonAddBrandInDB.setOnClickListener {
                 CoroutineScope(Dispatchers.Main).launch {
@@ -176,9 +178,9 @@ class AddCarFragment : Fragment() {
             buttonSaveNewCar.setOnClickListener {
                 if (!textInputLayoutBrandNewCar.editText!!.text.equals("")
                     && !textInputLayoutModelNewCar.editText!!.text.equals("")){
-                    collectAndInsertNewCar()
-                    val navig = Navigation.findNavController(view)
-                    navig.navigate(R.id.listCarsFragment)
+                    collectAndInsertCar()
+                    val navigation = Navigation.findNavController(view)
+                    navigation.popBackStack()
                 } else {
                     Snackbar.make(
                         view,
@@ -189,6 +191,11 @@ class AddCarFragment : Fragment() {
             }
         }
        
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     private fun brandAlreadyExistInDb(writtenBrand: String, brandListName: List<String>): Boolean {
@@ -250,45 +257,48 @@ class AddCarFragment : Fragment() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun collectAndInsertNewCar() {
+    private fun collectAndInsertCar() {
         copyToScopeStorageImg(viewModel.listAllCars.size)
-        val newCar = CarRoom()
-        binding.apply {
+        val car = CarRoom()
+        binding?.apply {
             val brand = textInputLayoutBrandNewCar.editText?.text
             brand?.let {
-                if(brand.isNotEmpty()) newCar.brandName = brand.toString()
+                if(brand.isNotEmpty()) car.brandName = brand.toString()
             }
             val model = textInputLayoutModelNewCar.editText?.text
             model?.let {
-                if (model.isNotEmpty()) newCar.modelName = model.toString()
+                if (model.isNotEmpty()) car.modelName = model.toString()
             }
             val engine = textInputLayoutEngineNewCar.editText?.text
             engine?.let {
-                if (engine.isNotEmpty()) newCar.engine = engine.toString()
+                if (engine.isNotEmpty()) car.engine = engine.toString()
             }
             val transmission = textInputLayoutTransmissionNewCar.editText?.text
             transmission?.let {
-                if (transmission.isNotEmpty()) newCar.transmissionName = transmission.toString()
+                if (transmission.isNotEmpty()) car.transmissionName = transmission.toString()
             }
             val year = textInputLayoutYearNewCar.editText?.text
             year?.let {
-                if (it.isNotEmpty()) newCar.year = it.toString().toInt()
+                if (it.isNotEmpty()) car.year = it.toString().toInt()
             }
             val mileage = textInputLayoutMileageNewCar.editText?.text
             mileage?.let {
-                if (mileage.isNotEmpty()) newCar.mileage = mileage.toString().toInt()
+                if (mileage.isNotEmpty()) car.mileage = mileage.toString().toInt()
             }
             choseImgUri?.let {
-                newCar.flagPresenceImg = true
+                car.flagPresenceImg = true
             }
-            newCar.timestamp = System.currentTimeMillis()
+            car.timestamp = System.currentTimeMillis()
+            carToEdit?.let { carEdit ->
+                car.carId = carEdit.carId
+            }
         }
         clearAllField()
-        viewModel.insertNewCar(newCar)
+        viewModel.insertNewCar(car)
     }
 
     private fun clearAllField() {
-        binding.apply {
+        binding?.apply {
             textInputLayoutBrandNewCar.editText?.text?.clear()
             textInputLayoutModelNewCar.editText?.text?.clear()
             textInputLayoutEngineNewCar.editText?.text?.clear()
@@ -298,6 +308,33 @@ class AddCarFragment : Fragment() {
 
             ivSelectImageCar.setImageResource(R.drawable.default_car)
             choseImgUri = null
+        }
+
+    }
+
+    private fun setDataIfEditCar() {
+        viewModel.getCarToEdit()?.let { car ->
+            carToEdit = car
+            binding?.apply {
+                if (car.brandName.isNotEmpty()) {
+                    textInputLayoutBrandNewCar.editText?.setText(car.brandName)
+                }
+                if (car.modelName.isNotEmpty()) {
+                    textInputLayoutModelNewCar.editText?.setText(car.modelName)
+                }
+                if (car.engine.isNotEmpty()) {
+                    textInputLayoutEngineNewCar.editText?.setText(car.engine)
+                }
+                if (car.transmissionName.isNotEmpty()) {
+                    textInputLayoutTransmissionNewCar.editText?.setText(car.transmissionName)
+                }
+                if (car.year != -1) {
+                    textInputLayoutYearNewCar.editText?.setText(car.year.toString())
+                }
+                if (car.mileage != -1) {
+                    textInputLayoutMileageNewCar.editText?.setText(car.mileage.toString())
+                }
+            }
         }
 
     }
@@ -331,7 +368,7 @@ class AddCarFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
              data?.data?.let {
-                 binding.ivSelectImageCar.setImageURI(it)
+                 binding?.ivSelectImageCar?.setImageURI(it)
                  choseImgUri = it
              }
         }

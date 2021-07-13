@@ -15,7 +15,7 @@ class SyncDatabasesClass(
 
     fun syncOnce() {
         GlobalScope.launch {
-           async(Dispatchers.IO) {
+            async(Dispatchers.IO) {
                 syncCar()
                 syncRoute()
             }.await()
@@ -51,7 +51,7 @@ class SyncDatabasesClass(
                 if (matchCar == null) {
                     mainRepository.insertRoomCar(remoteCar)
                     if (remoteCar.flagPresenceImg) {
-                        requireImgCar = fireStoreCarImgList.find {it.id == remoteCar.carId}
+                        requireImgCar = fireStoreCarImgList.find { it.id == remoteCar.carId }
                         requireImgCar?.let {
                             mainRepository.insertRoomImgCar(it) //need add img to scoped storage
                         }
@@ -59,7 +59,7 @@ class SyncDatabasesClass(
                 } else if (matchCar.timestamp < remoteCar.timestamp) {
                     mainRepository.updateRoomCar(remoteCar)
                     if (remoteCar.flagPresenceImg) {
-                        requireImgCar = fireStoreCarImgList.find {it.id == remoteCar.carId}
+                        requireImgCar = fireStoreCarImgList.find { it.id == remoteCar.carId }
                         requireImgCar?.let { imgCar ->
                             val requireCompareImg = carImgList.find { it.id == imgCar.id }
                             if (requireCompareImg != null && requireCompareImg.timestamp < requireImgCar!!.timestamp) {
@@ -92,6 +92,7 @@ class SyncDatabasesClass(
     private suspend fun syncRoute() {
         var routeRoomList = mainRepository.getAllRoutesOnce()
         var fireStoreRoutesList = firebaseRequests.getAllRoutes()
+//        var fireStoreImageRoutesList = firebaseRequests.get
 
         if (fireStoreRoutesList.isEmpty()) {
             for (localRoute in routeRoomList) {
@@ -136,14 +137,15 @@ class SyncDatabasesClass(
                             var fireStoreCarImgList = firebaseRequests.getAllCarImg()
 
                             for (remoteCar in fireStoreCarList) {
-                                val matchCar = carRoomList.find { it.carId == remoteCar.carId}
+                                val matchCar = carRoomList.find { it.carId == remoteCar.carId }
 
                                 var requireImgCar: ImageCarRoom?
 
                                 if (matchCar == null) {
                                     mainRepository.insertRoomCar(remoteCar)
                                     if (remoteCar.flagPresenceImg) {
-                                        requireImgCar = fireStoreCarImgList.find {it.id == remoteCar.carId}
+                                        requireImgCar =
+                                            fireStoreCarImgList.find { it.id == remoteCar.carId }
                                         requireImgCar?.let {
                                             val img = ImageCarRoom()
                                             mainRepository.insertRoomImgCar(it)
@@ -152,9 +154,11 @@ class SyncDatabasesClass(
                                 } else if (matchCar.timestamp < remoteCar.timestamp) {
                                     mainRepository.updateRoomCar(remoteCar)
                                     if (remoteCar.flagPresenceImg) {
-                                        requireImgCar = fireStoreCarImgList.find {it.id == remoteCar.carId}
+                                        requireImgCar =
+                                            fireStoreCarImgList.find { it.id == remoteCar.carId }
                                         requireImgCar?.let { imgCar ->
-                                            val requireCompareImg = carImgList.find { it.id == imgCar.id }
+                                            val requireCompareImg =
+                                                carImgList.find { it.id == imgCar.id }
                                             if (requireCompareImg != null && requireCompareImg.timestamp < requireImgCar!!.timestamp) {
                                                 mainRepository.updateRoomCarImg(requireImgCar!!)
                                             }
@@ -172,7 +176,8 @@ class SyncDatabasesClass(
                                 carRoomList = mainRepository.getAllCarsOnce()
                                 if (carRoomList.size > fireStoreCarList.size) {
                                     for (localCar in carRoomList) {
-                                        val matchCar = fireStoreCarList.find { it.carId == localCar.carId }
+                                        val matchCar =
+                                            fireStoreCarList.find { it.carId == localCar.carId }
                                         if (matchCar == null) {
                                             firebaseRequests.insertNewCar(localCar)
                                         }
@@ -181,7 +186,8 @@ class SyncDatabasesClass(
                                 carImgList = mainRepository.getAllImgOnce()
                                 if (carImgList.size > fireStoreCarImgList.size)
                                     for (localImg in carImgList) {
-                                        val matchImg = fireStoreCarImgList.find { it.id == localImg.id }
+                                        val matchImg =
+                                            fireStoreCarImgList.find { it.id == localImg.id }
                                         if (matchImg == null) {
                                             firebaseRequests.insertCarImg(localImg)
                                         }
@@ -209,7 +215,7 @@ class SyncDatabasesClass(
                             var updatedFireStoreRouteList = firebaseRequests.getAllRoutes()
 
                             for (routeRemote in updatedFireStoreRouteList) {
-                                val matchCar = routeRoomList.find { it.carId == routeRemote.carId}
+                                val matchCar = routeRoomList.find { it.carId == routeRemote.carId }
                                 if (matchCar == null) {
                                     mainRepository.insertRoomRoute(routeRemote)
                                 } else if (matchCar != routeRemote) {
@@ -223,12 +229,5 @@ class SyncDatabasesClass(
         }
     }
 
-    private suspend fun syncCarImg() {
-
-    }
-
-    private suspend fun syncRouteImg() {
-
-    }
 
 }

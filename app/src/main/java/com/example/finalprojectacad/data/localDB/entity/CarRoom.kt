@@ -12,7 +12,7 @@ data class CarRoom(
     var engine: String = "",
     var year: Int = -1,
     var mileage: Int = -1,
-    var timestamp: Long = -1,
+    var timestamp: Long = -1, //for synchronization
     @ColumnInfo(name = "flag_presence_img") var flagPresenceImg: Boolean = false,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "car_id") var carId: Int? = null
