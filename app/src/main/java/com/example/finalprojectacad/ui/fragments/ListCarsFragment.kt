@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -13,6 +14,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.adaptors.CarsListAdaptor
+import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.FragmentListCarsBinding
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.example.finalprojectacad.viewModel.CarViewModel
@@ -31,6 +33,8 @@ class ListCarsFragment : Fragment() {
     private var binding: FragmentListCarsBinding? = null
     
     private var carsListAdaptor: CarsListAdaptor? = null
+
+    private var searchText = ""
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -51,6 +55,12 @@ class ListCarsFragment : Fragment() {
 
         binding?.apply {
 
+            textViewSearchBarCarsList.doOnTextChanged { text, start, before, count ->
+                searchText = text.toString()
+                Log.d(TAG, "onViewCreated: serchtext: $searchText")
+                setFilteredCarsInAdaptor()
+            }
+
             val navigation = Navigation.findNavController(view)
 
             imageButtonToAuthorizationOrSettings.setOnClickListener {
@@ -70,19 +80,36 @@ class ListCarsFragment : Fragment() {
         }
 
         viewModel.getAllCars.observe(
-            viewLifecycleOwner, Observer {
-                carsListAdaptor?.submitList(it)
+            viewLifecycleOwner, Observer { list ->
+                viewModel.listAllCars = list
+                carsListAdaptor?.submitList(list)
             }
         )
 
         viewModel.getAllImages.observe(
-            viewLifecycleOwner, Observer {
-                viewModel.listAllImages = it
+            viewLifecycleOwner, Observer { list ->
+                viewModel.listAllImages = list
                 carsListAdaptor?.notifyDataSetChanged()//find better solution
             }
         )
 
 
+    }
+
+    private fun setFilteredCarsInAdaptor() { //enough for now
+        val carsList = viewModel.listAllCars
+        if (searchText.isEmpty()) {
+            carsListAdaptor?.submitList(carsList)
+            return
+        }
+        val filteredCarLis = mutableListOf<CarRoom>()
+        for (car in carsList) {
+            val carName = car.brandName.toCharArray()
+            if (carName.contains(searchText.toCharArray().first())) {
+                filteredCarLis.add(car)
+            }
+        }
+        carsListAdaptor?.submitList(filteredCarLis)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

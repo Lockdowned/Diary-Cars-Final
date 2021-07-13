@@ -18,6 +18,7 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.File
+import java.lang.Exception
 
 private const val TAG = "FirebaseRequests"
 
@@ -75,8 +76,13 @@ class FirebaseRequests(
 
     fun insertNewRoute(route: RouteRoom) {
         CoroutineScope(Dispatchers.IO).launch {
-            userDataRoutes?.add(route)
-            userDataRouteImgStorage?.child("/${route.routeId}")?.putFile(route.imgRoute.toUri())?.await()
+            try {
+                userDataRoutes?.add(route)
+                userDataRouteImgStorage?.child("/${route.routeId}")?.putFile(route.imgRoute.toUri())?.await()
+            } catch (e: Exception) {
+                Log.e(TAG, "insertNewRoute: ${e.message}")
+            }
+
         }
     }
 
