@@ -1,5 +1,8 @@
 package com.example.finalprojectacad.viewModel
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.finalprojectacad.adaptors.CarsListAdaptor
 import com.example.finalprojectacad.adaptors.RouteListAdaptor
@@ -14,6 +17,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
+private const val TAG = "TrackTripFragment"
+
 @HiltViewModel
 class CarViewModel
 @Inject constructor(
@@ -24,6 +29,9 @@ class CarViewModel
 
     var listAllCars: List<CarRoom> = listOf()
     var listAllImages: List<ImageCarRoom> = listOf()
+
+    @Inject
+    lateinit var appContext: Context
 
 
     val getAllCars: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()
@@ -46,6 +54,28 @@ class CarViewModel
 
     fun getCarToEdit(): CarRoom? {
         return carToEdit
+    }
+
+    private fun setChosenCarIdInSharedPref(car: CarRoom?) {
+        var carIdToSave = -1
+        car?.let { carNotNull ->
+            carIdToSave = carNotNull.carId!!
+        }
+        val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+
+        editor.apply() {
+            putInt("chosenCarId", carIdToSave)
+            apply()
+        }
+        Log.d(TAG, "setChosenCarIdInSharedPref: $carIdToSave")
+    }
+
+    fun getChosenCarIdAnyway(): Int {
+        val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val loadedCarId = sharedPref.getInt("chosenCarId", -1)
+        Log.d(TAG, "getChosenCarIdAnyway: $loadedCarId")
+        return loadedCarId
     }
 
 
@@ -110,6 +140,7 @@ class CarViewModel
     fun setChosenCar(car: CarRoom?) {
         chosenCar = car
         chosenCarMutableLifeData.value = chosenCar
+        setChosenCarIdInSharedPref(car)
     }
 
     fun getChosenCar(): CarRoom? {

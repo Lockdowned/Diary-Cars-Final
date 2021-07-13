@@ -64,6 +64,7 @@ class CarsListAdaptor(
                     chosenCar = car
                     view.setBackgroundColor(Color.YELLOW)
                     previousCarView = view
+                    carChoiceChanger(car)
                 } else if (chosenCar == car) {
                     view.setBackgroundColor(Color.WHITE)
                     chosenCar = null
@@ -74,9 +75,9 @@ class CarsListAdaptor(
                     view.setBackgroundColor(Color.YELLOW)
                     chosenCar = car
                     previousCarView = view
+                    carChoiceChanger(car)
                 }
 
-                carChoiceChanger(car)
             }
             itemView.setOnLongClickListener { view ->
                 val navigation = Navigation.findNavController(view)

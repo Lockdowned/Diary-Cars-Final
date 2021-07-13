@@ -1,6 +1,7 @@
 package com.example.finalprojectacad.ui.activity
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
     private val viewModel: CarViewModel by viewModels()
 
-    lateinit var binding: ActivityMainBinding
+    private var binding: ActivityMainBinding? = null
 
     // we need set navHostFragment so that then we could use Navigation.findNavController(view)
     private val navHostFragment by lazy {
@@ -82,9 +83,9 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding!!.root)
 
-        binding.apply {
+        binding?.apply {
 
             navController = navHostFragment.findNavController()
             bottomNavigationBar.setupWithNavController(navController)
@@ -101,16 +102,17 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             }
 
 
-            bottomNavigationBar.setOnItemSelectedListener {
-                if (NavigationUI.onNavDestinationSelected(it, navController)) {
+            bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+                if (NavigationUI.onNavDestinationSelected(menuItem, navController)) {
                     true
                 } else {
-                    when (it.itemId) {
+                    when (menuItem.itemId) {
                         R.id.trackTrip -> {
-                            if (viewModel.getChosenCar() == null) {
+                            if (viewModel.getChosenCarIdAnyway() == -1) {
+                                Log.d("TrackTripFragment", "onCreate: Im here")
                                 Toast.makeText(this@MainActivity, "Need chose a car", Toast.LENGTH_SHORT).show()
                                 bottomNavigationBar.selectedItemId = R.id.listCarsFragment
-                                false
+                                true
                             } else {
                                 navController.navigate(R.id.trackTripFragment)
                                 true

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -39,7 +40,7 @@ private const val TAG = "TrackTripFragment"
 @AndroidEntryPoint
 class TrackTripFragment : Fragment() {
 
-    private lateinit var binding: FragmentTrackTripBinding
+    private var binding: FragmentTrackTripBinding? = null
     private val viewModel: CarViewModel by activityViewModels()
     private lateinit var mapView: MapView
     private var googleMap: GoogleMap? = null
@@ -59,7 +60,7 @@ class TrackTripFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTrackTripBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,14 +71,15 @@ class TrackTripFragment : Fragment() {
         })
 
         val navigation = Navigation.findNavController(view)
-        if (viewModel.getChosenCar() == null){
-            Toast.makeText(requireContext(), "Need chose a car", Toast.LENGTH_SHORT).show()
-            navigation.popBackStack()
-        }
-        carId = viewModel.getChosenCar()!!.carId!!
+//        if (viewModel.getChosenCar() == null){
+//            Toast.makeText(requireContext(), "Need chose a car", Toast.LENGTH_SHORT).show()
+//            navigation.popBackStack()
+//        }
+        carId = viewModel.getChosenCarIdAnyway()
+        Log.d(TAG, "onViewCreated: carId: $carId")
 
 
-        binding.apply {
+        binding?.apply {
             buttonStartPause.setOnClickListener {
                 startOrResumeActionService()
             }
@@ -95,7 +97,7 @@ class TrackTripFragment : Fragment() {
 
 
 
-        mapView = binding.fragmentTrackTrip
+        mapView = binding!!.fragmentTrackTrip
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync {
             googleMap = it
@@ -259,14 +261,16 @@ class TrackTripFragment : Fragment() {
 
     private fun actualizeStateButtons(isTracking: Boolean, isServiceStopped: Boolean) {
         this.isTracking = isTracking
-        if (!isTracking && isServiceStopped) {
-            binding.buttonStartPause.text = "Start"
-            binding.buttonStopTracking.visibility = View.INVISIBLE
-        } else if (!isTracking) {
-            binding.buttonStartPause.text = "Resume"
-        } else {
-            binding.buttonStartPause.text = "Pause"
-            binding.buttonStopTracking.visibility = View.VISIBLE
+        binding?.apply {
+            if (!isTracking && isServiceStopped) {
+                buttonStartPause.text = "Start"
+                buttonStopTracking.isVisible = false
+            } else if (!isTracking) {
+                buttonStartPause.text = "Resume"
+            } else {
+                buttonStartPause.text = "Pause"
+                buttonStopTracking.isVisible = true
+            }
         }
 
     }
@@ -309,7 +313,7 @@ class TrackTripFragment : Fragment() {
         val distance = accurateDistance.roundToInt()
         val avgSpeed =
             ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
-        binding.apply {
+        binding?.apply {
             textViewDistanceDriving.text = "distance: $distance m"
             textViewAverageSpeed.text = "avg speed: $avgSpeed km/h"
         }
@@ -317,7 +321,7 @@ class TrackTripFragment : Fragment() {
 
     private fun showDurationTime(durationTime: Long) {
         val formattedTime = RouteUtils.getFormattedTime(durationTime)
-        binding.textViewDurationDriving.text = "duration $formattedTime"
+        binding?.textViewDurationDriving?.text = "duration $formattedTime"
     }
 
 
