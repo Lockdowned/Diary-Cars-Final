@@ -8,8 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.isVisible
+import android.widget.RelativeLayout
+import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -28,6 +28,7 @@ import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -35,10 +36,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+
 private const val TAG = "TrackTripFragment"
 
 @AndroidEntryPoint
-class TrackTripFragment : Fragment() {
+class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
     private var binding: FragmentTrackTripBinding? = null
     private val viewModel: CarViewModel by activityViewModels()
@@ -70,7 +72,7 @@ class TrackTripFragment : Fragment() {
             allRoutesList = list
         })
 
-        val navigation = Navigation.findNavController(view)
+//        val navigation = Navigation.findNavController(view)
 //        if (viewModel.getChosenCar() == null){
 //            Toast.makeText(requireContext(), "Need chose a car", Toast.LENGTH_SHORT).show()
 //            navigation.popBackStack()
@@ -103,8 +105,25 @@ class TrackTripFragment : Fragment() {
             googleMap = it
             addAllPolylines()
         }
+        mapView.getMapAsync(this) //call onMapReady
+
 
         initializeObservers()
+
+    }
+
+    override fun onMapReady(gMap: GoogleMap) {
+        Log.d(TAG, "onMapReady: ")
+
+        val zoomIn = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
+        val zoomInOut = zoomIn.parent as View
+        zoomInOut.setPadding(8, 8, 8, 150)
+
+        val compassIn = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("5"))
+        val layoutParams = compassIn.layoutParams as RelativeLayout.LayoutParams
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+        layoutParams.setMargins(8, 150, 8, 8);
 
     }
 
@@ -264,12 +283,12 @@ class TrackTripFragment : Fragment() {
         binding?.apply {
             if (!isTracking && isServiceStopped) {
                 buttonStartPause.text = "Start"
-                buttonStopTracking.isVisible = false
+                buttonStopTracking.isInvisible = true
             } else if (!isTracking) {
                 buttonStartPause.text = "Resume"
             } else {
                 buttonStartPause.text = "Pause"
-                buttonStopTracking.isVisible = true
+                buttonStopTracking.isInvisible = false
             }
         }
 
