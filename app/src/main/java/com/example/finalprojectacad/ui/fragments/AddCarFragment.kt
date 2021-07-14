@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.data.localDB.entity.BrandRoom
@@ -367,9 +368,13 @@ class AddCarFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
-             data?.data?.let {
-                 binding?.ivSelectImageCar?.setImageURI(it)
-                 choseImgUri = it
+             data?.data?.let { imgUri ->
+                 binding?.apply {
+                     Glide.with(requireContext()).load(imgUri)
+                         .into(ivSelectImageCar)
+                 }
+//                 binding?.ivSelectImageCar?.setImageURI(imgUri)
+                 choseImgUri = imgUri
              }
         }
     }

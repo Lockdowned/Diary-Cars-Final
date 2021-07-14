@@ -21,6 +21,7 @@ import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 private const val TAG = "ListCarsFragment"
@@ -96,16 +97,19 @@ class ListCarsFragment : Fragment() {
 
     }
 
-    private fun setFilteredCarsInAdaptor() { //enough for now
+    private fun setFilteredCarsInAdaptor() {
         val carsList = viewModel.listAllCars
         if (searchText.isEmpty()) {
             carsListAdaptor?.submitList(carsList)
             return
         }
         val filteredCarLis = mutableListOf<CarRoom>()
+        val correctSearchText = searchText.toLowerCase()
+        val carRegex = ".*$correctSearchText+.*"
+        val pat: Pattern = Pattern.compile(carRegex)
         for (car in carsList) {
-            val carName = car.brandName.toCharArray()
-            if (carName.contains(searchText.toCharArray().first())) {
+            val carName = "${car.brandName.toLowerCase()} ${car.modelName.toLowerCase()}"
+            if (pat.matcher(carName).matches()){
                 filteredCarLis.add(car)
             }
         }
