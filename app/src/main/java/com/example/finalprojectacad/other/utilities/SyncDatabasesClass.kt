@@ -92,7 +92,6 @@ class SyncDatabasesClass(
     private suspend fun syncRoute() {
         var routeRoomList = mainRepository.getAllRoutesOnce()
         var fireStoreRoutesList = firebaseRequests.getAllRoutes()
-//        var fireStoreImageRoutesList = firebaseRequests.get
 
         if (fireStoreRoutesList.isEmpty()) {
             for (localRoute in routeRoomList) {

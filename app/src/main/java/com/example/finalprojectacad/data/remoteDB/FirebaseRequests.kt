@@ -164,21 +164,21 @@ class FirebaseRequests(
 
     private var count = 1
 
-    suspend fun saveToScopeFromRemote(img: ImageCarRoom) {
+    suspend fun saveCarToScopeFromRemote(img: ImageCarRoom) {
 
         val tempFileImg = File.createTempFile("images", "jpg")
         userDataCarImgStorage?.child("/${img.id}")?.let { it ->
             it.getFile(tempFileImg).addOnSuccessListener {
-                Log.d(TAG, "saveToScopeFromRemote: ${tempFileImg.toURI()}")
+                Log.d(TAG, "car img saveToScopeFromRemote: ${tempFileImg.toURI()}")
                 SaveImgToScopedStorage.save(appContext, img.id, tempFileImg.toUri())
                 count = 1
             }.addOnFailureListener { ex ->
-                Log.d(TAG, "Exception : ${ex.message}")
+                Log.d(TAG, "car img Exception : ${ex.message}")
                 if (count < 3) {
                     count++
                     GlobalScope.launch {
                         delay(2000)
-                        saveToScopeFromRemote(img)
+                        saveCarToScopeFromRemote(img)
                     }
                 }
             }
@@ -188,5 +188,30 @@ class FirebaseRequests(
 
     }
 
+    suspend fun saveRouteToScopeFromRemote(route: RouteRoom) {
+
+        val tempFileImg = File.createTempFile("images", "jpg")
+        userDataRouteImgStorage?.child("/${route.routeId}")?.let { it ->
+            it.getFile(tempFileImg).addOnSuccessListener {
+                Log.d(TAG, "route img saveToScopeFromRemote: ${tempFileImg.toURI()} +\n" +
+                        " temp file uri ${tempFileImg.toURI()} + \n" +
+                        " routeId ${route.routeId}")
+                SaveImgToScopedStorage.saveRoute(appContext, route.routeId!!, tempFileImg.toUri())
+                count = 1
+            }.addOnFailureListener { ex ->
+                Log.d(TAG, "route img Exception : ${ex.message} +\n temp file uri ${tempFileImg.toURI()} + \n routeId ${route.routeId}")
+                if (count < 3) {
+                    count++
+                    GlobalScope.launch {
+                        delay(2000)
+                        saveRouteToScopeFromRemote(route)
+                    }
+                }
+            }
+
+
+        }
+
+    }
 
 }

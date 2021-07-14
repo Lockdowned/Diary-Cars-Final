@@ -41,18 +41,22 @@ object SaveImgToScopedStorage {
         }
     }
 
+    fun saveRoute(appContext: Context, id: Int, uriImg: Uri): Boolean {
+
+        return try {
+            val bmp = MediaStore.Images.Media.getBitmap(appContext.contentResolver, uriImg)
+            Log.d(TAG, "saveRoute: img save")
+            appContext.openFileOutput("Route_$id.jpg", AppCompatActivity.MODE_PRIVATE).use { stream ->
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            }
+            true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        }
+    }
+
     fun saveFromBitmap(appContext: Context, id: Int, bmp: Bitmap): Boolean {
-
-//        Log.d(TAG, "saveFromBitmap: HERE")
-//        val fileOutput = appContext.openFileOutput("Route_$id.jpg", AppCompatActivity.MODE_PRIVATE)
-//         fileOutput.use { stream ->
-//             val a = bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-//             Log.d(TAG, "saveFromBitmap: $a")
-//             return true
-//         }
-//
-//        return false
-
         return try {
             Log.d(TAG, "saveFromBitmap: HERE")
             appContext.openFileOutput("Route_$id.jpg", AppCompatActivity.MODE_PRIVATE)
@@ -65,6 +69,5 @@ object SaveImgToScopedStorage {
             e.printStackTrace()
             false
         }
-
     }
 }
