@@ -29,6 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -160,6 +161,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
     private fun stopTracking() {
         sendCommandToService(ACTION_STOP_SERVICE)
+        zoomToSeeWholeTrack()
         saveRouteInDb()
     }
 
@@ -324,6 +326,24 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
+    private fun zoomToSeeWholeTrack() {
+        val bounds = LatLngBounds.Builder()
+        for(polyline in polylinesList) {
+            for(pos in polyline) {
+                bounds.include(pos)
+            }
+        }
+
+        googleMap?.moveCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                bounds.build(),
+                mapView.width,
+                mapView.height,
+                (mapView.height * 0.25f).toInt()
+            )
+        )
+    }
+
     private fun showDistanceAndAverageSpeed() {
         var accurateDistance = 0.0
         for (polyline in polylinesList) {
@@ -334,6 +354,10 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
         binding?.apply {
             textViewDistanceDriving.text = "distance: $distance m"
+            if (avgSpeed.isNaN()){
+                textViewAverageSpeed.text = "avg speed: 0 km/h"
+                return
+            }
             textViewAverageSpeed.text = "avg speed: $avgSpeed km/h"
         }
     }
