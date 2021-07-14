@@ -10,4 +10,11 @@
         <item>Avg speed</item>
         <item>Max speed</item>
     </string-array>
+    
+    <string-array name="map_type_presentation">
+        <item>road</item>
+        <item>satellite</item>
+        <item>terrain</item>
+        <item>hybrid</item>
+    </string-array>
 </resources>

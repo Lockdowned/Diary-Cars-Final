@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.RelativeLayout
 import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
@@ -95,6 +96,25 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             buttonBackToListRoute.setOnClickListener {
 //                requireActivity().supportFragmentManager.popBackStack()//why crash if again track(probably know)
                 navigation.popBackStack()
+            }
+
+            spinnerMapTypePresentation.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    when(position) {
+                        0 -> googleMap?.mapType = GoogleMap.MAP_TYPE_NORMAL
+                        1 -> googleMap?.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                        2 -> googleMap?.mapType = GoogleMap.MAP_TYPE_TERRAIN
+                        3 -> googleMap?.mapType = GoogleMap.MAP_TYPE_HYBRID
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
             }
         }
 
