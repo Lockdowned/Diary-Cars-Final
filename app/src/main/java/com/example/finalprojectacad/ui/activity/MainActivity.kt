@@ -88,10 +88,10 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 bottomNavigationBar.selectedItemId = R.id.listCarsFragment
-                                true
+                                false
                             } else {
                                 navController.navigate(R.id.trackTripFragment)
-                                true
+                                false
                             }
 
                         }
