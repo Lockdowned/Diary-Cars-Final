@@ -34,11 +34,7 @@ private const val TAG = "MainActivity"
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
-    @Inject
-    lateinit var auth: FirebaseAuth
-
     private val viewModel: CarViewModel by viewModels()
-
     private var binding: ActivityMainBinding? = null
 
     private val navHostFragment by lazy {
@@ -105,7 +101,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             }
         }
 
-        request.send()
+        request.send() // asks permissions
 
         navigateToTrackingFragment(intent)
     }

@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.BrandRoom
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
-import com.example.finalprojectacad.data.localDB.entity.ImageCarRoom
 import com.example.finalprojectacad.data.localDB.entity.ModelRoom
 import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
@@ -32,7 +31,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 private const val TAG = "AddCarFragment"
@@ -74,7 +72,7 @@ class AddCarFragment : Fragment() {
             imageButtonAddBrandInDB.setOnClickListener {
                 CoroutineScope(Dispatchers.Main).launch {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
-                    if (textInputLayoutBrandNewCar.editText?.text.isNullOrEmpty()) {
+                    if (brandText.isEmpty()) {
                         Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT)
                             .show()
                     } else if (brandAlreadyExistInDb(brandText, brandListName)) {
@@ -90,10 +88,10 @@ class AddCarFragment : Fragment() {
                 CoroutineScope(Dispatchers.Main).launch {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
                     val modelText = textInputLayoutModelNewCar.editText?.text.toString()
-                    if (textInputLayoutModelNewCar.editText?.text.isNullOrEmpty()) {
+                    if (modelText.isEmpty()) {
                         Toast.makeText(context, "Please fill model text field", Toast.LENGTH_SHORT)
                             .show()
-                    } else if (textInputLayoutBrandNewCar.editText?.text.isNullOrEmpty()) {
+                    } else if (brandText.isEmpty()) {
                         Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT)
                             .show()
                     } else if (!brandAlreadyExistInDb(brandText, brandListName)) {
@@ -105,14 +103,12 @@ class AddCarFragment : Fragment() {
                 }
             }
 
-
             ivSelectImageCar.setOnClickListener {
                 Intent(Intent.ACTION_OPEN_DOCUMENT).also {
                     it.type = "image/*"
                     regImageIntent.launch(it)
                 }
             }
-
 
             viewModel.allBrands.observe(
                 viewLifecycleOwner, Observer { brandsListRoom ->
@@ -123,8 +119,6 @@ class AddCarFragment : Fragment() {
                     }
                     autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
                 })
-
-
 
             autoCompleteTextBrandNewCar.threshold = 2
 
@@ -176,7 +170,6 @@ class AddCarFragment : Fragment() {
 
             autoCompleteTextTransmissionNewCar.setAdapter(autoCompleteSetAdapter(transmissionList))
 
-
             constrainAddFragment.setOnClickListener {
                 activity?.hideKeyboard(view)
                 Log.d(TAG, "onViewCreated: tap outside fields")
@@ -198,7 +191,6 @@ class AddCarFragment : Fragment() {
                 }
             }
         }
-
     }
 
     override fun onDestroyView() {
@@ -322,7 +314,6 @@ class AddCarFragment : Fragment() {
             ivSelectImageCar.setImageResource(R.drawable.default_car)
             choseImgUri = null
         }
-
     }
 
     private fun setDataIfEditCar() {
@@ -349,29 +340,17 @@ class AddCarFragment : Fragment() {
                 }
             }
         }
-
     }
 
 
     private fun copyToScopeStorageImg(carListSize: Int) {
-        GlobalScope.launch(Dispatchers.IO) {
-            var flagSuccessSave = false
-            choseImgUri?.let {
-                val currentIdCars = carListSize + 1
-                flagSuccessSave = SaveImgToScopedStorage.save(requireContext(), currentIdCars, it)
-                if (flagSuccessSave) {
-                    val listScopeStorageImg = SaveImgToScopedStorage.openSavedImg((activity as MainActivity).applicationContext)
-                    val lastSavedImg = listScopeStorageImg.last() // mb need find by name file
-
-                    val imgRoom = ImageCarRoom(
-                        lastSavedImg.toString(),
-                        System.currentTimeMillis(),
-                        currentIdCars
-                    )
-                    viewModel.insertNewImg(imgRoom)
-                }
+        CoroutineScope(Dispatchers.IO).launch {
+            val insertedImg = SaveImgToScopedStorage
+                .copyToScopeStorageImg(choseImgUri
+                    , carListSize, (activity as MainActivity).applicationContext)
+            if (insertedImg != null) {
+                viewModel.insertNewImg(insertedImg)
             }
-
         }
     }
 
@@ -385,11 +364,8 @@ class AddCarFragment : Fragment() {
                     Glide.with(requireContext()).load(imgUri)
                         .into(ivSelectImageCar)
                 }
-//                 binding?.ivSelectImageCar?.setImageURI(imgUri)
                 choseImgUri = imgUri
             }
         }
     }
-
-
 }

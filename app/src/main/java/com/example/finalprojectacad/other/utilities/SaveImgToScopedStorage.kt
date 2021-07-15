@@ -7,11 +7,38 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import com.example.finalprojectacad.data.localDB.entity.ImageCarRoom
+import com.example.finalprojectacad.ui.activity.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 private const val TAG = "SaveImgToScopedStorage"
 
 object SaveImgToScopedStorage {
+
+    fun copyToScopeStorageImg(choseImgUri: Uri? ,carListSize: Int, appContext: Context): ImageCarRoom? {
+        var imgRoom: ImageCarRoom? = null
+        var flagSuccessSave: Boolean
+        choseImgUri?.let {
+            val currentIdCars = carListSize + 1
+            flagSuccessSave = save(appContext, currentIdCars, it)
+            if (flagSuccessSave) {
+                val listScopeStorageImg = openSavedImg(appContext)
+                val lastSavedImg = listScopeStorageImg.last() // mb need find by name file
+
+                imgRoom = ImageCarRoom(
+                    lastSavedImg.toString(),
+                    System.currentTimeMillis(),
+                    currentIdCars
+                )
+                return imgRoom
+            }
+        }
+        return null
+    }
 
     fun save(appContext: Context, id: Int, uriImg: Uri): Boolean {
 

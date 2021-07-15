@@ -15,6 +15,7 @@ import com.example.finalprojectacad.R
 import com.example.finalprojectacad.adaptors.CarsListAdaptor
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.FragmentListCarsBinding
+import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +29,6 @@ private const val TAG = "ListCarsFragment"
 class ListCarsFragment : Fragment() {
 
     private val viewModel: CarViewModel by activityViewModels()
-
     private var binding: FragmentListCarsBinding? = null
 
     private var carsListAdaptor: CarsListAdaptor? = null
@@ -54,9 +54,9 @@ class ListCarsFragment : Fragment() {
 
         binding?.apply {
 
-            textViewSearchBarCarsList.doOnTextChanged { text, start, before, count ->
+            textViewSearchBarCarsList.doOnTextChanged { text, _, _, _ ->
                 searchText = text.toString()
-                Log.d(TAG, "onViewCreated: serchtext: $searchText")
+                Log.d(TAG, "onViewCreated: search text: $searchText")
                 setFilteredCarsInAdaptor()
             }
 
@@ -91,8 +91,6 @@ class ListCarsFragment : Fragment() {
                 carsListAdaptor?.notifyDataSetChanged()
             }
         )
-
-
     }
 
     private fun setFilteredCarsInAdaptor() {
@@ -101,17 +99,8 @@ class ListCarsFragment : Fragment() {
             carsListAdaptor?.submitList(carsList)
             return
         }
-        val filteredCarLis = mutableListOf<CarRoom>()
-        val correctSearchText = searchText.toLowerCase()
-        val carRegex = ".*$correctSearchText+.*"
-        val pat: Pattern = Pattern.compile(carRegex)
-        for (car in carsList) {
-            val carName = "${car.brandName.toLowerCase()} ${car.modelName.toLowerCase()}"
-            if (pat.matcher(carName).matches()) {
-                filteredCarLis.add(car)
-            }
-        }
-        carsListAdaptor?.submitList(filteredCarLis)
+        val filteredCarList = FragmentsHelper.filterCarList(carsList, searchText)
+        carsListAdaptor?.submitList(filteredCarList)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -121,7 +110,6 @@ class ListCarsFragment : Fragment() {
         searchText?.let {
             outState.putString("searchText", searchText)
         }
-
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -137,5 +125,4 @@ class ListCarsFragment : Fragment() {
         super.onDestroyView()
         binding = null
     }
-
 }
