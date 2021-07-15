@@ -2,28 +2,21 @@ package com.example.finalprojectacad.ui.activity
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
 import com.example.finalprojectacad.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.finalprojectacad.viewModel.CarViewModel
-import com.example.finalprojectacad.workers.SyncDatabaseWorker
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.anyPermanentlyDenied
@@ -34,7 +27,6 @@ import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import java.io.IOException
 import javax.inject.Inject
 
 private const val TAG = "MainActivity"
@@ -67,10 +59,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val workManager = WorkManager.getInstance(application)
-        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>().build()
-        workManager.beginWith(testWorker).enqueue()
-
+        viewModel.starWorkManagerSynchronization(application)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
@@ -79,8 +68,6 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
             navController = navHostFragment.findNavController()
             bottomNavigationBar.setupWithNavController(navController)
-
-
 
             navController
                 .addOnDestinationChangedListener { _, destination, _ ->
@@ -99,10 +86,6 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                     when (menuItem.itemId) {
                         R.id.trackTrip -> {
                             if (viewModel.getChosenCarIdAnyway() == -1) {
-                                Log.d(
-                                    "TrackTripFragment",
-                                    "onCreate: Im in bottomNavigationBar.setOnItemSelectedListener"
-                                )
                                 Toast.makeText(
                                     this@MainActivity,
                                     "Need chose a car",
@@ -122,21 +105,15 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             }
         }
 
-
-
-
         request.send()
 
         navigateToTrackingFragment(intent)
-
-
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         navigateToTrackingFragment(intent)
     }
-
 
     //function that create our app after we close app than open him from notification bar
     private fun navigateToTrackingFragment(intent: Intent?) {
@@ -148,36 +125,11 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     override fun onPermissionsResult(result: List<PermissionStatus>) {
         when {
             result.anyPermanentlyDenied() -> Log.d(TAG, "onPermissionsResult: Denied")
-            result.anyShouldShowRationale() -> Log.d(TAG, "onPermissionsResult: SHOW SWTH")
+            result.anyShouldShowRationale() -> Log.d(
+                TAG,
+                "onPermissionsResult: result.anyShouldShowRationale()"
+            )
             result.allGranted() -> Log.d(TAG, "onPermissionsResult: all Allow")
         }
     }
-
-    fun openSavedImg(): List<Uri> {
-        val listUri = mutableListOf<Uri>()
-        val files = filesDir.listFiles()
-        files?.filter { it.canRead() && it.isFile }?.map {
-            val path = it.absolutePath
-            val realAbsolutePath = "file:$path"
-            listUri.add(realAbsolutePath.toUri())
-        }
-        return listUri
-
-    }
-
-
-    fun saveImgCarToScopedStorage(filenameImgId: String, imgUri: Uri): Boolean {
-        return try {
-            val bmp = MediaStore.Images.Media.getBitmap(this.contentResolver, imgUri)
-
-            openFileOutput("$filenameImgId.jpg", MODE_PRIVATE).use { stream ->
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            }
-            true
-        } catch (e: IOException) {
-            e.printStackTrace()
-            false
-        }
-    }
-
 }

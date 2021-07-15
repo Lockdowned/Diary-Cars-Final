@@ -226,8 +226,8 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                             bitmapImg
                         )
                     ) {
-                        val act = activity as MainActivity
-                        val listScopeStorageImg = act.openSavedImg()
+                        val listScopeStorageImg =
+                            SaveImgToScopedStorage.openSavedImg((activity as MainActivity).applicationContext)
                         val lastSavedImg =
                             listScopeStorageImg.last()
                         Log.d(TAG, "saveRouteInDb: ")
@@ -249,8 +249,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                     }
 
                 }
-
-
             }
         }
 
@@ -403,7 +401,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                 .addAll(polyline)
             googleMap?.addPolyline(polylineOptions)
         }
-
     }
 
     private fun sendCommandToService(action: String) =
@@ -411,5 +408,4 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             it.action = action
             requireContext().startService(it)
         }
-
 }

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import java.io.IOException
 
 private const val TAG = "SaveImgToScopedStorage"
@@ -56,5 +57,18 @@ object SaveImgToScopedStorage {
             e.printStackTrace()
             false
         }
+    }
+
+
+    fun openSavedImg(appContext: Context): List<Uri> {
+        val listUri = mutableListOf<Uri>()
+        val files = appContext.filesDir.listFiles()
+        files?.filter { it.canRead() && it.isFile }?.map {
+            val path = it.absolutePath
+            val realAbsolutePath = "file:$path"
+            listUri.add(realAbsolutePath.toUri())
+        }
+        return listUri
+
     }
 }

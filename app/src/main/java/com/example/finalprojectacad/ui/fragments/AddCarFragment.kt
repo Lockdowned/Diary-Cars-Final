@@ -358,10 +358,9 @@ class AddCarFragment : Fragment() {
             var flagSuccessSave = false
             choseImgUri?.let {
                 val currentIdCars = carListSize + 1
-                val act = activity as MainActivity
                 flagSuccessSave = SaveImgToScopedStorage.save(requireContext(), currentIdCars, it)
                 if (flagSuccessSave) {
-                    val listScopeStorageImg = act.openSavedImg()
+                    val listScopeStorageImg = SaveImgToScopedStorage.openSavedImg((activity as MainActivity).applicationContext)
                     val lastSavedImg = listScopeStorageImg.last() // mb need find by name file
 
                     val imgRoom = ImageCarRoom(

@@ -3,11 +3,14 @@ package com.example.finalprojectacad.viewModel
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.finalprojectacad.adaptors.CarsListAdaptor
 import com.example.finalprojectacad.adaptors.RouteListAdaptor
 import com.example.finalprojectacad.data.localDB.entity.*
 import com.example.finalprojectacad.other.enums.RouteSortType
 import com.example.finalprojectacad.repositories.MainRepository
+import com.example.finalprojectacad.workers.SyncDatabaseWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,6 +74,13 @@ class CarViewModel
         val loadedCarId = sharedPref.getInt("chosenCarId", -1)
         Log.d(TAG, "getChosenCarIdAnyway: $loadedCarId")
         return loadedCarId
+    }
+
+    fun starWorkManagerSynchronization(applicationContext: Context) {
+        val workManager = WorkManager.getInstance(applicationContext)
+        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>().build()
+        workManager.beginWith(testWorker).enqueue()
+
     }
 
 
