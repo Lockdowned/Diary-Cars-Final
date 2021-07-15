@@ -29,20 +29,20 @@ class CarViewModel
     var listAllCars: List<CarRoom> = listOf()
     var listAllImages: List<ImageCarRoom> = listOf()
 
-    val getAllCars: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()//change nave nameLiveData
-    val getAllImages: LiveData<List<ImageCarRoom>> = mainRepository.getAllImages().asLiveData()//change nave nameLiveData
+    val getAllCars: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()//change name nameLiveData
+    val getAllImages: LiveData<List<ImageCarRoom>> = mainRepository.getAllImages().asLiveData()//change name nameLiveData
     val allBrands: LiveData<List<BrandRoom>> = mainRepository.getAllBrands().asLiveData()//change name nameLiveData
-    val allModels: LiveData<List<ModelRoom>> = mainRepository.getAllModels().asLiveData()//change nave nameLiveData
+    val allModels: LiveData<List<ModelRoom>> = mainRepository.getAllModels().asLiveData()//change name nameLiveData
     val allTransmissions: LiveData<List<TransmissionRoom>> =
-        mainRepository.getAllTransmissions().asLiveData()//change nave nameLiveData
+        mainRepository.getAllTransmissions().asLiveData()//change name nameLiveData
 
-    val allRoutes: LiveData<List<RouteRoom>> = mainRepository.getAllRoutes().asLiveData()//change nave nameLiveData
+    val allRoutes: LiveData<List<RouteRoom>> = mainRepository.getAllRoutes().asLiveData()//change name nameLiveData
 
-    private val routesSortedByDate = mainRepository.getAllRoutesSortedByDate().asLiveData()//change nave nameLiveData
-    private val routesSortedByDistance = mainRepository.getAllRoutesSortedByDistance().asLiveData()//change nave nameLiveData
-    private val routesSortedByDuration = mainRepository.getAllRoutesSortedByDuration().asLiveData()//change nave nameLiveData
-    private val routesSortedByAvgSpeed = mainRepository.getAllRoutesSortedByAvgSpeed().asLiveData()//change nave nameLiveData
-    private val routesSortedByMaxSpeed = mainRepository.getAllRoutesSortedByMaxSpeed().asLiveData()//change nave nameLiveData
+    private val routesSortedByDate = mainRepository.getAllRoutesSortedByDate().asLiveData()//change name nameLiveData
+    private val routesSortedByDistance = mainRepository.getAllRoutesSortedByDistance().asLiveData()//change name nameLiveData
+    private val routesSortedByDuration = mainRepository.getAllRoutesSortedByDuration().asLiveData()//change name nameLiveData
+    private val routesSortedByAvgSpeed = mainRepository.getAllRoutesSortedByAvgSpeed().asLiveData()//change name nameLiveData
+    private val routesSortedByMaxSpeed = mainRepository.getAllRoutesSortedByMaxSpeed().asLiveData()//change name nameLiveData
 
     val routesSorted = MediatorLiveData<List<RouteRoom>>()
 
