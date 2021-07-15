@@ -23,9 +23,7 @@ class SyncDatabaseWorker
 
 
     override fun doWork(): Result {
-        Log.d("HEY", "doWork: Do something")
-        firebaseRequests.testExistence()
-        mainRepository.testExistence()
+        Log.d("worker", "start do worker jobs")
         SyncDatabasesClass(firebaseRequests, mainRepository)
             .syncOnce()
         return Result.success()

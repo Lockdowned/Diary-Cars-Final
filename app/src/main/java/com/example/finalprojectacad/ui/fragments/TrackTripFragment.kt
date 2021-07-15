@@ -20,6 +20,8 @@ import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.finalprojectacad.other.Constants.ACTION_STOP_SERVICE
+import com.example.finalprojectacad.other.Constants.DEFAULT_ZOOM_LEVEL
+import com.example.finalprojectacad.other.Constants.MAP_SCALE_WEIGHT
 import com.example.finalprojectacad.other.utilities.RouteUtils
 import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.example.finalprojectacad.services.Polyline
@@ -38,7 +40,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-
 private const val TAG = "TrackTripFragment"
 
 @AndroidEntryPoint
@@ -46,7 +47,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
     private var binding: FragmentTrackTripBinding? = null
     private val viewModel: CarViewModel by activityViewModels()
-    private lateinit var mapView: MapView
+    private lateinit var mapView: MapView //deferred remove lateinit
     private var googleMap: GoogleMap? = null
 
     private var polylinesList = mutableListOf<Polyline>()
@@ -113,8 +114,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                 }
         }
 
-
-
         mapView = binding!!.fragmentTrackTrip
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync {
@@ -123,32 +122,21 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         }
         mapView.getMapAsync(this) //call onMapReady
 
-
         initializeObservers()
-
     }
 
     override fun onMapReady(gMap: GoogleMap) {
         Log.d(TAG, "onMapReady: ")
 
-        val zoomIn =
-            (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(
-                Integer.parseInt("2")
-            )
-        val zoomInOut = zoomIn.parent as View
-        zoomInOut.setPadding(8, 8, 8, 150)
+        val zoomButtons = findZoomButtons()
+        zoomButtons.setPadding(8, 8, 8, 150)
 
-        val compassIn =
-            (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(
-                Integer.parseInt("5")
-            )
+        val compassIn = findCompass()
         val layoutParams = compassIn.layoutParams as RelativeLayout.LayoutParams
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
         layoutParams.setMargins(8, 150, 8, 8);
-
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -196,15 +184,13 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             }
             val distance = accurateDistance.roundToInt()
             val duration = wholeDrivingTimeInMillis
-            val avgSpeed =
-                ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
+            val avgSpeed = calculateAvgSpeed(accurateDistance)
             val maxSpeed = TrackingService.maxSpeed
             var imgRoute = ""
 
             googleMap?.snapshot { bmp ->
                 if (bmp == null) {
-                    val routeRoom = RouteRoom(
-                        carId,
+                    insertRouteInDB(
                         startDriveTime,
                         distance,
                         duration,
@@ -212,9 +198,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                         maxSpeed,
                         imgRoute
                     )
-                    Log.d(TAG, "Route Room : $routeRoom")
-
-                    viewModel.insertNewRoute(routeRoom)
                 }
                 bmp?.let { bitmapImg ->
                     Log.d(TAG, "saveRouteInDb: SOME bitmap")
@@ -231,11 +214,9 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                         val lastSavedImg =
                             listScopeStorageImg.last()
                         Log.d(TAG, "saveRouteInDb: ")
-
                         imgRoute = lastSavedImg.toString()
 
-                        val routeRoom = RouteRoom(
-                            carId,
+                        insertRouteInDB(
                             startDriveTime,
                             distance,
                             duration,
@@ -243,15 +224,44 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                             maxSpeed,
                             imgRoute
                         )
-                        Log.d(TAG, "Route Room : $routeRoom")
-
-                        viewModel.insertNewRoute(routeRoom)
                     }
-
                 }
             }
         }
+    }
 
+    private fun insertRouteInDB(
+        startDriveTime: Long,
+        distance: Int,
+        duration: Long,
+        avgSpeed: Float,
+        maxSpeed: Float,
+        imgRoute: String
+    ) {
+        val routeRoom = RouteRoom(
+            carId,
+            startDriveTime,
+            distance,
+            duration,
+            avgSpeed,
+            maxSpeed,
+            imgRoute
+        )
+        Log.d(TAG, "Route Room : $routeRoom")
+        viewModel.insertNewRoute(routeRoom)
+    }
+
+    private fun findZoomButtons(): View {
+        val zoomIn =
+            (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(
+                Integer.parseInt("2")
+            )
+        return zoomIn.parent as View
+    }
+
+    private fun findCompass(): View {
+        return (mapView.findViewById<View>(Integer.parseInt("1")).parent as View)
+            .findViewById<View>(Integer.parseInt("5"))
     }
 
     private fun calculatePolylineLength(polyline: Polyline): Double {
@@ -294,7 +304,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                 buttonStopTracking.isInvisible = false
             }
         }
-
     }
 
     private fun initializeObservers() {
@@ -340,7 +349,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                     bounds.build(),
                     mapView.width,
                     mapView.height,
-                    (mapView.height * 0.25f).toInt()
+                    (mapView.height * MAP_SCALE_WEIGHT).toInt()
                 )
             )
         }
@@ -353,8 +362,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             accurateDistance += calculatePolylineLength(polyline)
         }
         val distance = accurateDistance.roundToInt()
-        val avgSpeed =
-            ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
+        val avgSpeed = calculateAvgSpeed(accurateDistance)
         binding?.apply {
             textViewDistanceDriving.text = "distance: $distance m"
             if (avgSpeed.isNaN()) {
@@ -364,6 +372,10 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             textViewAverageSpeed.text = "avg speed: $avgSpeed km/h"
         }
     }
+
+    private fun calculateAvgSpeed(accurateDistance: Double) =
+        ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis
+                / 1000f / 60 / 60) * 10 / 10f).toFloat()
 
     private fun showDurationTime(durationTime: Long) {
         val formattedTime = RouteUtils.getFormattedTime(durationTime)
@@ -376,7 +388,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             googleMap?.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     polylinesList.last().last(),
-                    15f
+                    DEFAULT_ZOOM_LEVEL
                 )
             )
         }

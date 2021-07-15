@@ -22,6 +22,7 @@ class ListTracksFragment : Fragment() {
 
     private var binding: FragmentListTracksBinding? = null
     private val viewModel: CarViewModel by activityViewModels()
+
     private var chosenCar: CarRoom? = null
     private var routeListAdaptor: RouteListAdaptor? = null
 
@@ -41,9 +42,7 @@ class ListTracksFragment : Fragment() {
 
         routeListAdaptor = viewModel.createOrGetRoutesRVAdaptor()
 
-
         binding?.apply {
-
 
             imageButtonListTrackClearChosenCar.setOnClickListener {
                 viewModel.setChosenCar(null)
@@ -82,7 +81,6 @@ class ListTracksFragment : Fragment() {
                             4 -> viewModel.sortRoutes(RouteSortType.MAX_SPEED)
                         }
                     }
-
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                     }
                 }
@@ -105,7 +103,6 @@ class ListTracksFragment : Fragment() {
                 setCorrectRouteInAdaptor(viewModel.getChosenCar())
             }
         )
-
     }
 
     override fun onDestroyView() {
@@ -126,7 +123,6 @@ class ListTracksFragment : Fragment() {
                 }
             }
             routeListAdaptor?.submitList(routeByCurrentCar)
-
         }
     }
 

@@ -223,4 +223,8 @@ class CarViewModel
     }.also {
         this.routeSortType = routeSortType
     }
+
+    fun setAuthorizedUser() {
+        mainRepository.firebaseAuthorizedUser()
+    }
 }

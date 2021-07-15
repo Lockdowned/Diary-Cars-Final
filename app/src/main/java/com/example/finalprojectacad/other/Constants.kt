@@ -14,5 +14,8 @@ object Constants {
     const val LOCATION_UPDATE_INTERVAL = 5000L
     const val FASTEST_LOCATION_INTERVAL = 2000L
 
+    const val MAP_SCALE_WEIGHT = 0.25f
+    const val DEFAULT_ZOOM_LEVEL = 15f
+
 
 }

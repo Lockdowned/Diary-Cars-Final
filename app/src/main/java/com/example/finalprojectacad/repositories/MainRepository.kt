@@ -14,10 +14,6 @@ class MainRepository
     private val firebaseRequests: FirebaseRequests,
 ) {
 
-    fun testExistence() {
-        Log.d("HEY", "testExistence: MainRepository true")
-    }
-
     suspend fun insertCar(car: CarRoom) {
         carDao.insertCar(car)
         firebaseRequests.insertNewCar(carDao.getAllCarsOnce().last())
@@ -59,19 +55,12 @@ class MainRepository
 
     fun getAllRoutes() = routeDao.getAllRoutes()
 
-    suspend fun updateCar(car: CarRoom) {
-        carDao.updateCar(car)
-    }
-
-    suspend fun deleteCar(car: CarRoom) {
-        carDao.deleteCar(car)
-    }
 
     fun getAllCarsOnce(): List<CarRoom> {
         return carDao.getAllCarsOnce()
     }
 
-    suspend fun getAllRoutesOnce(): List<RouteRoom> {
+    fun getAllRoutesOnce(): List<RouteRoom> {
         return routeDao.getAllRoutesOnce()
     }
 
@@ -112,4 +101,7 @@ class MainRepository
     fun getAllRoutesSortedByAvgSpeed() = routeDao.getAllRoutesSortedByAvgSpeed()
     fun getAllRoutesSortedByMaxSpeed() = routeDao.getAllRoutesSortedByMaxSpeed()
 
+    fun firebaseAuthorizedUser() {
+        firebaseRequests.setUserData()
+    }
 }

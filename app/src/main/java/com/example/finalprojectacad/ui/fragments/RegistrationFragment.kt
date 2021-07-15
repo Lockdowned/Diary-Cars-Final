@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.databinding.FragmentRegistrationBinding
+import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
+import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -28,14 +31,12 @@ private const val TAG = "RegistrationFragment"
 class RegistrationFragment : Fragment() {
 
     private var binding: FragmentRegistrationBinding? = null
+    private val viewModel: CarViewModel by activityViewModels()
 
     @Inject
     lateinit var auth: FirebaseAuth
 
-    @Inject
-    lateinit var firebaseRequests: FirebaseRequests
-
-    private lateinit var navigation: NavController
+    private var navigation: NavController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,12 +82,11 @@ class RegistrationFragment : Fragment() {
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Log.e(TAG, "registerNewUser: ${e.message}")
-                        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Missing internet connection", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-
     }
 
     private fun loginUserWithEmailAndPassword() {
@@ -106,7 +106,8 @@ class RegistrationFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "No such user or missing internet connection",
+                            Toast.LENGTH_SHORT).show()
                         Log.e(TAG, "registerNewUser: ${e.message}")
                     }
                 }
@@ -129,27 +130,21 @@ class RegistrationFragment : Fragment() {
             return false
         }
         if (emailText.length > 5) {
-            val emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
-                    "[a-zA-Z0-9_+&*-]+)*@" +
-                    "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                    "A-Z]{2,7}$"
-            val pat: Pattern = Pattern.compile(emailRegex)
-            val isValidEmail = pat.matcher(emailText).matches()
-            if (!isValidEmail) {
+            val isCorrectEmail = FragmentsHelper.checkCorrectEmail(emailText)
+            if (!isCorrectEmail) {
                 Toast.makeText(context, "Pleas write correct email", Toast.LENGTH_SHORT).show()
             }
-            return isValidEmail
+            return isCorrectEmail
         } else {
             Toast.makeText(context, "Pleas write correct email", Toast.LENGTH_SHORT).show()
         }
-
         return false
     }
 
     private fun moveToBackStack() {
         if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
-            firebaseRequests.setUserData()
+            viewModel.setAuthorizedUser()
         }
-        navigation.popBackStack()
+        navigation?.popBackStack()
     }
 }

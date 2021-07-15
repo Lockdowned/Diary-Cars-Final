@@ -65,10 +65,6 @@ class FirebaseRequests(
 
     }
 
-    fun testExistence() {
-        Log.d("HEY", "testExistence: FirebaseRequests true")
-    }
-
     fun insertNewCar(car: CarRoom) {
         CoroutineScope(Dispatchers.IO).launch {
             userDataCars?.add(car)
