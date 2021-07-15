@@ -31,7 +31,7 @@ class CarViewModel
 
     val getAllCars: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()//change nave nameLiveData
     val getAllImages: LiveData<List<ImageCarRoom>> = mainRepository.getAllImages().asLiveData()//change nave nameLiveData
-    val allBrands: LiveData<List<BrandRoom>> = mainRepository.getAllBrands().asLiveData()//change nave nameLiveData
+    val allBrands: LiveData<List<BrandRoom>> = mainRepository.getAllBrands().asLiveData()//change name nameLiveData
     val allModels: LiveData<List<ModelRoom>> = mainRepository.getAllModels().asLiveData()//change nave nameLiveData
     val allTransmissions: LiveData<List<TransmissionRoom>> =
         mainRepository.getAllTransmissions().asLiveData()//change nave nameLiveData
