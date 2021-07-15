@@ -121,7 +121,7 @@ class CarsListAdaptor(
     }
 
     private fun carChoiceChanger(car: CarRoom?) {
-        viewModel.setChosenCar(car)
+        viewModel.setChosenCar(car, context)
     }
 
 
@@ -139,5 +139,4 @@ class CarsListAdaptor(
                     oldItem.mileage == newItem.mileage
         }
     }
-
 }

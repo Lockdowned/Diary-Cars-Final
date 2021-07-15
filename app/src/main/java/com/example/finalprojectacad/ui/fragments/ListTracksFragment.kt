@@ -45,7 +45,7 @@ class ListTracksFragment : Fragment() {
         binding?.apply {
 
             imageButtonListTrackClearChosenCar.setOnClickListener {
-                viewModel.setChosenCar(null)
+                viewModel.setChosenCar(null, requireActivity().applicationContext)
                 textViewChosenCar.text = "Routes of all cars"
             }
 
@@ -125,5 +125,4 @@ class ListTracksFragment : Fragment() {
             routeListAdaptor?.submitList(routeByCurrentCar)
         }
     }
-
 }

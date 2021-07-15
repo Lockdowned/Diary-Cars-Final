@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                 } else {
                     when (menuItem.itemId) {
                         R.id.trackTrip -> {
-                            if (viewModel.getChosenCarIdAnyway() == -1) {
+                            if (viewModel.getChosenCarIdAnyway(applicationContext) == -1) {
                                 Toast.makeText(
                                     this@MainActivity,
                                     "Need chose a car",

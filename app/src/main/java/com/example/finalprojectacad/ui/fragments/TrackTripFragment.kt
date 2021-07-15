@@ -75,7 +75,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             allRoutesList = list
         })
 
-        carId = viewModel.getChosenCarIdAnyway()
+        carId = viewModel.getChosenCarIdAnyway(requireActivity().applicationContext)
         Log.d(TAG, "onViewCreated: carId: $carId")
 
 
@@ -201,7 +201,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                 }
                 bmp?.let { bitmapImg ->
                     Log.d(TAG, "saveRouteInDb: SOME bitmap")
-
                     val currentId = allRoutesList!!.size + 1
                     if (SaveImgToScopedStorage.saveFromBitmap(
                             requireContext(),
@@ -213,7 +212,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                             SaveImgToScopedStorage.openSavedImg((activity as MainActivity).applicationContext)
                         val lastSavedImg =
                             listScopeStorageImg.last()
-                        Log.d(TAG, "saveRouteInDb: ")
                         imgRoute = lastSavedImg.toString()
 
                         insertRouteInDB(

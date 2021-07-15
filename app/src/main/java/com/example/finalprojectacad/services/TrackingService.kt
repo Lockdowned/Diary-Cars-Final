@@ -27,6 +27,7 @@ import com.example.finalprojectacad.other.Constants.LOCATION_UPDATE_INTERVAL
 import com.example.finalprojectacad.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.finalprojectacad.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.finalprojectacad.other.Constants.NOTIFICATION_ID
+import com.example.finalprojectacad.other.Constants.REFRESH_MILLIS_TIME_NOTIFICATION
 import com.example.finalprojectacad.other.utilities.RouteUtils
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -74,7 +75,7 @@ class TrackingService : LifecycleService() {
         val isTracking = MutableLiveData<Boolean>()
         val pathPoints = MutableLiveData<MutableListPolylines>()
 
-        var isForegroundServiceStopped = false //use this in fragment is ok?
+        var isForegroundServiceStopped = false
 
         var startDriveTime: Long = -1
         var maxSpeed: Float = 0f
@@ -135,7 +136,7 @@ class TrackingService : LifecycleService() {
                     timeRunInSeconds.postValue(timeRunInSeconds.value!! + 1)
                     lastSecondLapTime += 1000L
                 }
-                delay(50)
+                delay(REFRESH_MILLIS_TIME_NOTIFICATION)
             }
             timeRun += lapTime
         }
@@ -169,7 +170,7 @@ class TrackingService : LifecycleService() {
             val pauseIntent = Intent(this, TrackingService::class.java).apply {
                 action = ACTION_PAUSE_SERVICE
             }
-            PendingIntent.getService(this, 1, pauseIntent, FLAG_UPDATE_CURRENT)
+            getService(this, 1, pauseIntent, FLAG_UPDATE_CURRENT)
         } else {
             val resumeIntent = Intent(this, TrackingService::class.java).apply {
                 action = ACTION_START_OR_RESUME_SERVICE
@@ -202,20 +203,16 @@ class TrackingService : LifecycleService() {
     @SuppressLint("MissingPermission")
     private fun updateLocationTracking(isTracking: Boolean) {
         if (isTracking) {
-            if (true) { //set check allow permission
-                val request = LocationRequest.create().apply {
-                    interval = LOCATION_UPDATE_INTERVAL
-                    fastestInterval = FASTEST_LOCATION_INTERVAL
-                    priority = PRIORITY_HIGH_ACCURACY
-                }
-                fusedLocationProviderClient.requestLocationUpdates( //!!!
-                    request,
-                    locationCallBack,
-                    Looper.getMainLooper()
-                )
-            } else {
-                fusedLocationProviderClient.removeLocationUpdates(locationCallBack)
+            val request = LocationRequest.create().apply {
+                interval = LOCATION_UPDATE_INTERVAL
+                fastestInterval = FASTEST_LOCATION_INTERVAL
+                priority = PRIORITY_HIGH_ACCURACY
             }
+            fusedLocationProviderClient.requestLocationUpdates( //!!!
+                request,
+                locationCallBack,
+                Looper.getMainLooper()
+            )
         }
     }
 

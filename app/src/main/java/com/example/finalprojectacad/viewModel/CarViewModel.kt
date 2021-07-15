@@ -1,5 +1,6 @@
 package com.example.finalprojectacad.viewModel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
@@ -25,13 +26,8 @@ class CarViewModel
     private val mainRepository: MainRepository,
 ) : ViewModel() {
 
-
     var listAllCars: List<CarRoom> = listOf()
     var listAllImages: List<ImageCarRoom> = listOf()
-
-    @Inject
-    lateinit var appContext: Context
-
 
     val getAllCars: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()
     val getAllImages: LiveData<List<ImageCarRoom>> = mainRepository.getAllImages().asLiveData()
@@ -54,7 +50,8 @@ class CarViewModel
         return carToEdit
     }
 
-    private fun setChosenCarIdInSharedPref(car: CarRoom?) {
+    @SuppressLint("CommitPrefEdits")
+    private fun setChosenCarIdInSharedPref(car: CarRoom?, appContext: Context) {
         var carIdToSave = -1
         car?.let { carNotNull ->
             carIdToSave = carNotNull.carId!!
@@ -69,7 +66,7 @@ class CarViewModel
         Log.d(TAG, "setChosenCarIdInSharedPref: $carIdToSave")
     }
 
-    fun getChosenCarIdAnyway(): Int {
+    fun getChosenCarIdAnyway(appContext: Context): Int {
         val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
         val loadedCarId = sharedPref.getInt("chosenCarId", -1)
         Log.d(TAG, "getChosenCarIdAnyway: $loadedCarId")
@@ -142,10 +139,10 @@ class CarViewModel
         }
     }
 
-    fun setChosenCar(car: CarRoom?) {
+    fun setChosenCar(car: CarRoom?,appContext: Context) {
         chosenCar = car
         chosenCarMutableLifeData.value = chosenCar
-        setChosenCarIdInSharedPref(car)
+        setChosenCarIdInSharedPref(car, appContext)
     }
 
     fun getChosenCar(): CarRoom? {

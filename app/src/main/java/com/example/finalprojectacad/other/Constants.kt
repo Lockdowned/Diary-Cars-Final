@@ -17,5 +17,6 @@ object Constants {
     const val MAP_SCALE_WEIGHT = 0.25f
     const val DEFAULT_ZOOM_LEVEL = 15f
 
+    const val REFRESH_MILLIS_TIME_NOTIFICATION = 50L
 
 }
