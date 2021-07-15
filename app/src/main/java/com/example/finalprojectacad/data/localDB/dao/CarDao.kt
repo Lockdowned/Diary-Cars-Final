@@ -40,7 +40,6 @@ interface CarDao {
     @Query("SELECT * FROM transmission_table")
     fun getAllTransmissions(): Flow<List<TransmissionRoom>>
 
-
     @Update
     suspend fun updateCar(car: CarRoom)
 
@@ -56,9 +55,4 @@ interface CarDao {
 
     @Query("SELECT * FROM image_car_table")
     fun getAllImgOnce(): List<ImageCarRoom>
-
-
-
-
-
 }

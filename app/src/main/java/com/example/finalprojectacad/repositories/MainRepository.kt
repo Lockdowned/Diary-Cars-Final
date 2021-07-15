@@ -12,7 +12,7 @@ class MainRepository
     private val carDao: CarDao,
     private val routeDao: RouteDao,
     private val firebaseRequests: FirebaseRequests,
-){
+) {
 
     fun testExistence() {
         Log.d("HEY", "testExistence: MainRepository true")

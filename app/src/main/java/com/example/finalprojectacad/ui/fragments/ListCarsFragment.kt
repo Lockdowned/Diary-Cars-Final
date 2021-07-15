@@ -1,7 +1,6 @@
 package com.example.finalprojectacad.ui.fragments
 
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.FragmentListCarsBinding
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.example.finalprojectacad.viewModel.CarViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.regex.Pattern
@@ -32,7 +30,7 @@ class ListCarsFragment : Fragment() {
     private val viewModel: CarViewModel by activityViewModels()
 
     private var binding: FragmentListCarsBinding? = null
-    
+
     private var carsListAdaptor: CarsListAdaptor? = null
 
     private var searchText = ""
@@ -90,7 +88,7 @@ class ListCarsFragment : Fragment() {
         viewModel.getAllImages.observe(
             viewLifecycleOwner, Observer { list ->
                 viewModel.listAllImages = list
-                carsListAdaptor?.notifyDataSetChanged()//find better solution
+                carsListAdaptor?.notifyDataSetChanged()
             }
         )
 
@@ -109,7 +107,7 @@ class ListCarsFragment : Fragment() {
         val pat: Pattern = Pattern.compile(carRegex)
         for (car in carsList) {
             val carName = "${car.brandName.toLowerCase()} ${car.modelName.toLowerCase()}"
-            if (pat.matcher(carName).matches()){
+            if (pat.matcher(carName).matches()) {
                 filteredCarLis.add(car)
             }
         }

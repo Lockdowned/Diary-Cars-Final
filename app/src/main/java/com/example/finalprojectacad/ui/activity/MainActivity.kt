@@ -1,25 +1,18 @@
 package com.example.finalprojectacad.ui.activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.os.FileUtils
 import android.provider.MediaStore
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -29,8 +22,6 @@ import androidx.work.WorkManager
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
 import com.example.finalprojectacad.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
-import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
-import com.example.finalprojectacad.other.utilities.SyncDatabasesClass
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.example.finalprojectacad.workers.SyncDatabaseWorker
 import com.fondesa.kpermissions.PermissionStatus
@@ -40,7 +31,6 @@ import com.fondesa.kpermissions.anyShouldShowRationale
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.google.android.gms.location.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -59,7 +49,6 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
     private var binding: ActivityMainBinding? = null
 
-    // we need set navHostFragment so that then we could use Navigation.findNavController(view)
     private val navHostFragment by lazy {
         supportFragmentManager
             .findFragmentById(R.id.mainNavFragment) as NavHostFragment
@@ -70,7 +59,8 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     private val request by lazy { // request for add permission from user
         permissionsBuilder(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
             .build()
     }
 
@@ -94,12 +84,12 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
             navController
                 .addOnDestinationChangedListener { _, destination, _ ->
-                when(destination.id) {
-                    R.id.listCarsFragment, R.id.listTracksFragment ->
-                        bottomNavigationBar.isVisible = true
-                    else -> bottomNavigationBar.isVisible = false
+                    when (destination.id) {
+                        R.id.listCarsFragment, R.id.listTracksFragment ->
+                            bottomNavigationBar.isVisible = true
+                        else -> bottomNavigationBar.isVisible = false
+                    }
                 }
-            }
 
 
             bottomNavigationBar.setOnItemSelectedListener { menuItem ->
@@ -109,8 +99,15 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                     when (menuItem.itemId) {
                         R.id.trackTrip -> {
                             if (viewModel.getChosenCarIdAnyway() == -1) {
-                                Log.d("TrackTripFragment", "onCreate: Im here")
-                                Toast.makeText(this@MainActivity, "Need chose a car", Toast.LENGTH_SHORT).show()
+                                Log.d(
+                                    "TrackTripFragment",
+                                    "onCreate: Im in bottomNavigationBar.setOnItemSelectedListener"
+                                )
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "Need chose a car",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 bottomNavigationBar.selectedItemId = R.id.listCarsFragment
                                 true
                             } else {
@@ -169,16 +166,15 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     }
 
 
-    fun saveImgCarToScopedStorage(filenameImgId: String, imgUri: Uri): Boolean{
+    fun saveImgCarToScopedStorage(filenameImgId: String, imgUri: Uri): Boolean {
         return try {
-            val bmp =  MediaStore.Images.Media.getBitmap(this.contentResolver, imgUri) //deprecated
+            val bmp = MediaStore.Images.Media.getBitmap(this.contentResolver, imgUri)
 
             openFileOutput("$filenameImgId.jpg", MODE_PRIVATE).use { stream ->
                 bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             }
-
             true
-        } catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
             false
         }

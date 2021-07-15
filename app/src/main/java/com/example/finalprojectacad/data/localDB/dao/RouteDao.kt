@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RouteDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoute(route: RouteRoom)
 
@@ -41,6 +40,4 @@ interface RouteDao {
 
     @Query("SELECT * FROM route_table ORDER BY max_speed DESC")
     fun getAllRoutesSortedByMaxSpeed(): Flow<List<RouteRoom>>
-
-
 }

@@ -1,15 +1,12 @@
 package com.example.finalprojectacad.viewModel
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.finalprojectacad.adaptors.CarsListAdaptor
 import com.example.finalprojectacad.adaptors.RouteListAdaptor
 import com.example.finalprojectacad.data.localDB.entity.*
-import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.other.enums.RouteSortType
-import com.example.finalprojectacad.other.utilities.SyncDatabasesClass
 import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +20,6 @@ private const val TAG = "TrackTripFragment"
 class CarViewModel
 @Inject constructor(
     private val mainRepository: MainRepository,
-    private val firebaseRequests: FirebaseRequests
 ) : ViewModel() {
 
 
@@ -38,7 +34,6 @@ class CarViewModel
     val getAllImages: LiveData<List<ImageCarRoom>> = mainRepository.getAllImages().asLiveData()
     val allBrands: LiveData<List<BrandRoom>> = mainRepository.getAllBrands().asLiveData()
     val allModels: LiveData<List<ModelRoom>> = mainRepository.getAllModels().asLiveData()
-    fun getModelsByBrand(brandId: Int) = mainRepository.getModelsByBrand(brandId).asLiveData()
     val allTransmissions: LiveData<List<TransmissionRoom>> =
         mainRepository.getAllTransmissions().asLiveData()
 
@@ -81,7 +76,7 @@ class CarViewModel
 
     fun insertNewCar(car: CarRoom) {
         viewModelScope.launch(Dispatchers.IO) {
-            supervisorScope { //should i do this with other db command
+            supervisorScope {
                 mainRepository.insertCar(car)
             }
         }
@@ -150,7 +145,7 @@ class CarViewModel
     private var tempCarsAdaptor: CarsListAdaptor? = null
 
     fun createOrGetCarsRVAdaptor(): CarsListAdaptor {
-       return tempCarsAdaptor ?: CarsListAdaptor(this)
+        return tempCarsAdaptor ?: CarsListAdaptor(this)
     }
 
     private var tempRoutesAdaptor: RouteListAdaptor? = null
@@ -207,17 +202,15 @@ class CarViewModel
         }
     }
 
-    fun sortRoutes(routeSortType: RouteSortType) = when(routeSortType) {
+    val chosenCarMutableLifeData = MutableLiveData<CarRoom?>()
+
+    fun sortRoutes(routeSortType: RouteSortType) = when (routeSortType) {
         RouteSortType.DATE -> routesSortedByDate.value?.let { routesSorted.value = it }
         RouteSortType.DISTANCE -> routesSortedByDistance.value?.let { routesSorted.value = it }
         RouteSortType.DURATION -> routesSortedByDuration.value?.let { routesSorted.value = it }
         RouteSortType.AVG_SPEED -> routesSortedByAvgSpeed.value?.let { routesSorted.value = it }
         RouteSortType.MAX_SPEED -> routesSortedByMaxSpeed.value?.let { routesSorted.value = it }
     }.also {
-       this.routeSortType = routeSortType
+        this.routeSortType = routeSortType
     }
-
-    val chosenCarMutableLifeData = MutableLiveData<CarRoom?>()
-
-
 }

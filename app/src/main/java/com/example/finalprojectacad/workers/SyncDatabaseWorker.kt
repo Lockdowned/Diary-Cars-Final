@@ -22,7 +22,6 @@ class SyncDatabaseWorker
 ) : Worker(ctx, params) {
 
 
-
     override fun doWork(): Result {
         Log.d("HEY", "doWork: Do something")
         firebaseRequests.testExistence()
@@ -31,6 +30,4 @@ class SyncDatabaseWorker
             .syncOnce()
         return Result.success()
     }
-
-
 }

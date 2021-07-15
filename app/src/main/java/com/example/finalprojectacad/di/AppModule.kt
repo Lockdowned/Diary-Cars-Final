@@ -29,9 +29,9 @@ object AppModule {
     @Provides
     fun provideLocalDatabase(
         @ApplicationContext appContext: Context,
-        carDaoProvider: Provider<CarDao> // how we can get dao provider before than we create db
+        carDaoProvider: Provider<CarDao>
     ) =
-        synchronized(this) { // i almost sure that is scope need synchronize(yes, but how is actually work)
+        synchronized(this) {
             Room.databaseBuilder(
                 appContext,
                 AppLocalDatabase::class.java,
@@ -82,9 +82,7 @@ object AppModule {
     @Provides
     fun provideAppContext(
         @ApplicationContext appContext: Context
-    ) : Context {
+    ): Context {
         return appContext
     }
-
-
 }

@@ -18,7 +18,6 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.File
-import java.lang.Exception
 
 private const val TAG = "FirebaseRequests"
 
@@ -51,9 +50,11 @@ class FirebaseRequests(
         if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
             userDataCars = Firebase.firestore.collection("Cars user: ${auth.currentUser?.uid}")
             userDataCarImg = Firebase.firestore.collection("Images user: ${auth.currentUser?.uid}")
-            userDataCarImgStorage = Firebase.storage.reference.child("Images user: ${auth.currentUser?.uid}")
+            userDataCarImgStorage =
+                Firebase.storage.reference.child("Images user: ${auth.currentUser?.uid}")
             userDataRoutes = Firebase.firestore.collection("Routes user: ${auth.currentUser?.uid}")
-            userDataRouteImgStorage = Firebase.storage.reference.child("Images routes user: ${auth.currentUser?.uid}")
+            userDataRouteImgStorage =
+                Firebase.storage.reference.child("Images routes user: ${auth.currentUser?.uid}")
         } else {
             userDataCars = null
             userDataCarImg = null
@@ -78,7 +79,8 @@ class FirebaseRequests(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 userDataRoutes?.add(route)
-                userDataRouteImgStorage?.child("/${route.routeId}")?.putFile(route.imgRoute.toUri())?.await()
+                userDataRouteImgStorage
+                    ?.child("/${route.routeId}")?.putFile(route.imgRoute.toUri())?.await()
             } catch (e: Exception) {
                 Log.e(TAG, "insertNewRoute: ${e.message}")
             }
@@ -89,7 +91,8 @@ class FirebaseRequests(
     fun insertCarImg(carImg: ImageCarRoom) {
         CoroutineScope(Dispatchers.IO).launch {
             userDataCarImg?.add(carImg)
-            userDataCarImgStorage?.child("/${carImg.id}")?.putFile(carImg.imgCar.toUri())?.await()
+            userDataCarImgStorage
+                ?.child("/${carImg.id}")?.putFile(carImg.imgCar.toUri())?.await()
         }
     }
 
@@ -193,13 +196,18 @@ class FirebaseRequests(
         val tempFileImg = File.createTempFile("images", "jpg")
         userDataRouteImgStorage?.child("/${route.routeId}")?.let { it ->
             it.getFile(tempFileImg).addOnSuccessListener {
-                Log.d(TAG, "route img saveToScopeFromRemote: ${tempFileImg.toURI()} +\n" +
-                        " temp file uri ${tempFileImg.toURI()} + \n" +
-                        " routeId ${route.routeId}")
+                Log.d(
+                    TAG, "route img saveToScopeFromRemote: ${tempFileImg.toURI()} +\n" +
+                            " temp file uri ${tempFileImg.toURI()} + \n" +
+                            " routeId ${route.routeId}"
+                )
                 SaveImgToScopedStorage.saveRoute(appContext, route.routeId!!, tempFileImg.toUri())
                 count = 1
             }.addOnFailureListener { ex ->
-                Log.d(TAG, "route img Exception : ${ex.message} +\n temp file uri ${tempFileImg.toURI()} + \n routeId ${route.routeId}")
+                Log.d(
+                    TAG,
+                    "route img Exception : ${ex.message} +\n temp file uri ${tempFileImg.toURI()} + \n routeId ${route.routeId}"
+                )
                 if (count < 3) {
                     count++
                     GlobalScope.launch {

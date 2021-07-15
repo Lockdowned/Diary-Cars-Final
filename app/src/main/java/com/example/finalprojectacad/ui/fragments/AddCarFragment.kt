@@ -20,11 +20,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.finalprojectacad.R
-import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.data.localDB.entity.BrandRoom
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.ImageCarRoom
 import com.example.finalprojectacad.data.localDB.entity.ModelRoom
+import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.example.finalprojectacad.ui.activity.MainActivity
 import com.example.finalprojectacad.viewModel.CarViewModel
@@ -75,9 +75,11 @@ class AddCarFragment : Fragment() {
                 CoroutineScope(Dispatchers.Main).launch {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
                     if (textInputLayoutBrandNewCar.editText?.text.isNullOrEmpty()) {
-                        Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT).show()
-                    } else if (brandAlreadyExistInDb(brandText, brandListName)){
-                        Toast.makeText(context, "This brand already exist", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (brandAlreadyExistInDb(brandText, brandListName)) {
+                        Toast.makeText(context, "This brand already exist", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
                         addBrandInDbDialog(brandText)
                     }
@@ -88,12 +90,15 @@ class AddCarFragment : Fragment() {
                 CoroutineScope(Dispatchers.Main).launch {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
                     val modelText = textInputLayoutModelNewCar.editText?.text.toString()
-                    if (textInputLayoutModelNewCar.editText?.text.isNullOrEmpty()){
-                        Toast.makeText(context, "Please fill model text field", Toast.LENGTH_SHORT).show()
+                    if (textInputLayoutModelNewCar.editText?.text.isNullOrEmpty()) {
+                        Toast.makeText(context, "Please fill model text field", Toast.LENGTH_SHORT)
+                            .show()
                     } else if (textInputLayoutBrandNewCar.editText?.text.isNullOrEmpty()) {
-                        Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT)
+                            .show()
                     } else if (!brandAlreadyExistInDb(brandText, brandListName)) {
-                        Toast.makeText(context, "At the begin add brand name", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "At the begin add brand name", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
                         addModelInDbDialog(modelText, brandText, brandList)
                     }
@@ -110,7 +115,7 @@ class AddCarFragment : Fragment() {
 
 
             viewModel.allBrands.observe(
-                viewLifecycleOwner, Observer { brandsListRoom->
+                viewLifecycleOwner, Observer { brandsListRoom ->
                     brandList = brandsListRoom
                     brandListName.clear()
                     brandsListRoom.forEach {
@@ -124,9 +129,9 @@ class AddCarFragment : Fragment() {
             autoCompleteTextBrandNewCar.threshold = 2
 
             autoCompleteTextBrandNewCar.setOnItemClickListener { _, _, _, _ ->
-               activity?.hideKeyboard(view)
+                activity?.hideKeyboard(view)
             }
-            
+
             autoCompleteTextModelNewCar.setOnItemClickListener { _, _, _, _ ->
                 activity?.hideKeyboard(view)
             }
@@ -154,7 +159,8 @@ class AddCarFragment : Fragment() {
                     allModelsName,
                     listModelsRoom,
                     brandList,
-                    textInputLayoutBrandNewCar.editText!!.text.toString())
+                    textInputLayoutBrandNewCar.editText!!.text.toString()
+                )
                 autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(allModelsName))
             }
 
@@ -166,7 +172,7 @@ class AddCarFragment : Fragment() {
                             transmissionList.add(it.transmissionName)
                         }
                     }
-            })
+                })
 
             autoCompleteTextTransmissionNewCar.setAdapter(autoCompleteSetAdapter(transmissionList))
 
@@ -178,7 +184,8 @@ class AddCarFragment : Fragment() {
 
             buttonSaveNewCar.setOnClickListener {
                 if (!textInputLayoutBrandNewCar.editText!!.text.equals("")
-                    && !textInputLayoutModelNewCar.editText!!.text.equals("")){
+                    && !textInputLayoutModelNewCar.editText!!.text.equals("")
+                ) {
                     collectAndInsertCar()
                     val navigation = Navigation.findNavController(view)
                     navigation.popBackStack()
@@ -191,7 +198,7 @@ class AddCarFragment : Fragment() {
                 }
             }
         }
-       
+
     }
 
     override fun onDestroyView() {
@@ -201,7 +208,7 @@ class AddCarFragment : Fragment() {
 
     private fun brandAlreadyExistInDb(writtenBrand: String, brandListName: List<String>): Boolean {
         for (brandName in brandListName) {
-            if (writtenBrand == brandName){
+            if (writtenBrand == brandName) {
                 return true
             }
         }
@@ -212,22 +219,26 @@ class AddCarFragment : Fragment() {
         val dialog = AlertDialog.Builder(context)
         dialog.run {
             setMessage("Insert this brand: $brandName in database?")
-            setPositiveButton("Yes"){ _, _ ->
+            setPositiveButton("Yes") { _, _ ->
                 Log.d(TAG, "addBrandInDBDialog: ")
                 val newBrandRoom = BrandRoom(brandName)
                 viewModel.insertNewBrand(newBrandRoom)
             }
-            setNegativeButton("No"){ _, _ -> }
+            setNegativeButton("No") { _, _ -> }
         }
         val alertDialog = dialog.create()
         alertDialog.show()
     }
 
-    private fun addModelInDbDialog(modelName: String, brandName: String, listBrandRoom: List<BrandRoom>) {
+    private fun addModelInDbDialog(
+        modelName: String,
+        brandName: String,
+        listBrandRoom: List<BrandRoom>
+    ) {
         val dialog = AlertDialog.Builder(context)
         dialog.run {
             setMessage("Insert this brand: $modelName in database?")
-            setPositiveButton("Yes"){ _, _ ->
+            setPositiveButton("Yes") { _, _ ->
                 Log.d(TAG, "addBrandInDBDialog: ")
                 var brandId: Int? = null
                 for (brand in listBrandRoom) {
@@ -241,20 +252,21 @@ class AddCarFragment : Fragment() {
                     Log.d(TAG, "addModelInDbDialog: new model insert in db model: $newModelRoom")
                 }
             }
-            setNegativeButton("No"){ _, _ -> }
+            setNegativeButton("No") { _, _ -> }
         }
         val alertDialog = dialog.create()
         alertDialog.show()
     }
 
-    private fun autoCompleteSetAdapter(list: List<String>): ArrayAdapter<String>{
+    private fun autoCompleteSetAdapter(list: List<String>): ArrayAdapter<String> {
         return ArrayAdapter(
             requireContext(), android.R.layout.simple_dropdown_item_1line, list
         )
     }
 
     private fun Context.hideKeyboard(view: View) {
-        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
@@ -264,7 +276,7 @@ class AddCarFragment : Fragment() {
         binding?.apply {
             val brand = textInputLayoutBrandNewCar.editText?.text
             brand?.let {
-                if(brand.isNotEmpty()) car.brandName = brand.toString()
+                if (brand.isNotEmpty()) car.brandName = brand.toString()
             }
             val model = textInputLayoutModelNewCar.editText?.text
             model?.let {
@@ -341,7 +353,6 @@ class AddCarFragment : Fragment() {
     }
 
 
-
     private fun copyToScopeStorageImg(carListSize: Int) {
         GlobalScope.launch(Dispatchers.IO) {
             var flagSuccessSave = false
@@ -356,7 +367,8 @@ class AddCarFragment : Fragment() {
                     val imgRoom = ImageCarRoom(
                         lastSavedImg.toString(),
                         System.currentTimeMillis(),
-                        currentIdCars)
+                        currentIdCars
+                    )
                     viewModel.insertNewImg(imgRoom)
                 }
             }
@@ -365,17 +377,18 @@ class AddCarFragment : Fragment() {
     }
 
     private val regImageIntent = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) { result ->
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
-             data?.data?.let { imgUri ->
-                 binding?.apply {
-                     Glide.with(requireContext()).load(imgUri)
-                         .into(ivSelectImageCar)
-                 }
+            data?.data?.let { imgUri ->
+                binding?.apply {
+                    Glide.with(requireContext()).load(imgUri)
+                        .into(ivSelectImageCar)
+                }
 //                 binding?.ivSelectImageCar?.setImageURI(imgUri)
-                 choseImgUri = imgUri
-             }
+                choseImgUri = imgUri
+            }
         }
     }
 

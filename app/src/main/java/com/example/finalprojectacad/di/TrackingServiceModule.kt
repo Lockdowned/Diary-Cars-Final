@@ -31,7 +31,7 @@ object TrackingServiceModule {
     @Provides
     fun provideMainActivityPendingIntent( //need for open our app when we click on notification
         @ApplicationContext app: Context
-    ) = PendingIntent.getActivity(
+    ): PendingIntent = PendingIntent.getActivity(
         app,
         0,
         Intent(app, MainActivity::class.java).also {

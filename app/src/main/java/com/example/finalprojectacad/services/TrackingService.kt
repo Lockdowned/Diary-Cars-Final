@@ -39,10 +39,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 private const val TAG = "TrackingService"
 
@@ -63,9 +60,12 @@ class TrackingService : LifecycleService() {
     private val timeRunInSeconds = MutableLiveData<Long>()
 
     private lateinit var curNotificationBuilder: NotificationCompat.Builder
-//    private val curNotificationBuilder: NotificationCompat.Builder by lazy {
-//        baseNotificationBuilder
-//    }
+
+    private var isTimerEnable = false
+    private var lapTime = 0L// time between pause
+    private var timeRun = 0L//all time from starting
+    private var timeStarted = 0L//begin lap time
+    private var lastSecondLapTime = 0L//end lap time
 
 
     companion object {
@@ -120,12 +120,6 @@ class TrackingService : LifecycleService() {
         }
         return super.onStartCommand(intent, flags, startId)
     }
-
-    private var isTimerEnable = false
-    private var lapTime = 0L// time between pause
-    private var timeRun = 0L//all time from starting
-    private var timeStarted = 0L//begin lap time
-    private var lastSecondLapTime = 0L//end lap time
 
     private fun startTimer() {
         addEmptyPolyline()
@@ -225,7 +219,7 @@ class TrackingService : LifecycleService() {
         }
     }
 
-    private val locationCallBack = object : LocationCallback() { //!!!
+    private val locationCallBack = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
             if (isTracking.value!!) {

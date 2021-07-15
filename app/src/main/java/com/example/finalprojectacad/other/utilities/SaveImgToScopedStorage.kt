@@ -12,20 +12,6 @@ private const val TAG = "SaveImgToScopedStorage"
 
 object SaveImgToScopedStorage {
 
-//    fun save(appContext: Context, img: ImageCarRoom) {
-//
-//        try {
-//            val bmp =  MediaStore.Images.Media.getBitmap(appContext.contentResolver, img.imgCar.toUri())
-//
-//            appContext.openFileOutput("${img.id}.jpg", AppCompatActivity.MODE_PRIVATE).use { stream ->
-//                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-//            }
-//        } catch (e: IOException){
-//            e.printStackTrace()
-//        }
-//    }
-
-
     fun save(appContext: Context, id: Int, uriImg: Uri): Boolean {
 
         return try {
@@ -46,9 +32,10 @@ object SaveImgToScopedStorage {
         return try {
             val bmp = MediaStore.Images.Media.getBitmap(appContext.contentResolver, uriImg)
             Log.d(TAG, "saveRoute: img save")
-            appContext.openFileOutput("Route_$id.jpg", AppCompatActivity.MODE_PRIVATE).use { stream ->
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            }
+            appContext.openFileOutput("Route_$id.jpg", AppCompatActivity.MODE_PRIVATE)
+                .use { stream ->
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                }
             true
         } catch (e: IOException) {
             e.printStackTrace()
@@ -61,7 +48,7 @@ object SaveImgToScopedStorage {
             Log.d(TAG, "saveFromBitmap: HERE")
             appContext.openFileOutput("Route_$id.jpg", AppCompatActivity.MODE_PRIVATE)
                 .use { stream ->
-                   val a = bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    val a = bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                     Log.d(TAG, "saveFromBitmap: $a")
                 }
             true

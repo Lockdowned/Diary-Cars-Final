@@ -102,7 +102,8 @@ class PopulateDatabase() {
         ),
         ModelRoom(
             "e-tron",
-            4),
+            4
+        ),
         ModelRoom(
             "Continental GT",
             5
@@ -133,9 +134,6 @@ class PopulateDatabase() {
             mileage = 325
         )
     )
-
-
-
 
 
 }

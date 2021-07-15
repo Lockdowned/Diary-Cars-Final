@@ -48,9 +48,4 @@
         android:name="com.example.finalprojectacad.ui.fragments.AddCarFragment"
         android:label="fragment_add_car"
         tools:layout="@layout/fragment_add_car" />
-    <fragment
-        android:id="@+id/editCarFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.EditCarFragment"
-        android:label="fragment_edit_car"
-        tools:layout="@layout/fragment_edit_car" />
 </navigation>

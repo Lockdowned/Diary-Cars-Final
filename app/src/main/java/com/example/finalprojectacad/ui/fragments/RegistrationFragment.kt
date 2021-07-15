@@ -71,7 +71,11 @@ class RegistrationFragment : Fragment() {
                 try {
                     auth.createUserWithEmailAndPassword(email, password).await()
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "You have successfully registered", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "You have successfully registered",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         moveToBackStack()
                     }
                 } catch (e: Exception) {
@@ -93,7 +97,11 @@ class RegistrationFragment : Fragment() {
                 try {
                     auth.signInWithEmailAndPassword(email, password).await()
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "You have been successfully authorized", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "You have been successfully authorized",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         moveToBackStack()
                     }
                 } catch (e: Exception) {
@@ -107,16 +115,17 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun inspectInputFields(emailText: String, passwordText: String): Boolean {
-        if (emailText.isEmpty()){
+        if (emailText.isEmpty()) {
             Toast.makeText(context, "Pleas fill email field", Toast.LENGTH_SHORT).show()
             return false
         }
-        if (passwordText.isEmpty()){
+        if (passwordText.isEmpty()) {
             Toast.makeText(context, "Pleas fill password field", Toast.LENGTH_SHORT).show()
             return false
         }
         if (passwordText.length < 6) {
-            Toast.makeText(context, "Password must contains at least 6 symbols", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Password must contains at least 6 symbols", Toast.LENGTH_SHORT)
+                .show()
             return false
         }
         if (emailText.length > 5) {
@@ -137,15 +146,10 @@ class RegistrationFragment : Fragment() {
         return false
     }
 
-    private suspend fun moveToBackStack() {
+    private fun moveToBackStack() {
         if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
             firebaseRequests.setUserData()
-//                    navigation.navigate(R.id.listCarsFragment) // QUESTION!!! WHY if i do this i will crash when i navigate again to setting fragment
-            navigation.popBackStack()
-        } else {
-            // show tmth
         }
+        navigation.popBackStack()
     }
-
-
 }

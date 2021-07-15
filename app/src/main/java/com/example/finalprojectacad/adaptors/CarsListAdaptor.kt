@@ -54,7 +54,9 @@ class CarsListAdaptor(
                 textViewSpecification.text = specificationText
                 CoroutineScope(Dispatchers.Main).launch {
                     val findImgRoom =
-                        viewModel.listAllImages.find { imageCarRoom -> imageCarRoom.id == carItem.carId }
+                        viewModel.listAllImages.find {
+                                imageCarRoom -> imageCarRoom.id == carItem.carId
+                        }
                     Log.d(TAG, "bind: findImgRoom: ${findImgRoom.toString()} ")
                     if (findImgRoom == null) {
                         val defaultCarDrawable =

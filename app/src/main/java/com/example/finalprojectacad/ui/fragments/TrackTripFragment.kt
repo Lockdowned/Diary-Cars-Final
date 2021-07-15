@@ -70,15 +70,10 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.allRoutes.observe(viewLifecycleOwner , Observer { list ->
+        viewModel.allRoutes.observe(viewLifecycleOwner, Observer { list ->
             allRoutesList = list
         })
 
-//        val navigation = Navigation.findNavController(view)
-//        if (viewModel.getChosenCar() == null){
-//            Toast.makeText(requireContext(), "Need chose a car", Toast.LENGTH_SHORT).show()
-//            navigation.popBackStack()
-//        }
         carId = viewModel.getChosenCarIdAnyway()
         Log.d(TAG, "onViewCreated: carId: $carId")
 
@@ -94,28 +89,28 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
             val navigation = Navigation.findNavController(view)
             buttonBackToListRoute.setOnClickListener {
-//                requireActivity().supportFragmentManager.popBackStack()//why crash if again track(probably know)
                 navigation.popBackStack()
             }
 
-            spinnerMapTypePresentation.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    when(position) {
-                        0 -> googleMap?.mapType = GoogleMap.MAP_TYPE_NORMAL
-                        1 -> googleMap?.mapType = GoogleMap.MAP_TYPE_SATELLITE
-                        2 -> googleMap?.mapType = GoogleMap.MAP_TYPE_TERRAIN
-                        3 -> googleMap?.mapType = GoogleMap.MAP_TYPE_HYBRID
+            spinnerMapTypePresentation.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        when (position) {
+                            0 -> googleMap?.mapType = GoogleMap.MAP_TYPE_NORMAL
+                            1 -> googleMap?.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                            2 -> googleMap?.mapType = GoogleMap.MAP_TYPE_TERRAIN
+                            3 -> googleMap?.mapType = GoogleMap.MAP_TYPE_HYBRID
+                        }
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
                     }
                 }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
-            }
         }
 
 
@@ -136,11 +131,17 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(gMap: GoogleMap) {
         Log.d(TAG, "onMapReady: ")
 
-        val zoomIn = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
+        val zoomIn =
+            (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(
+                Integer.parseInt("2")
+            )
         val zoomInOut = zoomIn.parent as View
         zoomInOut.setPadding(8, 8, 8, 150)
 
-        val compassIn = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("5"))
+        val compassIn =
+            (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(
+                Integer.parseInt("5")
+            )
         val layoutParams = compassIn.layoutParams as RelativeLayout.LayoutParams
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
@@ -200,20 +201,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             val maxSpeed = TrackingService.maxSpeed
             var imgRoute = ""
 
-//            async {
-//                googleMap?.snapshot { bmp ->
-//                    if (bmp == null) {
-//                        val routeRoom = RouteRoom(
-//                            carId,
-//                            startDriveTime,
-//                            distance,
-//                            duration,
-//                            avgSpeed,
-//
-//
-//
-//            }.await()
-
             googleMap?.snapshot { bmp ->
                 if (bmp == null) {
                     val routeRoom = RouteRoom(
@@ -242,7 +229,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                         val act = activity as MainActivity
                         val listScopeStorageImg = act.openSavedImg()
                         val lastSavedImg =
-                            listScopeStorageImg.last() // mb need find by name file
+                            listScopeStorageImg.last()
                         Log.d(TAG, "saveRouteInDb: ")
 
                         imgRoute = lastSavedImg.toString()
@@ -265,10 +252,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
 
             }
-
-
-
-
         }
 
     }
@@ -339,9 +322,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                 Log.d(TAG, "initializeObservers: drive time : $formattedTime")
 
                 showDurationTime(it)
-
-                //TO DO
-                //set formattedTime in fragment field
             }
         )
     }
@@ -349,8 +329,8 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
     private fun zoomToSeeWholeTrack() {
         var boundsAreEmpty = true
         val bounds = LatLngBounds.Builder()
-        for(polyline in polylinesList) {
-            for(pos in polyline) {
+        for (polyline in polylinesList) {
+            for (pos in polyline) {
                 bounds.include(pos)
                 boundsAreEmpty = false
             }
@@ -379,7 +359,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis / 1000f / 60 / 60) * 10 / 10f).toFloat()
         binding?.apply {
             textViewDistanceDriving.text = "distance: $distance m"
-            if (avgSpeed.isNaN()){
+            if (avgSpeed.isNaN()) {
                 textViewAverageSpeed.text = "avg speed: 0 km/h"
                 return
             }
