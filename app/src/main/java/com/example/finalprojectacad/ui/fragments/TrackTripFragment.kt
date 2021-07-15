@@ -347,21 +347,26 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun zoomToSeeWholeTrack() {
+        var boundsAreEmpty = true
         val bounds = LatLngBounds.Builder()
         for(polyline in polylinesList) {
             for(pos in polyline) {
                 bounds.include(pos)
+                boundsAreEmpty = false
             }
         }
 
-        googleMap?.moveCamera(
-            CameraUpdateFactory.newLatLngBounds(
-                bounds.build(),
-                mapView.width,
-                mapView.height,
-                (mapView.height * 0.25f).toInt()
+        if (!boundsAreEmpty) {
+            googleMap?.moveCamera(
+                CameraUpdateFactory.newLatLngBounds(
+                    bounds.build(),
+                    mapView.width,
+                    mapView.height,
+                    (mapView.height * 0.25f).toInt()
+                )
             )
-        )
+        }
+
     }
 
     private fun showDistanceAndAverageSpeed() {
