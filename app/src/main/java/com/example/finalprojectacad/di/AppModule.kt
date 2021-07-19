@@ -77,12 +77,4 @@ object AppModule {
     ): FirebaseRequests {
         return FirebaseRequests(auth, appContext)
     }
-
-    @Singleton
-    @Provides
-    fun provideAppContext(
-        @ApplicationContext appContext: Context
-    ): Context {
-        return appContext
-    }
 }

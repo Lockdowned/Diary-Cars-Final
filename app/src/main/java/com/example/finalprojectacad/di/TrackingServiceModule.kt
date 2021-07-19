@@ -53,5 +53,4 @@ object TrackingServiceModule {
         .setContentText("00:00:00")//info in notification bar from our app
         .setContentIntent(pendingIntent)
 
-
 }
