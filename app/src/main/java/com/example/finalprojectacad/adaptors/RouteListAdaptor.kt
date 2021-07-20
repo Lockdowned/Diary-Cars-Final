@@ -26,7 +26,7 @@ class RouteListAdaptor(
                 val formatterStartTime =
                     SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
                 val formattedStartTime = formatterStartTime.format(routeItem.startDriveTime)
-                textViewStartDrivingTimeRv.text = "Start time: ${formattedStartTime}"
+                textViewStartDrivingTimeRv.text = "Start time: \n ${formattedStartTime}"
                 var car: CarRoom? = viewModel.getChosenCar()
                 if (car == null) {
                     car = viewModel.listAllCars.find { it.carId == routeItem.carId }
@@ -67,5 +67,4 @@ class RouteListAdaptor(
         val itemRoute = getItem(position)
         holder.bind(itemRoute)
     }
-
 }

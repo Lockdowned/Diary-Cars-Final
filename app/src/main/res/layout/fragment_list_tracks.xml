@@ -16,6 +16,7 @@
         android:layout_marginTop="16dp"
         android:text="Routes of all cars"
         android:textSize="16sp"
+        android:maxLines="1"
         app:layout_constraintEnd_toStartOf="@+id/imageButtonListTrackClearChosenCar"
         app:layout_constraintStart_toEndOf="@+id/spinnerRouteSortType"
         app:layout_constraintTop_toTopOf="parent" />

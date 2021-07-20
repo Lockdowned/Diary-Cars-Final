@@ -6,23 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
+import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentRegistrationBinding
 import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.example.finalprojectacad.viewModel.CarViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 private const val TAG = "RegistrationFragment"
@@ -61,6 +65,10 @@ class RegistrationFragment : Fragment() {
             buttonRegistrationNewUser.setOnClickListener {
                 registerNewUserWithEmailAndPassword()
             }
+
+            imgBtnGoogleSignIn.setOnClickListener {
+                tuneAndStartGoogleAuthIntent()
+            }
         }
     }
 
@@ -82,7 +90,8 @@ class RegistrationFragment : Fragment() {
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Log.e(TAG, "registerNewUser: ${e.message}")
-                        Toast.makeText(context, "Missing internet connection", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Missing internet connection", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
@@ -106,8 +115,10 @@ class RegistrationFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "No such user or missing internet connection",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context, "No such user or missing internet connection",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         Log.e(TAG, "registerNewUser: ${e.message}")
                     }
                 }
@@ -147,4 +158,41 @@ class RegistrationFragment : Fragment() {
         }
         navigation?.popBackStack()
     }
+
+    private fun tuneAndStartGoogleAuthIntent() {
+        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail() //if need .requestProfile() give more info
+            .build()
+        val signInClient = GoogleSignIn.getClient(requireActivity(), options)
+        signInClient.signInIntent.also {
+            startForRegistarionResult.launch(it)
+        }
+    }
+
+    private fun googleAuthForFirebase(account: GoogleSignInAccount) {
+        val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                auth.signInWithCredential(credentials).await()
+                moveToBackStack()
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Missing internet connection", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private val startForRegistarionResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//        if (result.resultCode == Activity.RESULT_OK) { } // request code is always negative - check
+            val account = GoogleSignIn.getSignedInAccountFromIntent(result.data).result
+            account?.let { googleSignInAccount ->
+                googleAuthForFirebase(googleSignInAccount)
+            }
+        }
 }

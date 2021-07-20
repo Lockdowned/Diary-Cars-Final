@@ -9,9 +9,12 @@
         android:id="@+id/constraintLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewRouteImg"
-        tools:layout_editor_absoluteX="0dp">
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewRouteImg">
 
         <TextView
             android:id="@+id/textViewChosenVehicleRv"
@@ -40,33 +43,18 @@
             app:layout_constraintTop_toBottomOf="@+id/textViewChosenVehicleRv" />
 
         <TextView
-            android:id="@+id/textViewDurationDrivingRv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/border_text_view"
-            android:paddingStart="3dp"
-            android:paddingEnd="3dp"
-            android:text="TextView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textViewStartDrivingTimeRv"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewDroveDistanceRv"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
             android:id="@+id/textViewAvgSpeedRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:background="@drawable/border_text_view"
             android:paddingStart="3dp"
             android:paddingEnd="3dp"
             android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewChosenVehicleRv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textViewStartDrivingTimeRv"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/textViewChosenVehicleRv" />
 
         <TextView
             android:id="@+id/textViewStartDrivingTimeRv"
@@ -86,14 +74,27 @@
             android:id="@+id/textViewMaxSpeedRv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:background="@drawable/border_text_view"
             android:paddingStart="3dp"
             android:paddingEnd="3dp"
             android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewDroveDistanceRv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textViewAvgSpeedRv"
-            app:layout_constraintTop_toBottomOf="@+id/textViewChosenVehicleRv" />
+            app:layout_constraintTop_toTopOf="@+id/textViewDroveDistanceRv" />
+
+        <TextView
+            android:id="@+id/textViewDurationDrivingRv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_text_view"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewStartDrivingTimeRv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textViewAvgSpeedRv"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -108,4 +109,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
