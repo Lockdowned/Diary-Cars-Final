@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentProfileSetingsBinding
-import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

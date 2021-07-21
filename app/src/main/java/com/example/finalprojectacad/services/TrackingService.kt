@@ -63,7 +63,7 @@ class TrackingService : LifecycleService() {
     private lateinit var curNotificationBuilder: NotificationCompat.Builder
 
     private var isTimerEnable = false
-    private var lapTime = 0L// time between pause
+    private var lapTime = 0L//time between pause
     private var timeRun = 0L//all time from starting
     private var timeStarted = 0L//begin lap time
     private var lastSecondLapTime = 0L//end lap time

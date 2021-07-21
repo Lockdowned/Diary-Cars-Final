@@ -19,7 +19,7 @@ private const val TAG = "TrackTripViewModel"
 class TrackTripViewModel
 @Inject constructor(
     private val mainRepository: MainRepository
-): ViewModel() {
+) : ViewModel() {
 
 
     val allRoutesLiveData: LiveData<List<RouteRoom>> = mainRepository.getAllRoutes().asLiveData()
@@ -37,5 +37,4 @@ class TrackTripViewModel
             mainRepository.insertNewRoute(route)
         }
     }
-
 }

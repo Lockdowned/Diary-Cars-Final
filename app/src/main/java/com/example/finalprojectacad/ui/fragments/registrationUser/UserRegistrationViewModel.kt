@@ -1,6 +1,5 @@
 package com.example.finalprojectacad.ui.fragments.registrationUser
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,5 +14,4 @@ class UserRegistrationViewModel
     fun setAuthorizedUser() {
         mainRepository.firebaseAuthorizedUser()
     }
-
 }

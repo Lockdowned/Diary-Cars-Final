@@ -16,7 +16,6 @@ import com.example.finalprojectacad.databinding.FragmentListCarsBinding
 import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
 import com.example.finalprojectacad.ui.SharedViewModel
-import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,7 +25,6 @@ private const val TAG = "ListCarsFragment"
 @AndroidEntryPoint
 class ListCarsFragment : Fragment() {
 
-    private val viewModel: CarViewModel by activityViewModels()
     private val newViewModel: ListCarsViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var binding: FragmentListCarsBinding? = null
@@ -50,7 +48,6 @@ class ListCarsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        carsListAdaptor = viewModel.createOrGetCarsRVAdaptor()
         carsListAdaptor = newViewModel.getCarsRVAdaptor()
         if (carsListAdaptor == null) {
             carsListAdaptor = CarsListAdaptor(newViewModel, sharedViewModel)
@@ -83,12 +80,6 @@ class ListCarsFragment : Fragment() {
             rvListCars.layoutManager = LinearLayoutManager(context)
         }
 
-//        viewModel.getAllCars.observe(
-//            viewLifecycleOwner, Observer { list ->
-//                viewModel.listAllCars = list
-//                carsListAdaptor?.submitList(list)
-//            }
-//        )
         newViewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer { list ->
                 newViewModel.listAllCars = list
@@ -96,13 +87,6 @@ class ListCarsFragment : Fragment() {
             }
         )
 
-
-//        viewModel.getAllImages.observe(
-//            viewLifecycleOwner, Observer { list ->
-//                viewModel.listAllImages = list
-//                carsListAdaptor?.notifyDataSetChanged()
-//            }
-//        )
         newViewModel.allImagesLiveData.observe(
             viewLifecycleOwner, Observer { list ->
                 newViewModel.listAllImages = list

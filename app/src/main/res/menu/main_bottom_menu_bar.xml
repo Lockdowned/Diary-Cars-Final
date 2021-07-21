@@ -12,7 +12,7 @@
         android:title="Start tracking" />
 
     <item
-        android:id="@+id/listTracksFragment"
+        android:id="@+id/listRoutesFragment"
         android:icon="@drawable/ic_routes_list_foreground"
         android:title="Tracks" />
 

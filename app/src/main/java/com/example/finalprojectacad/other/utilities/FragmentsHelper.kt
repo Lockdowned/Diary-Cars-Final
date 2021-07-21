@@ -1,10 +1,47 @@
 package com.example.finalprojectacad.other.utilities
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
+import com.example.finalprojectacad.workers.SyncDatabaseWorker
 import java.util.regex.Pattern
+
+private const val TAG = "FragmentsHelper"
 
 object FragmentsHelper {
 
+
+    fun starWorkManagerSynchronization(applicationContext: Context) {
+        val workManager = WorkManager.getInstance(applicationContext)
+        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>().build()
+        workManager.beginWith(testWorker).enqueue()
+    }
+
+    fun getChosenCarIdAnyway(appContext: Context): Int {
+        val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val loadedCarId = sharedPref.getInt("chosenCarId", -1)
+        Log.d("SharedViewModel", "getChosenCarIdAnyway: $loadedCarId")
+        return loadedCarId
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    fun setChosenCarIdInSharedPref(car: CarRoom?, appContext: Context) {
+        var carIdToSave = -1
+        car?.let { carNotNull ->
+            carIdToSave = carNotNull.carId!!
+        }
+        val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+
+        editor.apply() {
+            putInt("chosenCarId", carIdToSave)
+            apply()
+        }
+        Log.d("TAG", "setChosenCarIdInSharedPref: $carIdToSave")
+    }
 
     fun filterCarList(
         carsList: List<CarRoom>, searchText: String
@@ -30,6 +67,4 @@ object FragmentsHelper {
         val pat: Pattern = Pattern.compile(emailRegex)
         return pat.matcher(emailText).matches()
     }
-
-
 }

@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.ItemRvListCarsBinding
+import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.ui.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -84,13 +85,6 @@ class CarsListAdaptor(
         holder.apply {
             val car = getItem(position)
             bind(car)
-//            viewModel.getChosenCar()?.let {
-//                if (it == car) {
-//                    holder.itemView.setBackgroundColor(Color.YELLOW)
-//                    chosenCar = it
-//                    previousCarView = holder.itemView
-//                }
-//            }
             sharedViewModel.getChosenCar()?.let {
                 if (it == car) {
                     holder.itemView.setBackgroundColor(Color.YELLOW)
@@ -129,8 +123,8 @@ class CarsListAdaptor(
     }
 
     private fun carChoiceChanger(car: CarRoom?) {
-//        viewModel.setChosenCar(car, context)
-        sharedViewModel.setChosenCar(car, context)
+        sharedViewModel.setChosenCar(car)
+        FragmentsHelper.setChosenCarIdInSharedPref(car, context)
     }
 
 

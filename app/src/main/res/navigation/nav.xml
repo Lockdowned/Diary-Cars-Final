@@ -29,8 +29,8 @@
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration" />
     <fragment
-        android:id="@+id/listTracksFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.listRoutes.ListTracksFragment"
+        android:id="@+id/listRoutesFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.listRoutes.ListRoutesFragment"
         android:label="fragment_list_tracks"
         tools:layout="@layout/fragment_list_tracks"/>
     <fragment

@@ -22,12 +22,13 @@ class SharedViewModel
 ) : ViewModel() {
 
     var listAllCars: List<CarRoom> = listOf()
-    private var carToEdit: CarRoom? = null // need for add fragment
+
+    private var carToEdit: CarRoom? = null
 
     private var chosenCar: CarRoom? = null
     val chosenCarMutableLifeData = MutableLiveData<CarRoom?>()
 
-    fun setCarToEdit(car: CarRoom?) { // need for add fragment
+    fun setCarToEdit(car: CarRoom?) {
         carToEdit = car
     }
 
@@ -35,61 +36,12 @@ class SharedViewModel
         return carToEdit
     }
 
-    fun getChosenCar(): CarRoom? {
-        return chosenCar
-    }
-
-    fun setChosenCar(car: CarRoom?, appContext: Context) {
+    fun setChosenCar(car: CarRoom?) {
         chosenCar = car
         chosenCarMutableLifeData.value = chosenCar
-        setChosenCarIdInSharedPref(car, appContext)
     }
 
-    @SuppressLint("CommitPrefEdits")
-    private fun setChosenCarIdInSharedPref(car: CarRoom?, appContext: Context) {
-        var carIdToSave = -1
-        car?.let { carNotNull ->
-            carIdToSave = carNotNull.carId!!
-        }
-        val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-
-        editor.apply() {
-            putInt("chosenCarId", carIdToSave)
-            apply()
-        }
-        Log.d(TAG, "setChosenCarIdInSharedPref: $carIdToSave")
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    fun starWorkManagerSynchronization(applicationContext: Context) {
-        val workManager = WorkManager.getInstance(applicationContext)
-        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>().build()
-        workManager.beginWith(testWorker).enqueue()
-    }
-
-    fun getChosenCarIdAnyway(appContext: Context): Int {
-        val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        val loadedCarId = sharedPref.getInt("chosenCarId", -1)
-        Log.d("SharedViewModel", "getChosenCarIdAnyway: $loadedCarId")
-        return loadedCarId
+    fun getChosenCar(): CarRoom? {
+        return chosenCar
     }
 }

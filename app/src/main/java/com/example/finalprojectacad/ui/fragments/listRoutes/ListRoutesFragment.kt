@@ -13,15 +13,14 @@ import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.databinding.FragmentListTracksBinding
 import com.example.finalprojectacad.other.enums.RouteSortType
+import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.ui.SharedViewModel
-import com.example.finalprojectacad.viewModel.CarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ListTracksFragment : Fragment() {
+class ListRoutesFragment : Fragment() {
 
     private var binding: FragmentListTracksBinding? = null
-    private val viewModel: CarViewModel by activityViewModels()
     private val newViewModel: ListRoutesViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -42,7 +41,6 @@ class ListTracksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        routeListAdaptor = viewModel.createOrGetRoutesRVAdaptor()
         routeListAdaptor = newViewModel.getRoutesRVAdaptor()
 
         if (routeListAdaptor == null) {
@@ -53,30 +51,22 @@ class ListTracksFragment : Fragment() {
         binding?.apply {
 
             imageButtonListTrackClearChosenCar.setOnClickListener {
-//                viewModel.setChosenCar(null, requireActivity().applicationContext)
-//                newViewModel.setChosenCar(null, requireActivity().applicationContext)
-                sharedViewModel.setChosenCar(null, requireActivity().applicationContext)
+                sharedViewModel.setChosenCar(null)
+                FragmentsHelper.setChosenCarIdInSharedPref(
+                    null,
+                    requireActivity().applicationContext
+                )
                 textViewChosenCar.text = "Routes of all cars"
             }
 
             recyclerViewListRoutes.adapter = routeListAdaptor
             recyclerViewListRoutes.layoutManager = LinearLayoutManager(context)
 
-
-//            chosenCar = viewModel.getChosenCar()
-//            chosenCar = newViewModel.getChosenCar()
             chosenCar = sharedViewModel.getChosenCar()
             if (chosenCar != null) {
                 textViewChosenCar.text = "${chosenCar?.brandName} ${chosenCar?.modelName}"
             }
 
-//            when (viewModel.routeSortType) {
-//                RouteSortType.DATE -> spinnerRouteSortType.setSelection(0)
-//                RouteSortType.DISTANCE -> spinnerRouteSortType.setSelection(1)
-//                RouteSortType.DURATION -> spinnerRouteSortType.setSelection(2)
-//                RouteSortType.AVG_SPEED -> spinnerRouteSortType.setSelection(3)
-//                RouteSortType.MAX_SPEED -> spinnerRouteSortType.setSelection(4)
-//            }
             when (newViewModel.routeSortType) {
                 RouteSortType.DATE -> spinnerRouteSortType.setSelection(0)
                 RouteSortType.DISTANCE -> spinnerRouteSortType.setSelection(1)
@@ -92,13 +82,6 @@ class ListTracksFragment : Fragment() {
                         position: Int,
                         id: Long
                     ) {
-//                        when (position) {
-//                            0 -> viewModel.sortRoutes(RouteSortType.DATE)
-//                            1 -> viewModel.sortRoutes(RouteSortType.DISTANCE)
-//                            2 -> viewModel.sortRoutes(RouteSortType.DURATION)
-//                            3 -> viewModel.sortRoutes(RouteSortType.AVG_SPEED)
-//                            4 -> viewModel.sortRoutes(RouteSortType.MAX_SPEED)
-//                        }
                         when (position) {
                             0 -> newViewModel.sortRoutes(RouteSortType.DATE)
                             1 -> newViewModel.sortRoutes(RouteSortType.DISTANCE)
@@ -113,43 +96,18 @@ class ListTracksFragment : Fragment() {
                 }
         }
 
-//        viewModel.getAllCars.observe(
-//            viewLifecycleOwner, Observer {
-//                viewModel.listAllCars = it
-//            }
-//        )
         newViewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer {
                 newViewModel.listAllCars = it
             }
         )
 
-//        viewModel.routesSorted.observe(
-//            viewLifecycleOwner, Observer {
-//                routeSortedList = it
-//                setCorrectRouteInAdaptor(viewModel.getChosenCar())
-//            })
-//        newViewModel.routesSorted.observe(
-//            viewLifecycleOwner, Observer {
-//                routeSortedList = it
-//                setCorrectRouteInAdaptor(newViewModel.getChosenCar())
-//            })
         newViewModel.routesSorted.observe(
             viewLifecycleOwner, Observer {
                 routeSortedList = it
                 setCorrectRouteInAdaptor(sharedViewModel.getChosenCar())
             })
 
-//        viewModel.chosenCarMutableLifeData.observe(
-//            viewLifecycleOwner, Observer {
-//                setCorrectRouteInAdaptor(viewModel.getChosenCar())
-//            }
-//        )
-//        newViewModel.chosenCarMutableLifeData.observe(
-//            viewLifecycleOwner, Observer {
-//                setCorrectRouteInAdaptor(newViewModel.getChosenCar())
-//            }
-//        )
         sharedViewModel.chosenCarMutableLifeData.observe(
             viewLifecycleOwner, Observer {
                 setCorrectRouteInAdaptor(sharedViewModel.getChosenCar())

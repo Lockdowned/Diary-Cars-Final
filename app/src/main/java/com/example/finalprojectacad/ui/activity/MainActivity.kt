@@ -16,8 +16,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
 import com.example.finalprojectacad.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
+import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.ui.SharedViewModel
-import com.example.finalprojectacad.viewModel.CarViewModel
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.anyPermanentlyDenied
@@ -25,18 +25,14 @@ import com.fondesa.kpermissions.anyShouldShowRationale
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.google.android.gms.location.*
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import javax.inject.Inject
 
 private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
-    private val viewModel: CarViewModel by viewModels()
-    private val sharedViewModel: SharedViewModel by viewModels()
     private var binding: ActivityMainBinding? = null
 
     private val navHostFragment by lazy {
@@ -57,7 +53,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedViewModel.starWorkManagerSynchronization(application)
+        FragmentsHelper.starWorkManagerSynchronization(application)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
@@ -70,7 +66,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             navController
                 .addOnDestinationChangedListener { _, destination, _ ->
                     when (destination.id) {
-                        R.id.listCarsFragment, R.id.listTracksFragment ->
+                        R.id.listCarsFragment, R.id.listRoutesFragment ->
                             bottomNavigationBar.isVisible = true
                         else -> bottomNavigationBar.isVisible = false
                     }
@@ -83,7 +79,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                 } else {
                     when (menuItem.itemId) {
                         R.id.trackTrip -> {
-                            if (sharedViewModel.getChosenCarIdAnyway(applicationContext) == -1) {
+                            if (FragmentsHelper.getChosenCarIdAnyway(applicationContext) == -1) {
                                 Toast.makeText(
                                     this@MainActivity,
                                     "Need chose a car",

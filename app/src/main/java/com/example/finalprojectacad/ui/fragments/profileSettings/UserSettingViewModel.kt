@@ -9,10 +9,9 @@ import javax.inject.Inject
 class UserSettingViewModel
 @Inject constructor(
     private val mainRepository: MainRepository
-): ViewModel(){
+) : ViewModel() {
 
     fun setAuthorizedUser() {
         mainRepository.firebaseAuthorizedUser()
     }
-
 }

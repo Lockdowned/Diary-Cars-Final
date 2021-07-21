@@ -23,7 +23,6 @@ class PopulateDatabase() {
         }
     }
 
-
     val brandList = listOf<BrandRoom>(
         BrandRoom("Abarth"),
         BrandRoom("Alfa Romeo"),
@@ -134,6 +133,4 @@ class PopulateDatabase() {
             mileage = 325
         )
     )
-
-
 }

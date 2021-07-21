@@ -16,7 +16,6 @@ import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentRegistrationBinding
 import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
-import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

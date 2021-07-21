@@ -27,7 +27,6 @@ import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.example.finalprojectacad.ui.SharedViewModel
 import com.example.finalprojectacad.ui.activity.MainActivity
-import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +39,6 @@ private const val TAG = "AddCarFragment"
 class AddCarFragment : Fragment() {
 
     private var binding: FragmentAddCarBinding? = null
-    private val viewModel: CarViewModel by activityViewModels()
     private val newViewModel: AddCarViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
@@ -61,11 +59,6 @@ class AddCarFragment : Fragment() {
 
         setDataIfEditCar()
 
-//        viewModel.getAllCars.observe(
-//            viewLifecycleOwner, Observer {
-//                viewModel.listAllCars = it
-//            }
-//        )
         newViewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer {
                 newViewModel.listAllCars = it
@@ -118,15 +111,6 @@ class AddCarFragment : Fragment() {
                 }
             }
 
-//            viewModel.allBrands.observe(
-//                viewLifecycleOwner, Observer { brandsListRoom ->
-//                    brandList = brandsListRoom
-//                    brandListName.clear()
-//                    brandsListRoom.forEach {
-//                        brandListName.add(it.brandName)
-//                    }
-//                    autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
-//                })
             newViewModel.allBrandsLiveData.observe(
                 viewLifecycleOwner, Observer { brandsListRoom ->
                     brandList = brandsListRoom
@@ -137,7 +121,7 @@ class AddCarFragment : Fragment() {
                     autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
                 })
 
-            autoCompleteTextBrandNewCar.threshold = 2
+            autoCompleteTextBrandNewCar.threshold = 2 // how much need letters to saw hints
 
             autoCompleteTextBrandNewCar.setOnItemClickListener { _, _, _, _ ->
                 activity?.hideKeyboard(view)
@@ -153,15 +137,7 @@ class AddCarFragment : Fragment() {
 
             val allModelsName = mutableListOf<String>()
             var listModelsRoom = listOf<ModelRoom>()
-//            viewModel.allModels.observe(
-//                viewLifecycleOwner, Observer { modelsRoom ->
-//                    val modelsName = mutableListOf<String>()
-//                    listModelsRoom = modelsRoom
-//                    modelsRoom.forEach {
-//                        modelsName.add(it.modelName)
-//                    }
-//                    viewModel.setAllModels(modelsName)
-//                })
+
             newViewModel.allModelsLiveData.observe(
                 viewLifecycleOwner, Observer { modelsRoom ->
                     val modelsName = mutableListOf<String>()
@@ -174,15 +150,6 @@ class AddCarFragment : Fragment() {
 
             autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(allModelsName))
 
-//            autoCompleteTextModelNewCar.setOnClickListener {
-//                viewModel.fillCorrectModelsByCar(
-//                    allModelsName,
-//                    listModelsRoom,
-//                    brandList,
-//                    textInputLayoutBrandNewCar.editText!!.text.toString()
-//                )
-//                autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(allModelsName))
-//            }
             autoCompleteTextModelNewCar.setOnClickListener {
                 newViewModel.fillCorrectModelsByCar(
                     allModelsName,
@@ -194,14 +161,7 @@ class AddCarFragment : Fragment() {
             }
 
             val transmissionList = mutableListOf<String>()
-//            viewModel.allTransmissions.observe(
-//                viewLifecycleOwner, Observer {
-//                    if (transmissionList.isEmpty()) {
-//                        it.forEach {
-//                            transmissionList.add(it.transmissionName)
-//                        }
-//                    }
-//                })
+
             newViewModel.allTransmissionsLiveData.observe(
                 viewLifecycleOwner, Observer {
                     if (transmissionList.isEmpty()) {
@@ -250,20 +210,6 @@ class AddCarFragment : Fragment() {
         return false
     }
 
-//    private fun addBrandInDbDialog(brandName: String) {
-//        val dialog = AlertDialog.Builder(context)
-//        dialog.run {
-//            setMessage("Insert this brand: $brandName in database?")
-//            setPositiveButton("Yes") { _, _ ->
-//                Log.d(TAG, "addBrandInDBDialog: ")
-//                val newBrandRoom = BrandRoom(brandName)
-//                viewModel.insertNewBrand(newBrandRoom)
-//            }
-//            setNegativeButton("No") { _, _ -> }
-//        }
-//        val alertDialog = dialog.create()
-//        alertDialog.show()
-//    }
     private fun addBrandInDbDialog(brandName: String) {
         val dialog = AlertDialog.Builder(context)
         dialog.run {
@@ -297,7 +243,6 @@ class AddCarFragment : Fragment() {
                 }
                 brandId?.let { idBrand ->
                     val newModelRoom = ModelRoom(modelName, idBrand)
-//                    viewModel.insertNewModel(newModelRoom)
                     newViewModel.insertNewModel(newModelRoom)
                     Log.d(TAG, "addModelInDbDialog: new model insert in db model: $newModelRoom")
                 }
@@ -321,7 +266,6 @@ class AddCarFragment : Fragment() {
     }
 
     private fun collectAndInsertCar() {
-//        copyToScopeStorageImg(viewModel.listAllCars.size)
         copyToScopeStorageImg(newViewModel.listAllCars.size)
         val car = CarRoom()
         binding?.apply {
@@ -358,7 +302,6 @@ class AddCarFragment : Fragment() {
             }
         }
         clearAllField()
-//        viewModel.insertNewCar(car)
         newViewModel.insertNewCar(car)
     }
 
@@ -370,37 +313,11 @@ class AddCarFragment : Fragment() {
             textInputLayoutTransmissionNewCar.editText?.text?.clear()
             textInputLayoutYearNewCar.editText?.text?.clear()
             textInputLayoutMileageNewCar.editText?.text?.clear()
-
             ivSelectImageCar.setImageResource(R.drawable.default_car)
             choseImgUri = null
         }
     }
 
-//    private fun setDataIfEditCar() {
-//        viewModel.getCarToEdit()?.let { car ->
-//            carToEdit = car
-//            binding?.apply {
-//                if (car.brandName.isNotEmpty()) {
-//                    textInputLayoutBrandNewCar.editText?.setText(car.brandName)
-//                }
-//                if (car.modelName.isNotEmpty()) {
-//                    textInputLayoutModelNewCar.editText?.setText(car.modelName)
-//                }
-//                if (car.engine.isNotEmpty()) {
-//                    textInputLayoutEngineNewCar.editText?.setText(car.engine)
-//                }
-//                if (car.transmissionName.isNotEmpty()) {
-//                    textInputLayoutTransmissionNewCar.editText?.setText(car.transmissionName)
-//                }
-//                if (car.year != -1) {
-//                    textInputLayoutYearNewCar.editText?.setText(car.year.toString())
-//                }
-//                if (car.mileage != -1) {
-//                    textInputLayoutMileageNewCar.editText?.setText(car.mileage.toString())
-//                }
-//            }
-//        }
-//    }
     private fun setDataIfEditCar() {
         sharedViewModel.getCarToEdit()?.let { car ->
             carToEdit = car
@@ -435,7 +352,6 @@ class AddCarFragment : Fragment() {
                     choseImgUri, carListSize, (activity as MainActivity).applicationContext
                 )
             if (insertedImg != null) {
-//                viewModel.insertNewImg(insertedImg)
                 newViewModel.insertNewImg(insertedImg)
             }
         }

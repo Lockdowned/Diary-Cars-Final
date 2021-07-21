@@ -27,7 +27,6 @@ import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.example.finalprojectacad.services.Polyline
 import com.example.finalprojectacad.services.TrackingService
 import com.example.finalprojectacad.ui.activity.MainActivity
-import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -38,6 +37,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.math.roundToInt
 
 private const val TAG = "TrackTripFragment"
@@ -46,7 +47,7 @@ private const val TAG = "TrackTripFragment"
 class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
     private var binding: FragmentTrackTripBinding? = null
-    private val viewModel: CarViewModel by activityViewModels()
+    private val viewModel: TrackTripViewModel by activityViewModels()
     private lateinit var mapView: MapView //deferred remove lateinit
     private var googleMap: GoogleMap? = null
 
@@ -71,13 +72,12 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.allRoutes.observe(viewLifecycleOwner, Observer { list ->
+        viewModel.allRoutesLiveData.observe(viewLifecycleOwner, Observer { list ->
             allRoutesList = list
         })
 
         carId = viewModel.getChosenCarIdAnyway(requireActivity().applicationContext)
         Log.d(TAG, "onViewCreated: carId: $carId")
-
 
         binding?.apply {
             buttonStartPause.setOnClickListener {
@@ -186,6 +186,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             val duration = wholeDrivingTimeInMillis
             val avgSpeed = calculateAvgSpeed(accurateDistance)
             val maxSpeed = TrackingService.maxSpeed
+                .toBigDecimal().setScale(1, RoundingMode.HALF_EVEN).toFloat()
             var imgRoute = ""
 
             googleMap?.snapshot { bmp ->
@@ -371,15 +372,22 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun calculateAvgSpeed(accurateDistance: Double) =
-        ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis
-                / 1000f / 60 / 60) * 10 / 10f).toFloat()
+    private fun calculateAvgSpeed(accurateDistance: Double): Float {
+        val totalAvgSpeed = ((accurateDistance / 1000f) / (wholeDrivingTimeInMillis
+                / 1000f / 60 / 60) * 10 / 10f)
+        Log.d(TAG, "calculateAvgSpeed: $totalAvgSpeed")
+        var roundAvgSpeed = 0f
+        if (!totalAvgSpeed.isNaN()) {
+            roundAvgSpeed = BigDecimal(totalAvgSpeed)
+                .setScale(1, RoundingMode.HALF_EVEN).toFloat()
+        }
+        return roundAvgSpeed
+    }
 
     private fun showDurationTime(durationTime: Long) {
         val formattedTime = RouteUtils.getFormattedTime(durationTime)
         binding?.textViewDurationDriving?.text = "duration $formattedTime"
     }
-
 
     private fun moveCameraToLastPoint() {
         if (polylinesList.isNotEmpty() && polylinesList.last().isNotEmpty()) {
