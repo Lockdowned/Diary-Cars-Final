@@ -1,5 +1,6 @@
-package com.example.finalprojectacad.ui.fragments
+package com.example.finalprojectacad.ui.fragments.registrationUser
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -35,7 +36,7 @@ private const val TAG = "RegistrationFragment"
 class RegistrationFragment : Fragment() {
 
     private var binding: FragmentRegistrationBinding? = null
-    private val viewModel: CarViewModel by activityViewModels()
+    private val viewModel: UserRegistrationViewModel by activityViewModels()
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -152,7 +153,7 @@ class RegistrationFragment : Fragment() {
         return false
     }
 
-    private fun moveToBackStack() {
+    private fun moveToBackStack() { // !!! and update authorize state !!!
         if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
             viewModel.setAuthorizedUser()
         }
@@ -175,9 +176,17 @@ class RegistrationFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 auth.signInWithCredential(credentials).await()
-                moveToBackStack()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        "You have been successfully authorized",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    moveToBackStack()
+                }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    Log.d(TAG, "googleAuthForFirebase: ${e.message}")
                     Toast.makeText(
                         requireContext(),
                         "Missing internet connection", Toast.LENGTH_SHORT
@@ -189,10 +198,11 @@ class RegistrationFragment : Fragment() {
 
     private val startForRegistarionResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//        if (result.resultCode == Activity.RESULT_OK) { } // request code is always negative - check
-            val account = GoogleSignIn.getSignedInAccountFromIntent(result.data).result
-            account?.let { googleSignInAccount ->
-                googleAuthForFirebase(googleSignInAccount)
-            }
+            if (result.resultCode == Activity.RESULT_OK) {
+                val account = GoogleSignIn.getSignedInAccountFromIntent(result.data).result
+                account?.let { googleSignInAccount ->
+                    googleAuthForFirebase(googleSignInAccount)
+                }
+            } // correct work?
         }
 }

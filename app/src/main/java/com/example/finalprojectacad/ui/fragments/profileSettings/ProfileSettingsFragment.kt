@@ -1,4 +1,4 @@
-package com.example.finalprojectacad.ui.fragments
+package com.example.finalprojectacad.ui.fragments.profileSettings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
-import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
 import com.example.finalprojectacad.databinding.FragmentProfileSetingsBinding
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -19,7 +18,7 @@ import javax.inject.Inject
 class ProfileSettingsFragment : Fragment(R.layout.fragment_profile_setings) {
 
     private var binding: FragmentProfileSetingsBinding? = null
-    private val viewModel: CarViewModel by activityViewModels()
+    private val viewModel: UserSettingViewModel by activityViewModels()
 
     @Inject
     lateinit var auth: FirebaseAuth

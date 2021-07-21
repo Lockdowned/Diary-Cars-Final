@@ -1,4 +1,4 @@
-package com.example.finalprojectacad.adaptors
+package com.example.finalprojectacad.ui.fragments.listRoutes
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,12 +10,14 @@ import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.databinding.ItemRvListTracksBinding
 import com.example.finalprojectacad.other.utilities.RouteUtils
+import com.example.finalprojectacad.ui.SharedViewModel
 import com.example.finalprojectacad.viewModel.CarViewModel
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 class RouteListAdaptor(
-    private val viewModel: CarViewModel
+    private val viewModel: ListRoutesViewModel,
+    private val sharedViewModel: SharedViewModel
 ) : ListAdapter<RouteRoom, RouteListAdaptor.RoutesListHolder>(RouteComparator()) {
 
 
@@ -27,7 +29,8 @@ class RouteListAdaptor(
                     SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
                 val formattedStartTime = formatterStartTime.format(routeItem.startDriveTime)
                 textViewStartDrivingTimeRv.text = "Start time: \n ${formattedStartTime}"
-                var car: CarRoom? = viewModel.getChosenCar()
+//                var car: CarRoom? = viewModel.getChosenCar()
+                var car: CarRoom? = sharedViewModel.getChosenCar()
                 if (car == null) {
                     car = viewModel.listAllCars.find { it.carId == routeItem.carId }
                 }

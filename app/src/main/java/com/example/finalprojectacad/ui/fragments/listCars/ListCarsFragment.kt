@@ -1,4 +1,4 @@
-package com.example.finalprojectacad.ui.fragments
+package com.example.finalprojectacad.ui.fragments.listCars
 
 import android.os.Bundle
 import android.util.Log
@@ -12,15 +12,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalprojectacad.R
-import com.example.finalprojectacad.adaptors.CarsListAdaptor
-import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.FragmentListCarsBinding
 import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.other.utilities.RemoteSynchronizeUtils
+import com.example.finalprojectacad.ui.SharedViewModel
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 private const val TAG = "ListCarsFragment"
@@ -29,6 +27,8 @@ private const val TAG = "ListCarsFragment"
 class ListCarsFragment : Fragment() {
 
     private val viewModel: CarViewModel by activityViewModels()
+    private val newViewModel: ListCarsViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private var binding: FragmentListCarsBinding? = null
 
     private var carsListAdaptor: CarsListAdaptor? = null
@@ -50,7 +50,12 @@ class ListCarsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        carsListAdaptor = viewModel.createOrGetCarsRVAdaptor()
+//        carsListAdaptor = viewModel.createOrGetCarsRVAdaptor()
+        carsListAdaptor = newViewModel.getCarsRVAdaptor()
+        if (carsListAdaptor == null) {
+            carsListAdaptor = CarsListAdaptor(newViewModel, sharedViewModel)
+            newViewModel.setCarsRVAdaptor(carsListAdaptor!!)
+        }
 
         binding?.apply {
 
@@ -78,23 +83,36 @@ class ListCarsFragment : Fragment() {
             rvListCars.layoutManager = LinearLayoutManager(context)
         }
 
-        viewModel.getAllCars.observe(
+//        viewModel.getAllCars.observe(
+//            viewLifecycleOwner, Observer { list ->
+//                viewModel.listAllCars = list
+//                carsListAdaptor?.submitList(list)
+//            }
+//        )
+        newViewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer { list ->
-                viewModel.listAllCars = list
+                newViewModel.listAllCars = list
                 carsListAdaptor?.submitList(list)
             }
         )
 
-        viewModel.getAllImages.observe(
+
+//        viewModel.getAllImages.observe(
+//            viewLifecycleOwner, Observer { list ->
+//                viewModel.listAllImages = list
+//                carsListAdaptor?.notifyDataSetChanged()
+//            }
+//        )
+        newViewModel.allImagesLiveData.observe(
             viewLifecycleOwner, Observer { list ->
-                viewModel.listAllImages = list
+                newViewModel.listAllImages = list
                 carsListAdaptor?.notifyDataSetChanged()
             }
         )
     }
 
     private fun setFilteredCarsInAdaptor() {
-        val carsList = viewModel.listAllCars
+        val carsList = newViewModel.listAllCars
         if (searchText.isEmpty()) {
             carsListAdaptor?.submitList(carsList)
             return

@@ -1,4 +1,4 @@
-package com.example.finalprojectacad.ui.fragments
+package com.example.finalprojectacad.ui.fragments.addCar
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -25,6 +25,7 @@ import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.ModelRoom
 import com.example.finalprojectacad.databinding.FragmentAddCarBinding
 import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
+import com.example.finalprojectacad.ui.SharedViewModel
 import com.example.finalprojectacad.ui.activity.MainActivity
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -40,6 +41,8 @@ class AddCarFragment : Fragment() {
 
     private var binding: FragmentAddCarBinding? = null
     private val viewModel: CarViewModel by activityViewModels()
+    private val newViewModel: AddCarViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     var choseImgUri: Uri? = null
     var carToEdit: CarRoom? = null
@@ -58,9 +61,14 @@ class AddCarFragment : Fragment() {
 
         setDataIfEditCar()
 
-        viewModel.getAllCars.observe(
+//        viewModel.getAllCars.observe(
+//            viewLifecycleOwner, Observer {
+//                viewModel.listAllCars = it
+//            }
+//        )
+        newViewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer {
-                viewModel.listAllCars = it
+                newViewModel.listAllCars = it
             }
         )
 
@@ -110,7 +118,16 @@ class AddCarFragment : Fragment() {
                 }
             }
 
-            viewModel.allBrands.observe(
+//            viewModel.allBrands.observe(
+//                viewLifecycleOwner, Observer { brandsListRoom ->
+//                    brandList = brandsListRoom
+//                    brandListName.clear()
+//                    brandsListRoom.forEach {
+//                        brandListName.add(it.brandName)
+//                    }
+//                    autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
+//                })
+            newViewModel.allBrandsLiveData.observe(
                 viewLifecycleOwner, Observer { brandsListRoom ->
                     brandList = brandsListRoom
                     brandListName.clear()
@@ -136,20 +153,38 @@ class AddCarFragment : Fragment() {
 
             val allModelsName = mutableListOf<String>()
             var listModelsRoom = listOf<ModelRoom>()
-            viewModel.allModels.observe(
+//            viewModel.allModels.observe(
+//                viewLifecycleOwner, Observer { modelsRoom ->
+//                    val modelsName = mutableListOf<String>()
+//                    listModelsRoom = modelsRoom
+//                    modelsRoom.forEach {
+//                        modelsName.add(it.modelName)
+//                    }
+//                    viewModel.setAllModels(modelsName)
+//                })
+            newViewModel.allModelsLiveData.observe(
                 viewLifecycleOwner, Observer { modelsRoom ->
                     val modelsName = mutableListOf<String>()
                     listModelsRoom = modelsRoom
                     modelsRoom.forEach {
                         modelsName.add(it.modelName)
                     }
-                    viewModel.setAllModels(modelsName)
+                    newViewModel.setAllModels(modelsName)
                 })
 
             autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(allModelsName))
 
+//            autoCompleteTextModelNewCar.setOnClickListener {
+//                viewModel.fillCorrectModelsByCar(
+//                    allModelsName,
+//                    listModelsRoom,
+//                    brandList,
+//                    textInputLayoutBrandNewCar.editText!!.text.toString()
+//                )
+//                autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(allModelsName))
+//            }
             autoCompleteTextModelNewCar.setOnClickListener {
-                viewModel.fillCorrectModelsByCar(
+                newViewModel.fillCorrectModelsByCar(
                     allModelsName,
                     listModelsRoom,
                     brandList,
@@ -159,7 +194,15 @@ class AddCarFragment : Fragment() {
             }
 
             val transmissionList = mutableListOf<String>()
-            viewModel.allTransmissions.observe(
+//            viewModel.allTransmissions.observe(
+//                viewLifecycleOwner, Observer {
+//                    if (transmissionList.isEmpty()) {
+//                        it.forEach {
+//                            transmissionList.add(it.transmissionName)
+//                        }
+//                    }
+//                })
+            newViewModel.allTransmissionsLiveData.observe(
                 viewLifecycleOwner, Observer {
                     if (transmissionList.isEmpty()) {
                         it.forEach {
@@ -207,6 +250,20 @@ class AddCarFragment : Fragment() {
         return false
     }
 
+//    private fun addBrandInDbDialog(brandName: String) {
+//        val dialog = AlertDialog.Builder(context)
+//        dialog.run {
+//            setMessage("Insert this brand: $brandName in database?")
+//            setPositiveButton("Yes") { _, _ ->
+//                Log.d(TAG, "addBrandInDBDialog: ")
+//                val newBrandRoom = BrandRoom(brandName)
+//                viewModel.insertNewBrand(newBrandRoom)
+//            }
+//            setNegativeButton("No") { _, _ -> }
+//        }
+//        val alertDialog = dialog.create()
+//        alertDialog.show()
+//    }
     private fun addBrandInDbDialog(brandName: String) {
         val dialog = AlertDialog.Builder(context)
         dialog.run {
@@ -214,7 +271,7 @@ class AddCarFragment : Fragment() {
             setPositiveButton("Yes") { _, _ ->
                 Log.d(TAG, "addBrandInDBDialog: ")
                 val newBrandRoom = BrandRoom(brandName)
-                viewModel.insertNewBrand(newBrandRoom)
+                newViewModel.insertNewBrand(newBrandRoom)
             }
             setNegativeButton("No") { _, _ -> }
         }
@@ -240,7 +297,8 @@ class AddCarFragment : Fragment() {
                 }
                 brandId?.let { idBrand ->
                     val newModelRoom = ModelRoom(modelName, idBrand)
-                    viewModel.insertNewModel(newModelRoom)
+//                    viewModel.insertNewModel(newModelRoom)
+                    newViewModel.insertNewModel(newModelRoom)
                     Log.d(TAG, "addModelInDbDialog: new model insert in db model: $newModelRoom")
                 }
             }
@@ -263,7 +321,8 @@ class AddCarFragment : Fragment() {
     }
 
     private fun collectAndInsertCar() {
-        copyToScopeStorageImg(viewModel.listAllCars.size)
+//        copyToScopeStorageImg(viewModel.listAllCars.size)
+        copyToScopeStorageImg(newViewModel.listAllCars.size)
         val car = CarRoom()
         binding?.apply {
             val brand = textInputLayoutBrandNewCar.editText?.text
@@ -299,7 +358,8 @@ class AddCarFragment : Fragment() {
             }
         }
         clearAllField()
-        viewModel.insertNewCar(car)
+//        viewModel.insertNewCar(car)
+        newViewModel.insertNewCar(car)
     }
 
     private fun clearAllField() { //mb we dont need alredy
@@ -316,8 +376,33 @@ class AddCarFragment : Fragment() {
         }
     }
 
+//    private fun setDataIfEditCar() {
+//        viewModel.getCarToEdit()?.let { car ->
+//            carToEdit = car
+//            binding?.apply {
+//                if (car.brandName.isNotEmpty()) {
+//                    textInputLayoutBrandNewCar.editText?.setText(car.brandName)
+//                }
+//                if (car.modelName.isNotEmpty()) {
+//                    textInputLayoutModelNewCar.editText?.setText(car.modelName)
+//                }
+//                if (car.engine.isNotEmpty()) {
+//                    textInputLayoutEngineNewCar.editText?.setText(car.engine)
+//                }
+//                if (car.transmissionName.isNotEmpty()) {
+//                    textInputLayoutTransmissionNewCar.editText?.setText(car.transmissionName)
+//                }
+//                if (car.year != -1) {
+//                    textInputLayoutYearNewCar.editText?.setText(car.year.toString())
+//                }
+//                if (car.mileage != -1) {
+//                    textInputLayoutMileageNewCar.editText?.setText(car.mileage.toString())
+//                }
+//            }
+//        }
+//    }
     private fun setDataIfEditCar() {
-        viewModel.getCarToEdit()?.let { car ->
+        sharedViewModel.getCarToEdit()?.let { car ->
             carToEdit = car
             binding?.apply {
                 if (car.brandName.isNotEmpty()) {
@@ -346,10 +431,12 @@ class AddCarFragment : Fragment() {
     private fun copyToScopeStorageImg(carListSize: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             val insertedImg = SaveImgToScopedStorage
-                .copyToScopeStorageImg(choseImgUri
-                    , carListSize, (activity as MainActivity).applicationContext)
+                .copyToScopeStorageImg(
+                    choseImgUri, carListSize, (activity as MainActivity).applicationContext
+                )
             if (insertedImg != null) {
-                viewModel.insertNewImg(insertedImg)
+//                viewModel.insertNewImg(insertedImg)
+                newViewModel.insertNewImg(insertedImg)
             }
         }
     }

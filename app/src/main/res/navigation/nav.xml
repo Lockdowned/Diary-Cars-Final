@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/listCarsFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.ListCarsFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.listCars.ListCarsFragment"
         android:label="fragment_list_cars"
         tools:layout="@layout/fragment_list_cars" >
         <action
@@ -25,27 +25,27 @@
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.RegistrationFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.registrationUser.RegistrationFragment"
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration" />
     <fragment
         android:id="@+id/listTracksFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.ListTracksFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.listRoutes.ListTracksFragment"
         android:label="fragment_list_tracks"
         tools:layout="@layout/fragment_list_tracks"/>
     <fragment
         android:id="@+id/trackTripFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.TrackTripFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.trackTrip.TrackTripFragment"
         android:label="fragment_track_trip"
         tools:layout="@layout/fragment_track_trip" />
     <fragment
         android:id="@+id/profileSetingsFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.ProfileSettingsFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.profileSettings.ProfileSettingsFragment"
         android:label="fragment_profile_setings"
         tools:layout="@layout/fragment_profile_setings" />
     <fragment
         android:id="@+id/addCarFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.AddCarFragment"
+        android:name="com.example.finalprojectacad.ui.fragments.addCar.AddCarFragment"
         android:label="fragment_add_car"
         tools:layout="@layout/fragment_add_car" />
 </navigation>

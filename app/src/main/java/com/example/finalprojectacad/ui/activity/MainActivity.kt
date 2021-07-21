@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
 import com.example.finalprojectacad.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
+import com.example.finalprojectacad.ui.SharedViewModel
 import com.example.finalprojectacad.viewModel.CarViewModel
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
@@ -35,6 +36,7 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
     private val viewModel: CarViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
     private var binding: ActivityMainBinding? = null
 
     private val navHostFragment by lazy {
@@ -55,7 +57,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.starWorkManagerSynchronization(application)
+        sharedViewModel.starWorkManagerSynchronization(application)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
@@ -81,7 +83,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                 } else {
                     when (menuItem.itemId) {
                         R.id.trackTrip -> {
-                            if (viewModel.getChosenCarIdAnyway(applicationContext) == -1) {
+                            if (sharedViewModel.getChosenCarIdAnyway(applicationContext) == -1) {
                                 Toast.makeText(
                                     this@MainActivity,
                                     "Need chose a car",

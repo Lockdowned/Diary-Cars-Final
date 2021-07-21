@@ -1,4 +1,4 @@
-package com.example.finalprojectacad.ui.fragments
+package com.example.finalprojectacad.ui.fragments.trackTrip
 
 import android.content.Intent
 import android.graphics.Color

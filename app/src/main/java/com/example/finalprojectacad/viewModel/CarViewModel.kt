@@ -6,11 +6,11 @@ import android.util.Log
 import androidx.lifecycle.*
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.finalprojectacad.adaptors.CarsListAdaptor
-import com.example.finalprojectacad.adaptors.RouteListAdaptor
+import com.example.finalprojectacad.ui.fragments.listRoutes.RouteListAdaptor
 import com.example.finalprojectacad.data.localDB.entity.*
 import com.example.finalprojectacad.other.enums.RouteSortType
 import com.example.finalprojectacad.repositories.MainRepository
+import com.example.finalprojectacad.ui.fragments.listCars.CarsListAdaptor
 import com.example.finalprojectacad.workers.SyncDatabaseWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +23,7 @@ private const val TAG = "TrackTripFragment"
 @HiltViewModel
 class CarViewModel
 @Inject constructor(
-    private val mainRepository: MainRepository,
+    private val mainRepository: MainRepository
 ) : ViewModel() {
 
     var listAllCars: List<CarRoom> = listOf()
@@ -159,15 +159,15 @@ class CarViewModel
 
     private var tempCarsAdaptor: CarsListAdaptor? = null
 
-    fun createOrGetCarsRVAdaptor(): CarsListAdaptor {
-        return tempCarsAdaptor ?: CarsListAdaptor(this)
-    }
+//    fun createOrGetCarsRVAdaptor(): CarsListAdaptor {
+//        return tempCarsAdaptor ?: CarsListAdaptor(this)
+//    }
 
     private var tempRoutesAdaptor: RouteListAdaptor? = null
 
-    fun createOrGetRoutesRVAdaptor(): RouteListAdaptor {
-        return tempRoutesAdaptor ?: RouteListAdaptor(this)
-    }
+//    fun createOrGetRoutesRVAdaptor(): RouteListAdaptor {
+//        return tempRoutesAdaptor ?: RouteListAdaptor(this)
+//    }
 
     var routeSortType = RouteSortType.DATE
 

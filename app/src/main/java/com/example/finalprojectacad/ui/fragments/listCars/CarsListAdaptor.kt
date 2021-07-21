@@ -1,4 +1,4 @@
-package com.example.finalprojectacad.adaptors
+package com.example.finalprojectacad.ui.fragments.listCars
 
 import android.content.Context
 import android.graphics.Color
@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.ItemRvListCarsBinding
-import com.example.finalprojectacad.viewModel.CarViewModel
+import com.example.finalprojectacad.ui.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +23,8 @@ import kotlinx.coroutines.launch
 private const val TAG = "CarsListAdaptor"
 
 class CarsListAdaptor(
-    private val viewModel: CarViewModel
+    private val viewModel: ListCarsViewModel,
+    private val sharedViewModel: SharedViewModel
 ) : ListAdapter<CarRoom, CarsListAdaptor.CarsListHolder>(CarsComparator()) {
 
     lateinit var context: Context
@@ -54,8 +55,8 @@ class CarsListAdaptor(
                 textViewSpecification.text = specificationText
                 CoroutineScope(Dispatchers.Main).launch {
                     val findImgRoom =
-                        viewModel.listAllImages.find {
-                                imageCarRoom -> imageCarRoom.id == carItem.carId
+                        viewModel.listAllImages.find { imageCarRoom ->
+                            imageCarRoom.id == carItem.carId
                         }
                     Log.d(TAG, "bind: findImgRoom: ${findImgRoom.toString()} ")
                     if (findImgRoom == null) {
@@ -83,7 +84,14 @@ class CarsListAdaptor(
         holder.apply {
             val car = getItem(position)
             bind(car)
-            viewModel.getChosenCar()?.let {
+//            viewModel.getChosenCar()?.let {
+//                if (it == car) {
+//                    holder.itemView.setBackgroundColor(Color.YELLOW)
+//                    chosenCar = it
+//                    previousCarView = holder.itemView
+//                }
+//            }
+            sharedViewModel.getChosenCar()?.let {
                 if (it == car) {
                     holder.itemView.setBackgroundColor(Color.YELLOW)
                     chosenCar = it
@@ -112,7 +120,7 @@ class CarsListAdaptor(
             }
             itemView.setOnLongClickListener { view ->
                 val navigation = Navigation.findNavController(view)
-                viewModel.setCarToEdit(car)
+                sharedViewModel.setCarToEdit(car)
                 navigation.navigate(R.id.action_listCarsFragment_to_addCarFragment)
                 true
             }
@@ -121,7 +129,8 @@ class CarsListAdaptor(
     }
 
     private fun carChoiceChanger(car: CarRoom?) {
-        viewModel.setChosenCar(car, context)
+//        viewModel.setChosenCar(car, context)
+        sharedViewModel.setChosenCar(car, context)
     }
 
 
