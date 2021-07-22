@@ -1,6 +1,5 @@
 package com.example.finalprojectacad.repositories
 
-import android.util.Log
 import com.example.finalprojectacad.data.localDB.dao.CarDao
 import com.example.finalprojectacad.data.localDB.dao.RouteDao
 import com.example.finalprojectacad.data.localDB.entity.*
@@ -73,7 +72,7 @@ class MainRepository
     }
 
     suspend fun insertRoomRoute(route: RouteRoom) {
-        firebaseRequests.saveRouteToScopeFromRemote(route)
+        firebaseRequests.saveRouteImgToScopeFromRemote(route)
         routeDao.insertRoute(route)
     }
 
@@ -86,7 +85,7 @@ class MainRepository
     }
 
     suspend fun insertRoomImgCar(img: ImageCarRoom) {
-        firebaseRequests.saveCarToScopeFromRemote(img)
+        firebaseRequests.saveCarImgToScopeFromRemote(img)
         carDao.insertImg(img)
     }
 

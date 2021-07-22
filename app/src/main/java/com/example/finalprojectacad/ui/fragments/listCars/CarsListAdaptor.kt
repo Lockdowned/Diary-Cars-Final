@@ -17,9 +17,7 @@ import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.ItemRvListCarsBinding
 import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.ui.SharedViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 private const val TAG = "CarsListAdaptor"
 
@@ -28,10 +26,10 @@ class CarsListAdaptor(
     private val sharedViewModel: SharedViewModel
 ) : ListAdapter<CarRoom, CarsListAdaptor.CarsListHolder>(CarsComparator()) {
 
-    lateinit var context: Context
-
+    var context: Context? = null
     var chosenCar: CarRoom? = null
     var previousCarView: View? = null
+    val localCoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 
     inner class CarsListHolder(private val carItemBinding: ItemRvListCarsBinding) :
         RecyclerView.ViewHolder(carItemBinding.root) {
@@ -54,7 +52,7 @@ class CarsListAdaptor(
                     specificationText += "mileage: ${carItem.mileage}"
                 }
                 textViewSpecification.text = specificationText
-                CoroutineScope(Dispatchers.Main).launch {
+                localCoroutineScope.launch {
                     val findImgRoom =
                         viewModel.listAllImages.find { imageCarRoom ->
                             imageCarRoom.id == carItem.carId
@@ -62,11 +60,13 @@ class CarsListAdaptor(
                     Log.d(TAG, "bind: findImgRoom: ${findImgRoom.toString()} ")
                     if (findImgRoom == null) {
                         val defaultCarDrawable =
-                            AppCompatResources.getDrawable(context, R.drawable.default_car);
+                            AppCompatResources.getDrawable(context!!, R.drawable.default_car);
                         imageViewCar.setImageDrawable(defaultCarDrawable)
                     } else {
-                        Glide.with(carItemBinding.root.context).load(findImgRoom.imgCar)
-                            .into(imageViewCar)
+                        withContext(Dispatchers.Main) {
+                            Glide.with(carItemBinding.root.context).load(findImgRoom.imgCar)
+                                .into(imageViewCar)
+                        }
                     }
                 }
 
@@ -85,46 +85,56 @@ class CarsListAdaptor(
         holder.apply {
             val car = getItem(position)
             bind(car)
-            sharedViewModel.getChosenCar()?.let {
-                if (it == car) {
-                    holder.itemView.setBackgroundColor(Color.YELLOW)
-                    chosenCar = it
-                    previousCarView = holder.itemView
-                }
-            }
-            itemView.setOnClickListener { view ->
-                if (chosenCar == null) {
-                    chosenCar = car
-                    view.setBackgroundColor(Color.YELLOW)
-                    previousCarView = view
-                    carChoiceChanger(car)
-                } else if (chosenCar == car) {
-                    view.setBackgroundColor(Color.WHITE)
-                    chosenCar = null
-                    previousCarView = null
-                    carChoiceChanger(null)
-                } else {
-                    previousCarView?.setBackgroundColor(Color.WHITE)
-                    view.setBackgroundColor(Color.YELLOW)
-                    chosenCar = car
-                    previousCarView = view
-                    carChoiceChanger(car)
-                }
-
-            }
-            itemView.setOnLongClickListener { view ->
-                val navigation = Navigation.findNavController(view)
-                sharedViewModel.setCarToEdit(car)
-                navigation.navigate(R.id.action_listCarsFragment_to_addCarFragment)
-                true
-            }
+            choosingCar(car, holder)
         }
 
     }
 
+    private fun CarsListHolder.choosingCar(
+        car: CarRoom?,
+        holder: CarsListHolder
+    ) {
+        sharedViewModel.getChosenCar()?.let {
+            if (it == car) {
+                holder.itemView.setBackgroundColor(Color.YELLOW)
+                chosenCar = it
+                previousCarView = holder.itemView
+            }
+        }
+        itemView.setOnClickListener { view ->
+            if (chosenCar == null) {
+                chosenCar = car
+                view.setBackgroundColor(Color.YELLOW)
+                previousCarView = view
+                carChoiceChanger(car)
+            } else if (chosenCar == car) {
+                view.setBackgroundColor(Color.WHITE)
+                chosenCar = null
+                previousCarView = null
+                carChoiceChanger(null)
+            } else {
+                previousCarView?.setBackgroundColor(Color.WHITE)
+                view.setBackgroundColor(Color.YELLOW)
+                chosenCar = car
+                previousCarView = view
+                carChoiceChanger(car)
+            }
+
+        }
+        itemView.setOnLongClickListener { view ->
+            val navigation = Navigation.findNavController(view)
+            sharedViewModel.setCarToEdit(car)
+            navigation.navigate(R.id.action_listCarsFragment_to_addCarFragment)
+            true
+        }
+    }
+
     private fun carChoiceChanger(car: CarRoom?) {
         sharedViewModel.setChosenCar(car)
-        FragmentsHelper.setChosenCarIdInSharedPref(car, context)
+        context?.let { context ->
+            FragmentsHelper.setChosenCarIdInSharedPref(car, context)
+        }
+
     }
 
 

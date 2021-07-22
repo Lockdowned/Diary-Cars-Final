@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.finalprojectacad.R
@@ -24,14 +25,13 @@ import com.example.finalprojectacad.data.localDB.entity.BrandRoom
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.ModelRoom
 import com.example.finalprojectacad.databinding.FragmentAddCarBinding
+import com.example.finalprojectacad.other.Constants.MINIMAL_LIFETIME_COROUTINE
 import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.example.finalprojectacad.ui.SharedViewModel
 import com.example.finalprojectacad.ui.activity.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 private const val TAG = "AddCarFragment"
 
@@ -71,7 +71,7 @@ class AddCarFragment : Fragment() {
         binding?.apply {
 
             imageButtonAddBrandInDB.setOnClickListener {
-                CoroutineScope(Dispatchers.Main).launch {
+                lifecycleScope.launch {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
                     if (brandText.isEmpty()) {
                         Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT)
@@ -86,7 +86,7 @@ class AddCarFragment : Fragment() {
             }
 
             imageButtonAddModelInDB.setOnClickListener {
-                CoroutineScope(Dispatchers.Main).launch {
+                lifecycleScope.launch {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
                     val modelText = textInputLayoutModelNewCar.editText?.text.toString()
                     if (modelText.isEmpty()) {
@@ -345,14 +345,17 @@ class AddCarFragment : Fragment() {
     }
 
 
+    @DelicateCoroutinesApi
     private fun copyToScopeStorageImg(carListSize: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val insertedImg = SaveImgToScopedStorage
-                .copyToScopeStorageImg(
-                    choseImgUri, carListSize, (activity as MainActivity).applicationContext
-                )
-            if (insertedImg != null) {
-                newViewModel.insertNewImg(insertedImg)
+        GlobalScope.launch(Dispatchers.IO) {
+            withTimeoutOrNull(MINIMAL_LIFETIME_COROUTINE){
+                val insertedImg = SaveImgToScopedStorage
+                    .copyToScopeStorageImg(
+                        choseImgUri, carListSize, (activity as MainActivity).applicationContext
+                    )
+                if (insertedImg != null) {
+                    newViewModel.insertNewImg(insertedImg)
+                }
             }
         }
     }

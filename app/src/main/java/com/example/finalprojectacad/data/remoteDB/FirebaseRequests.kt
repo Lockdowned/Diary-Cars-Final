@@ -65,35 +65,33 @@ class FirebaseRequests(
 
     }
 
-    fun insertNewCar(car: CarRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
-            userDataCars?.add(car)
-        }
+    suspend fun insertNewCar(car: CarRoom) = coroutineScope {
+        launch { userDataCars?.add(car) }
     }
 
-    fun insertNewRoute(route: RouteRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
+    suspend fun insertNewRoute(route: RouteRoom) = coroutineScope {
+        launch {
             try {
                 userDataRoutes?.add(route)
-                userDataRouteImgStorage
-                    ?.child("/${route.routeId}")?.putFile(route.imgRoute.toUri())?.await()
+                userDataRouteImgStorage?.child("/${route.routeId}")
+                    ?.putFile(route.imgRoute.toUri())?.await()
             } catch (e: Exception) {
                 Log.e(TAG, "insertNewRoute: ${e.message}")
             }
-
         }
     }
 
-    fun insertCarImg(carImg: ImageCarRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
+
+    suspend fun insertCarImg(carImg: ImageCarRoom) = coroutineScope {
+        launch {
             userDataCarImg?.add(carImg)
             userDataCarImgStorage
                 ?.child("/${carImg.id}")?.putFile(carImg.imgCar.toUri())?.await()
         }
     }
 
-    fun updateCar(car: CarRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
+    suspend fun updateCar(car: CarRoom) = coroutineScope {
+        launch {
             userDataCars?.let { carsUser ->
                 val necessaryDoc = carsUser.whereEqualTo("id", car.carId).get().await()
                 if (necessaryDoc.documents.isNotEmpty()) {
@@ -103,8 +101,8 @@ class FirebaseRequests(
         }
     }
 
-    fun updateRoute(route: RouteRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
+    suspend fun updateRoute(route: RouteRoom) = coroutineScope {
+        launch {
             userDataRoutes?.let { routesUser ->
                 val necessaryDoc = routesUser.whereEqualTo("routeId", route.routeId)
                     .get().await()
@@ -115,8 +113,9 @@ class FirebaseRequests(
         }
     }
 
-    fun updateCarImg(img: ImageCarRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
+
+    suspend fun updateCarImg(img: ImageCarRoom) = coroutineScope {
+        launch {
             userDataCarImg?.let { imagesCarUser ->
                 val necessaryDoc = imagesCarUser.whereEqualTo("id", img.id)
                     .get().await()
@@ -163,59 +162,62 @@ class FirebaseRequests(
 
     private var count = 1
 
-    suspend fun saveCarToScopeFromRemote(img: ImageCarRoom) {
-
-        val tempFileImg = File.createTempFile("images", "jpg")
-        userDataCarImgStorage?.child("/${img.id}")?.let { it ->
-            it.getFile(tempFileImg).addOnSuccessListener {
-                Log.d(TAG, "car img saveToScopeFromRemote: ${tempFileImg.toURI()}")
-                SaveImgToScopedStorage.save(appContext, img.id, tempFileImg.toUri())
-                count = 1
-            }.addOnFailureListener { ex ->
-                Log.d(TAG, "car img Exception : ${ex.message}")
-                if (count < 3) {
-                    count++
-                    GlobalScope.launch {
-                        delay(2000)
-                        saveCarToScopeFromRemote(img)
+    suspend fun saveCarImgToScopeFromRemote(img: ImageCarRoom) {
+        coroutineScope {
+            val tempFileImg =
+                withContext(Dispatchers.IO) { // updating dispatchers to be sure doesn't blocking main thread
+                    File.createTempFile("images", "jpg")
+                }
+            userDataCarImgStorage?.child("/${img.id}")?.let { it ->
+                it.getFile(tempFileImg).addOnSuccessListener {
+                    Log.d(TAG, "car img saveToScopeFromRemote: ${tempFileImg.toURI()}")
+                    SaveImgToScopedStorage.save(appContext, img.id, tempFileImg.toUri())
+                    count = 1
+                }.addOnFailureListener { ex ->
+                    Log.d(TAG, "car img Exception : ${ex.message}")
+                    if (count < 3) {
+                        count++
+                        launch {
+                            delay(2000)
+                            saveCarImgToScopeFromRemote(img)
+                        }
                     }
                 }
             }
-
-
         }
-
     }
 
-    suspend fun saveRouteToScopeFromRemote(route: RouteRoom) {
-
-        val tempFileImg = File.createTempFile("images", "jpg")
-        userDataRouteImgStorage?.child("/${route.routeId}")?.let { it ->
-            it.getFile(tempFileImg).addOnSuccessListener {
-                Log.d(
-                    TAG, "route img saveToScopeFromRemote: ${tempFileImg.toURI()} +\n" +
-                            " temp file uri ${tempFileImg.toURI()} + \n" +
-                            " routeId ${route.routeId}"
-                )
-                SaveImgToScopedStorage.saveRoute(appContext, route.routeId!!, tempFileImg.toUri())
-                count = 1
-            }.addOnFailureListener { ex ->
-                Log.d(
-                    TAG,
-                    "route img Exception : ${ex.message} +\n temp file uri ${tempFileImg.toURI()} + \n routeId ${route.routeId}"
-                )
-                if (count < 3) {
-                    count++
-                    GlobalScope.launch {
-                        delay(2000)
-                        saveRouteToScopeFromRemote(route)
-                    }
-                }
+    suspend fun saveRouteImgToScopeFromRemote(route: RouteRoom) {
+        coroutineScope {
+            val tempFileImg = withContext(Dispatchers.IO) {
+                File.createTempFile("images", "jpg")
             }
-
-
+            userDataRouteImgStorage?.child("/${route.routeId}")?.let { it ->
+                it.getFile(tempFileImg)
+                    .addOnSuccessListener {
+                        Log.d(
+                            TAG, "route img saveToScopeFromRemote: ${tempFileImg.toURI()} +\n" +
+                                    " temp file uri ${tempFileImg.toURI()} + \n" +
+                                    " routeId ${route.routeId}"
+                        )
+                        SaveImgToScopedStorage
+                            .saveRoute(appContext, route.routeId!!, tempFileImg.toUri())
+                        count = 1
+                    }.addOnFailureListener { ex ->
+                        Log.d(
+                            TAG,
+                            "route img Exception : ${ex.message} +\n temp file uri" +
+                                    " ${tempFileImg.toURI()} + \n routeId ${route.routeId}"
+                        )
+                        if (count < 3) {
+                            count++
+                            launch {
+                                delay(2000)
+                                saveRouteImgToScopeFromRemote(route)
+                            }
+                        }
+                    }
+            }
         }
-
     }
-
 }

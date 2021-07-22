@@ -68,7 +68,6 @@ object AppModule {
         return FirebaseAuth.getInstance()
     }
 
-
     @Singleton
     @Provides
     fun provideFireStorageCurrentUser(

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
@@ -17,7 +16,6 @@ import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.ActivityMainBinding
 import com.example.finalprojectacad.other.Constants.ACTION_SHOW_TRACKING_FRAGMENT
 import com.example.finalprojectacad.other.utilities.FragmentsHelper
-import com.example.finalprojectacad.ui.SharedViewModel
 import com.fondesa.kpermissions.PermissionStatus
 import com.fondesa.kpermissions.allGranted
 import com.fondesa.kpermissions.anyPermanentlyDenied
@@ -26,7 +24,6 @@ import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.fondesa.kpermissions.request.PermissionRequest
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
 
 private const val TAG = "MainActivity"
 

@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.finalprojectacad.R
@@ -76,7 +77,7 @@ class RegistrationFragment : Fragment() {
         val email = binding?.editTextRegistrationLogin?.text.toString()
         val password = binding?.editTextRegistrationPassword?.text.toString()
         if (inspectInputFields(email, password)) {
-            CoroutineScope(Dispatchers.IO).launch {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     auth.createUserWithEmailAndPassword(email, password).await()
                     withContext(Dispatchers.Main) {
@@ -102,7 +103,7 @@ class RegistrationFragment : Fragment() {
         val email = binding?.editTextAuthotrizationLogin?.text.toString()
         val password = binding?.editTextAuthorizationPassword?.text.toString()
         if (inspectInputFields(email, password)) {
-            CoroutineScope(Dispatchers.IO).launch {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     auth.signInWithEmailAndPassword(email, password).await()
                     withContext(Dispatchers.Main) {
@@ -172,7 +173,7 @@ class RegistrationFragment : Fragment() {
 
     private fun googleAuthForFirebase(account: GoogleSignInAccount) {
         val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 auth.signInWithCredential(credentials).await()
                 withContext(Dispatchers.Main) {

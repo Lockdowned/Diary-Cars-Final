@@ -19,4 +19,7 @@ object Constants {
 
     const val REFRESH_MILLIS_TIME_NOTIFICATION = 50L
 
+    const val MINIMAL_LIFETIME_COROUTINE = 5000L
+    const val MAX_LIFETIME_COROUTINE  = 100000L
+
 }

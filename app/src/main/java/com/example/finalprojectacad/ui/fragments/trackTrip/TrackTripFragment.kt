@@ -22,6 +22,7 @@ import com.example.finalprojectacad.other.Constants.ACTION_START_OR_RESUME_SERVI
 import com.example.finalprojectacad.other.Constants.ACTION_STOP_SERVICE
 import com.example.finalprojectacad.other.Constants.DEFAULT_ZOOM_LEVEL
 import com.example.finalprojectacad.other.Constants.MAP_SCALE_WEIGHT
+import com.example.finalprojectacad.other.Constants.MAX_LIFETIME_COROUTINE
 import com.example.finalprojectacad.other.utilities.RouteUtils
 import com.example.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.example.finalprojectacad.services.Polyline
@@ -34,9 +35,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.roundToInt
@@ -175,22 +177,60 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun saveRouteInDb() {
-        CoroutineScope(Dispatchers.IO).launch {
+        GlobalScope.launch(Dispatchers.IO) {
 
-            val startDriveTime = TrackingService.startDriveTime
-            var accurateDistance = 0.0
-            for (polyline in polylinesList) {
-                accurateDistance += calculatePolylineLength(polyline)
+            withTimeoutOrNull(MAX_LIFETIME_COROUTINE) {
+
+                val startDriveTime = TrackingService.startDriveTime
+                var accurateDistance = 0.0
+                for (polyline in polylinesList) {
+                    accurateDistance += calculatePolylineLength(polyline)
+                }
+                val distance = accurateDistance.roundToInt()
+                val duration = wholeDrivingTimeInMillis
+                val avgSpeed = calculateAvgSpeed(accurateDistance)
+                val maxSpeed = TrackingService.maxSpeed
+                    .toBigDecimal().setScale(1, RoundingMode.HALF_EVEN).toFloat()
+
+                saveRouteWithGMap(startDriveTime, distance, duration, avgSpeed, maxSpeed)
             }
-            val distance = accurateDistance.roundToInt()
-            val duration = wholeDrivingTimeInMillis
-            val avgSpeed = calculateAvgSpeed(accurateDistance)
-            val maxSpeed = TrackingService.maxSpeed
-                .toBigDecimal().setScale(1, RoundingMode.HALF_EVEN).toFloat()
-            var imgRoute = ""
+        }
+    }
 
-            googleMap?.snapshot { bmp ->
-                if (bmp == null) {
+    private fun saveRouteWithGMap(
+        startDriveTime: Long,
+        distance: Int,
+        duration: Long,
+        avgSpeed: Float,
+        maxSpeed: Float
+    ): Unit? {
+        var imgRoute = ""
+        return googleMap?.snapshot { bmp ->
+            if (bmp == null) {
+                insertRouteInDB(
+                    startDriveTime,
+                    distance,
+                    duration,
+                    avgSpeed,
+                    maxSpeed,
+                    imgRoute
+                )
+            }
+            bmp?.let { bitmapImg ->
+                Log.d(TAG, "saveRouteInDb: SOME bitmap")
+                val currentId = allRoutesList!!.size + 1
+                if (SaveImgToScopedStorage.saveFromBitmap(
+                        requireContext(),
+                        currentId,
+                        bitmapImg
+                    )
+                ) {
+                    val listScopeStorageImg =
+                        SaveImgToScopedStorage.openSavedImg((activity as MainActivity).applicationContext)
+                    val lastSavedImg =
+                        listScopeStorageImg.last()
+                    imgRoute = lastSavedImg.toString()
+
                     insertRouteInDB(
                         startDriveTime,
                         distance,
@@ -199,31 +239,6 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                         maxSpeed,
                         imgRoute
                     )
-                }
-                bmp?.let { bitmapImg ->
-                    Log.d(TAG, "saveRouteInDb: SOME bitmap")
-                    val currentId = allRoutesList!!.size + 1
-                    if (SaveImgToScopedStorage.saveFromBitmap(
-                            requireContext(),
-                            currentId,
-                            bitmapImg
-                        )
-                    ) {
-                        val listScopeStorageImg =
-                            SaveImgToScopedStorage.openSavedImg((activity as MainActivity).applicationContext)
-                        val lastSavedImg =
-                            listScopeStorageImg.last()
-                        imgRoute = lastSavedImg.toString()
-
-                        insertRouteInDB(
-                            startDriveTime,
-                            distance,
-                            duration,
-                            avgSpeed,
-                            maxSpeed,
-                            imgRoute
-                        )
-                    }
                 }
             }
         }
