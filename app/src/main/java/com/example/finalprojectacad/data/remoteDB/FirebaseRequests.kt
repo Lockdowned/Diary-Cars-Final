@@ -189,9 +189,10 @@ class FirebaseRequests(
 
     suspend fun saveRouteImgToScopeFromRemote(route: RouteRoom) {
         coroutineScope {
-            val tempFileImg = withContext(Dispatchers.IO) {
-                File.createTempFile("images", "jpg")
-            }
+            val tempFileImg =
+                withContext(Dispatchers.IO) { // updating dispatchers to be sure doesn't blocking main thread
+                    File.createTempFile("images", "jpg")
+                }
             userDataRouteImgStorage?.child("/${route.routeId}")?.let { it ->
                 it.getFile(tempFileImg)
                     .addOnSuccessListener {
