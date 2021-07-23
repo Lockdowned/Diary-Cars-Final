@@ -4,6 +4,8 @@ import com.example.finalprojectacad.data.localDB.dao.CarDao
 import com.example.finalprojectacad.data.localDB.dao.RouteDao
 import com.example.finalprojectacad.data.localDB.entity.*
 import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainRepository
@@ -71,9 +73,13 @@ class MainRepository
         carDao.updateCar(car)
     }
 
-    suspend fun insertRoomRoute(route: RouteRoom) {
-        firebaseRequests.saveRouteImgToScopeFromRemote(route)
-        routeDao.insertRoute(route)
+    suspend fun insertRoomRoute(route: RouteRoom) = coroutineScope {
+        launch {
+            launch {
+                firebaseRequests.saveRouteImgToScopeFromRemote(route)
+            }.join()
+            routeDao.insertRoute(route)
+        }
     }
 
     fun updateRoomRoute(route: RouteRoom) {
@@ -84,9 +90,13 @@ class MainRepository
         return carDao.getAllImgOnce()
     }
 
-    suspend fun insertRoomImgCar(img: ImageCarRoom) {
-        firebaseRequests.saveCarImgToScopeFromRemote(img)
-        carDao.insertImg(img)
+    suspend fun insertRoomImgCar(img: ImageCarRoom) = coroutineScope {
+        launch {
+            launch {
+                firebaseRequests.saveCarImgToScopeFromRemote(img)
+            }.join()
+            carDao.insertImg(img)
+        }
     }
 
 

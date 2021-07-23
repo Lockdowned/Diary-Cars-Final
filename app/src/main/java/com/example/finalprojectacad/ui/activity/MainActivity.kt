@@ -31,13 +31,12 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
     private var binding: ActivityMainBinding? = null
+    private lateinit var navController: NavController
 
     private val navHostFragment by lazy {
         supportFragmentManager
             .findFragmentById(R.id.mainNavFragment) as NavHostFragment
     }
-
-    private lateinit var navController: NavController
 
     private val request by lazy { // request for add permission from user
         permissionsBuilder(
@@ -60,15 +59,13 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
             navController = navHostFragment.findNavController()
             bottomNavigationBar.setupWithNavController(navController)
 
-            navController
-                .addOnDestinationChangedListener { _, destination, _ ->
-                    when (destination.id) {
-                        R.id.listCarsFragment, R.id.listRoutesFragment ->
-                            bottomNavigationBar.isVisible = true
-                        else -> bottomNavigationBar.isVisible = false
-                    }
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.listCarsFragment, R.id.listRoutesFragment ->
+                        bottomNavigationBar.isVisible = true
+                    else -> bottomNavigationBar.isVisible = false
                 }
-
+            }
 
             bottomNavigationBar.setOnItemSelectedListener { menuItem ->
                 if (NavigationUI.onNavDestinationSelected(menuItem, navController)) {

@@ -305,7 +305,7 @@ class AddCarFragment : Fragment() {
         newViewModel.insertNewCar(car)
     }
 
-    private fun clearAllField() { //mb we dont need alredy
+    private fun clearAllField() { //mb we don't need already
         binding?.apply {
             textInputLayoutBrandNewCar.editText?.text?.clear()
             textInputLayoutModelNewCar.editText?.text?.clear()

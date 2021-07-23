@@ -183,7 +183,7 @@ class FirebaseRequests(
                         }
                     }
                 }
-            }
+            }?.await()
         }
     }
 
@@ -218,7 +218,7 @@ class FirebaseRequests(
                             }
                         }
                     }
-            }
+            }?.await()
         }
     }
 }

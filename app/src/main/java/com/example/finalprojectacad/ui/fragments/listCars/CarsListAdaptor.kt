@@ -29,7 +29,7 @@ class CarsListAdaptor(
     var context: Context? = null
     var chosenCar: CarRoom? = null
     var previousCarView: View? = null
-    val localCoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
+    val localCoroutineScope = CoroutineScope(Job() + Dispatchers.Default)
 
     inner class CarsListHolder(private val carItemBinding: ItemRvListCarsBinding) :
         RecyclerView.ViewHolder(carItemBinding.root) {
@@ -58,18 +58,19 @@ class CarsListAdaptor(
                             imageCarRoom.id == carItem.carId
                         }
                     Log.d(TAG, "bind: findImgRoom: ${findImgRoom.toString()} ")
-                    if (findImgRoom == null) {
-                        val defaultCarDrawable =
-                            AppCompatResources.getDrawable(context!!, R.drawable.default_car);
-                        imageViewCar.setImageDrawable(defaultCarDrawable)
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            Glide.with(carItemBinding.root.context).load(findImgRoom.imgCar)
-                                .into(imageViewCar)
+                    withContext(Dispatchers.Main) {
+                        if (findImgRoom == null) {
+                            val defaultCarDrawable =
+                                AppCompatResources.getDrawable(context!!, R.drawable.default_car);
+                            imageViewCar.setImageDrawable(defaultCarDrawable)
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                Glide.with(carItemBinding.root.context).load(findImgRoom.imgCar)
+                                    .into(imageViewCar)
+                            }
                         }
                     }
                 }
-
             }
         }
     }

@@ -3,6 +3,7 @@ package com.example.finalprojectacad.other.utilities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
@@ -13,10 +14,11 @@ private const val TAG = "FragmentsHelper"
 
 object FragmentsHelper {
 
-
     fun starWorkManagerSynchronization(applicationContext: Context) {
         val workManager = WorkManager.getInstance(applicationContext)
-        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>().build()
+        val testWorker = OneTimeWorkRequestBuilder<SyncDatabaseWorker>()
+            .addTag("myWorker")
+            .build()
         workManager.beginWith(testWorker).enqueue()
     }
 

@@ -3,6 +3,7 @@ package com.example.finalprojectacad.workers
 import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
+import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.finalprojectacad.data.remoteDB.FirebaseRequests
@@ -18,10 +19,10 @@ class SyncDatabaseWorker
     @Assisted params: WorkerParameters,
     val firebaseRequests: FirebaseRequests,
     val mainRepository: MainRepository
-) : Worker(ctx, params) {
+) : CoroutineWorker(ctx, params) {
 
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         Log.d("worker", "start do worker jobs")
         SyncDatabasesClass(firebaseRequests, mainRepository)
             .syncOnce()

@@ -86,7 +86,8 @@ class RegistrationFragment : Fragment() {
                             "You have successfully registered",
                             Toast.LENGTH_SHORT
                         ).show()
-                        moveToBackStack()
+                        startAndTuningSynchronization()
+                        navigation?.popBackStack()
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
@@ -112,7 +113,8 @@ class RegistrationFragment : Fragment() {
                             "You have been successfully authorized",
                             Toast.LENGTH_SHORT
                         ).show()
-                        moveToBackStack()
+                        startAndTuningSynchronization()
+                        navigation?.popBackStack()
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
@@ -153,11 +155,11 @@ class RegistrationFragment : Fragment() {
         return false
     }
 
-    private fun moveToBackStack() { // !!! and update authorize state !!!
+    private fun startAndTuningSynchronization() {
         if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
             viewModel.setAuthorizedUser()
+            FragmentsHelper.starWorkManagerSynchronization(requireActivity())
         }
-        navigation?.popBackStack()
     }
 
     private fun tuneAndStartGoogleAuthIntent() {
@@ -182,7 +184,8 @@ class RegistrationFragment : Fragment() {
                         "You have been successfully authorized",
                         Toast.LENGTH_SHORT
                     ).show()
-                    moveToBackStack()
+                    startAndTuningSynchronization()
+                    navigation?.popBackStack()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -203,6 +206,6 @@ class RegistrationFragment : Fragment() {
                 account?.let { googleSignInAccount ->
                     googleAuthForFirebase(googleSignInAccount)
                 }
-            } // correct work?
+            }
         }
 }

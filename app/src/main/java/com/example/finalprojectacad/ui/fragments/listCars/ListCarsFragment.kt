@@ -73,6 +73,7 @@ class ListCarsFragment : Fragment() {
             }
 
             imageButtonToCarAddFragment.setOnClickListener {
+                sharedViewModel.setCarToEdit(null)
                 navigation.navigate(R.id.action_listCarsFragment_to_addCarFragment)
             }
 

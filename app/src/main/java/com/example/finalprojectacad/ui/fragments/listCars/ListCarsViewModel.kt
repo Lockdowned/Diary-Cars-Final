@@ -9,8 +9,6 @@ import com.example.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-private const val TAG = "ListCarsViewModel"
-
 @HiltViewModel
 class ListCarsViewModel
 @Inject constructor(
