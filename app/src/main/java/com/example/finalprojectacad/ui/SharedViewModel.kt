@@ -1,15 +1,9 @@
 package com.example.finalprojectacad.ui
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.repositories.MainRepository
-import com.example.finalprojectacad.workers.SyncDatabaseWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -27,6 +21,7 @@ class SharedViewModel
 
     private var chosenCar: CarRoom? = null
     val chosenCarMutableLifeData = MutableLiveData<CarRoom?>()
+    var confirmChosenCarFlag = false
 
     fun setCarToEdit(car: CarRoom?) {
         carToEdit = car

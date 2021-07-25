@@ -392,7 +392,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
                 / 1000f / 60 / 60) * 10 / 10f)
         Log.d(TAG, "calculateAvgSpeed: $totalAvgSpeed")
         var roundAvgSpeed = 0f
-        if (!totalAvgSpeed.isNaN()) {
+        if (!totalAvgSpeed.isNaN() && totalAvgSpeed.isFinite()) {
             roundAvgSpeed = BigDecimal(totalAvgSpeed)
                 .setScale(1, RoundingMode.HALF_EVEN).toFloat()
         }

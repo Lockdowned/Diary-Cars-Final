@@ -1,6 +1,7 @@
 package com.example.finalprojectacad.ui.fragments.listCars
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
@@ -20,6 +21,8 @@ class ListCarsViewModel
 
     val allCarsLiveData: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()
     val allImagesLiveData: LiveData<List<ImageCarRoom>> = mainRepository.getAllImages().asLiveData()
+
+    val confirmCarLiveData: MutableLiveData<CarRoom?> = MutableLiveData(null)
 
     private var tempCarsAdaptor: CarsListAdaptor? = null
 

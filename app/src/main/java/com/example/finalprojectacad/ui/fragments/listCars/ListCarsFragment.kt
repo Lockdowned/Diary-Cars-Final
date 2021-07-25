@@ -25,7 +25,7 @@ private const val TAG = "ListCarsFragment"
 @AndroidEntryPoint
 class ListCarsFragment : Fragment() {
 
-    private val newViewModel: ListCarsViewModel by activityViewModels()
+    private val viewModel: ListCarsViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var binding: FragmentListCarsBinding? = null
 
@@ -48,10 +48,10 @@ class ListCarsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        carsListAdaptor = newViewModel.getCarsRVAdaptor()
+        carsListAdaptor = viewModel.getCarsRVAdaptor()
         if (carsListAdaptor == null) {
-            carsListAdaptor = CarsListAdaptor(newViewModel, sharedViewModel)
-            newViewModel.setCarsRVAdaptor(carsListAdaptor!!)
+            carsListAdaptor = CarsListAdaptor(viewModel, sharedViewModel)
+            viewModel.setCarsRVAdaptor(carsListAdaptor!!)
         }
 
         binding?.apply {
@@ -81,23 +81,36 @@ class ListCarsFragment : Fragment() {
             rvListCars.layoutManager = LinearLayoutManager(context)
         }
 
-        newViewModel.allCarsLiveData.observe(
+        initializeObservers(view)
+    }
+
+    private fun initializeObservers(view: View) {
+        viewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer { list ->
-                newViewModel.listAllCars = list
+                viewModel.listAllCars = list
                 carsListAdaptor?.submitList(list)
             }
         )
 
-        newViewModel.allImagesLiveData.observe(
+        viewModel.allImagesLiveData.observe(
             viewLifecycleOwner, Observer { list ->
-                newViewModel.listAllImages = list
+                viewModel.listAllImages = list
                 carsListAdaptor?.notifyDataSetChanged()
+            }
+        )
+
+        viewModel.confirmCarLiveData.observe(
+            viewLifecycleOwner, Observer { cofirmedCar ->
+                cofirmedCar?.let {
+                    val navigation = Navigation.findNavController(view)
+                    navigation.navigate(R.id.trackTripFragment)
+                }
             }
         )
     }
 
     private fun setFilteredCarsInAdaptor() {
-        val carsList = newViewModel.listAllCars
+        val carsList = viewModel.listAllCars
         if (searchText.isEmpty()) {
             carsListAdaptor?.submitList(carsList)
             return

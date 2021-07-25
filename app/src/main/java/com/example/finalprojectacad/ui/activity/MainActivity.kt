@@ -73,19 +73,20 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                 } else {
                     when (menuItem.itemId) {
                         R.id.trackTrip -> {
-                            if (FragmentsHelper.getChosenCarIdAnyway(applicationContext) == -1) {
-                                Toast.makeText(
-                                    this@MainActivity,
-                                    "Need chose a car",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                bottomNavigationBar.selectedItemId = R.id.listCarsFragment
-                                false
-                            } else {
-                                navController.navigate(R.id.trackTripFragment)
-                                false
-                            }
-
+                            navController.navigate(R.id.bottomSheetDialogConfCar)
+//                            if (FragmentsHelper.getChosenCarIdAnyway(applicationContext) == -1) {
+//                                Toast.makeText(
+//                                    this@MainActivity,
+//                                    "Need chose a car",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                                bottomNavigationBar.selectedItemId = R.id.listCarsFragment
+//                                false
+//                            } else {
+//                                navController.navigate(R.id.trackTripFragment)
+//                                false
+//                            }
+                            false
                         }
                         else -> false
                     }

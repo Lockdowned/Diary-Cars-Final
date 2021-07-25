@@ -103,6 +103,10 @@ class CarsListAdaptor(
             }
         }
         itemView.setOnClickListener { view ->
+            if (sharedViewModel.confirmChosenCarFlag) {
+                sharedViewModel.confirmChosenCarFlag = false
+                viewModel.confirmCarLiveData.value = car
+            }
             if (chosenCar == null) {
                 chosenCar = car
                 view.setBackgroundColor(Color.YELLOW)

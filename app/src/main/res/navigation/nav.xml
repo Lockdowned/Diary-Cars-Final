@@ -48,4 +48,9 @@
         android:name="com.example.finalprojectacad.ui.fragments.addCar.AddCarFragment"
         android:label="fragment_add_car"
         tools:layout="@layout/fragment_add_car" />
+    <dialog
+        android:id="@+id/bottomSheetDialogConfCar"
+        android:name="com.example.finalprojectacad.ui.fragments.bottomSheetConf.BottomSheetDialogConfCar"
+        android:label="BottomSheetDialogConfCar"
+        tools:layout="@layout/bottom_sheet_dialog_conf_car"/>
 </navigation>
