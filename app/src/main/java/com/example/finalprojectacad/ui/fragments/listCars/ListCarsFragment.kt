@@ -88,6 +88,7 @@ class ListCarsFragment : Fragment() {
         viewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer { list ->
                 viewModel.listAllCars = list
+                sharedViewModel.listAllCars = list
                 carsListAdaptor?.submitList(list)
             }
         )
@@ -102,8 +103,11 @@ class ListCarsFragment : Fragment() {
         viewModel.confirmCarLiveData.observe(
             viewLifecycleOwner, Observer { cofirmedCar ->
                 cofirmedCar?.let {
-                    val navigation = Navigation.findNavController(view)
-                    navigation.navigate(R.id.trackTripFragment)
+                    if (sharedViewModel.confirmChosenCarFlag) {
+                        sharedViewModel.confirmChosenCarFlag = false
+                        val navigation = Navigation.findNavController(view)
+                        navigation.navigate(R.id.trackTripFragment)
+                    }
                 }
             }
         )

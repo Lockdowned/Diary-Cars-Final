@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
     private var binding: ActivityMainBinding? = null
     private lateinit var navController: NavController
 
+    private var isFistStartApp = true //if we are change colour theme and recreate activity
+
     private val navHostFragment by lazy {
         supportFragmentManager
             .findFragmentById(R.id.mainNavFragment) as NavHostFragment
@@ -106,9 +108,10 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
 
     //function that create our app after we close app than open him from notification bar
     private fun navigateToTrackingFragment(intent: Intent?) {
-        if (intent?.action == ACTION_SHOW_TRACKING_FRAGMENT) {
+        if (intent?.action == ACTION_SHOW_TRACKING_FRAGMENT && isFistStartApp) {
             navController.navigate(R.id.trackTripFragment)
         }
+        isFistStartApp = false
     }
 
     override fun onPermissionsResult(result: List<PermissionStatus>) {

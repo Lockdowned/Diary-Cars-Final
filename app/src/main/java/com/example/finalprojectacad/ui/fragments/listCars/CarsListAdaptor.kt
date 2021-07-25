@@ -3,6 +3,7 @@ package com.example.finalprojectacad.ui.fragments.listCars
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,31 +96,37 @@ class CarsListAdaptor(
         car: CarRoom?,
         holder: CarsListHolder
     ) {
-        sharedViewModel.getChosenCar()?.let {
-            if (it == car) {
-                holder.itemView.setBackgroundColor(Color.YELLOW)
-                chosenCar = it
-                previousCarView = holder.itemView
-            }
-        }
+        val typedValuePrimaryColour = TypedValue()
+        val typedValueColorSecondary = TypedValue()
+        val theme = context?.theme
+        theme?.resolveAttribute(R.attr.colorOnPrimary, typedValuePrimaryColour, true)
+        theme?.resolveAttribute(R.attr.colorSecondary, typedValueColorSecondary, true)
+        val primaryColour = typedValuePrimaryColour.data
+        val secondaryColour = typedValueColorSecondary.data
+//        sharedViewModel.getChosenCar()?.let {
+//            if (it == car) {
+//                holder.itemView.setBackgroundColor(secondaryColour)
+//                chosenCar = it
+//                previousCarView = holder.itemView
+//            }
+//        }
         itemView.setOnClickListener { view ->
             if (sharedViewModel.confirmChosenCarFlag) {
-                sharedViewModel.confirmChosenCarFlag = false
                 viewModel.confirmCarLiveData.value = car
             }
             if (chosenCar == null) {
                 chosenCar = car
-                view.setBackgroundColor(Color.YELLOW)
+                view.setBackgroundColor(secondaryColour)
                 previousCarView = view
                 carChoiceChanger(car)
             } else if (chosenCar == car) {
-                view.setBackgroundColor(Color.WHITE)
+                view.setBackgroundColor(primaryColour)
                 chosenCar = null
                 previousCarView = null
                 carChoiceChanger(null)
             } else {
-                previousCarView?.setBackgroundColor(Color.WHITE)
-                view.setBackgroundColor(Color.YELLOW)
+                previousCarView?.setBackgroundColor(primaryColour)
+                view.setBackgroundColor(secondaryColour)
                 chosenCar = car
                 previousCarView = view
                 carChoiceChanger(car)

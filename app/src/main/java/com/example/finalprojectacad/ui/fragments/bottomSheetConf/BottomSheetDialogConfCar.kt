@@ -7,14 +7,18 @@ import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.databinding.BottomSheetDialogConfCarBinding
+import com.example.finalprojectacad.other.utilities.FragmentsHelper
 import com.example.finalprojectacad.ui.SharedViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
@@ -35,32 +39,40 @@ class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navigation = requireActivity().supportFragmentManager
-            .findFragmentById(R.id.mainNavFragment)?.findNavController()
+        lifecycleScope.launch(Dispatchers.Main) {
+            val navigation = requireActivity().supportFragmentManager
+                .findFragmentById(R.id.mainNavFragment)?.findNavController()
 //        val navigation = Navigation.findNavController(view) //why didn't find navigation
-        val chosenCar = sharedViewModel.getChosenCar()
-
-        binding?.apply {
-            if (chosenCar != null) {
-                val infoTextCar = chosenCar.brandName + " " + chosenCar.modelName
-                if (chosenCar.year != -1) {
-                    infoTextCar.plus(" ${chosenCar.year}")
+            var chosenCar = sharedViewModel.getChosenCar()
+            if (chosenCar == null) {
+                val sharedPrefCarId = FragmentsHelper.getChosenCarIdAnyway(requireContext())
+                if (sharedPrefCarId != -1) {
+                    chosenCar = sharedViewModel.listAllCars.find { sharedPrefCarId == it.carId }
                 }
-                textViewCarBottomDialog.text = infoTextCar
-
-                showCarImg(chosenCar)
-
-
-                buttonConfirmCarBottomDialog.setOnClickListener {
-                    navigation?.navigate(R.id.trackTripFragment)
-                }
-            } else {
-                buttonConfirmCarBottomDialog.isGone = true
             }
 
-            buttonChangeCarBottomDialog.setOnClickListener {
-                sharedViewModel.confirmChosenCarFlag = true
-                navigation?.popBackStack()
+            binding?.apply {
+                if (chosenCar != null) {
+                    val infoTextCar = chosenCar.brandName + " " + chosenCar.modelName
+                    if (chosenCar.year != -1) {
+                        infoTextCar.plus(" ${chosenCar.year}")
+                    }
+                    textViewCarBottomDialog.text = infoTextCar
+
+                    showCarImg(chosenCar)
+
+
+                    buttonConfirmCarBottomDialog.setOnClickListener {
+                        navigation?.navigate(R.id.trackTripFragment)
+                    }
+                } else {
+                    buttonConfirmCarBottomDialog.isGone = true
+                }
+
+                buttonChangeCarBottomDialog.setOnClickListener {
+                    sharedViewModel.confirmChosenCarFlag = true
+                    navigation?.popBackStack()
+                }
             }
         }
 
@@ -80,6 +92,4 @@ class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
                 }
             })
     }
-
-
 }
