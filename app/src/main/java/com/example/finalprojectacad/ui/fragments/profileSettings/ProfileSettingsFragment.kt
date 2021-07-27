@@ -8,14 +8,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.finalprojectacad.R
 import com.example.finalprojectacad.databinding.FragmentProfileSetingsBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -67,11 +66,16 @@ class ProfileSettingsFragment : Fragment() {
                 }
             }
 
+            buttonResetPassword.setOnClickListener {
+                resetPassword()
+            }
+
             val savedUserAvatar = auth.currentUser?.photoUrl
             savedUserAvatar?.let { imgUri ->
                 Log.d(TAG, "onViewCreated: imgUri: ${imgUri.path}")
                 Log.d(TAG, "onViewCreated: imgUri: ${imgUri}")
-                val a = Glide.with(view).load(imgUri).error(R.drawable.default_user_img).into(imageViewUserAvatar)
+                val a = Glide.with(view).load(imgUri).error(R.drawable.default_user_img)
+                    .into(imageViewUserAvatar)
             }
         }
     }
@@ -79,6 +83,29 @@ class ProfileSettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    private fun resetPassword() {
+        val email: String = auth.currentUser?.email.toString().trim()
+
+        auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d(TAG, "resetPassword: ${Thread.currentThread().name}")
+                Toast.makeText(
+                    context,
+                    "Request to change password already send in your email",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }.addOnCanceledListener {
+            Toast.makeText(
+                context,
+                "Not valid email address or missing internet connection",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+
     }
 
     private val regImageIntent = registerForActivityResult(

@@ -15,13 +15,32 @@
         tools:layout="@layout/fragment_list_cars" >
         <action
             android:id="@+id/action_listCarsFragment_to_registrationFragment"
-            app:destination="@id/registrationFragment" />
+            app:destination="@id/registrationFragment"
+            app:enterAnim="@anim/custom_fade_in"
+            app:exitAnim="@anim/custom_fade_out"
+            app:popEnterAnim="@anim/custom_fade_in"
+            app:popExitAnim="@anim/custom_fade_out"/>
         <action
             android:id="@+id/action_listCarsFragment_to_profileSetingsFragment"
-            app:destination="@id/profileSetingsFragment" />
+            app:destination="@id/profileSetingsFragment"
+            app:enterAnim="@anim/custom_fade_in"
+            app:exitAnim="@anim/custom_fade_out"
+            app:popEnterAnim="@anim/custom_fade_in"
+            app:popExitAnim="@anim/custom_fade_out" />
         <action
             android:id="@+id/action_listCarsFragment_to_addCarFragment"
-            app:destination="@id/addCarFragment" />
+            app:destination="@id/addCarFragment"
+            app:enterAnim="@anim/custom_grow_fade_in"
+            app:exitAnim="@anim/custom_fade_out"
+            app:popEnterAnim="@anim/custom_fade_in"
+            app:popExitAnim="@anim/custom_fade_out" />
+        <action
+            android:id="@+id/action_listCarsFragment_to_trackTripFragment"
+            app:destination="@id/trackTripFragment"
+            app:enterAnim="@anim/custom_grow_fade_in"
+            app:exitAnim="@anim/custom_fade_out"
+            app:popEnterAnim="@anim/custom_fade_in"
+            app:popExitAnim="@anim/custom_fade_out" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
@@ -52,5 +71,13 @@
         android:id="@+id/bottomSheetDialogConfCar"
         android:name="com.example.finalprojectacad.ui.fragments.bottomSheetConf.BottomSheetDialogConfCar"
         android:label="BottomSheetDialogConfCar"
-        tools:layout="@layout/bottom_sheet_dialog_conf_car"/>
+        tools:layout="@layout/bottom_sheet_dialog_conf_car">
+        <action
+            android:id="@+id/action_bottomSheetDialogConfCar_to_trackTripFragment"
+            app:destination="@id/trackTripFragment"
+            app:enterAnim="@anim/custom_grow_fade_in"
+            app:exitAnim="@anim/custom_fade_out"
+            app:popEnterAnim="@anim/custom_fade_in"
+            app:popExitAnim="@anim/custom_fade_out" />
+    </dialog>
 </navigation>

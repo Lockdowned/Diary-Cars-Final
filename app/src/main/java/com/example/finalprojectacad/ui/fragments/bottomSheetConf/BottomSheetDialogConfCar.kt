@@ -63,7 +63,8 @@ class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
 
 
                     buttonConfirmCarBottomDialog.setOnClickListener {
-                        navigation?.navigate(R.id.trackTripFragment)
+                        navigation
+                            ?.navigate(R.id.action_bottomSheetDialogConfCar_to_trackTripFragment)
                     }
                 } else {
                     buttonConfirmCarBottomDialog.isGone = true

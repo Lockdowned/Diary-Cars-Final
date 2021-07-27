@@ -9,6 +9,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalprojectacad.R
@@ -32,6 +33,8 @@ class ListCarsFragment : Fragment() {
     private var carsListAdaptor: CarsListAdaptor? = null
 
     private var searchText = ""
+
+    private var navigation: NavController? = null
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -62,19 +65,21 @@ class ListCarsFragment : Fragment() {
                 setFilteredCarsInAdaptor()
             }
 
-            val navigation = Navigation.findNavController(view)
+            if (navigation == null) {
+                navigation = Navigation.findNavController(view)
+            }
 
             imageButtonToAuthorizationOrSettings.setOnClickListener {
                 if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
-                    navigation.navigate(R.id.action_listCarsFragment_to_profileSetingsFragment)
+                    navigation?.navigate(R.id.action_listCarsFragment_to_profileSetingsFragment)
                 } else {
-                    navigation.navigate(R.id.action_listCarsFragment_to_registrationFragment)
+                    navigation?.navigate(R.id.action_listCarsFragment_to_registrationFragment)
                 }
             }
 
             imageButtonToCarAddFragment.setOnClickListener {
                 sharedViewModel.setCarToEdit(null)
-                navigation.navigate(R.id.action_listCarsFragment_to_addCarFragment)
+                navigation?.navigate(R.id.action_listCarsFragment_to_addCarFragment)
             }
 
             rvListCars.adapter = carsListAdaptor
@@ -105,8 +110,8 @@ class ListCarsFragment : Fragment() {
                 cofirmedCar?.let {
                     if (sharedViewModel.confirmChosenCarFlag) {
                         sharedViewModel.confirmChosenCarFlag = false
-                        val navigation = Navigation.findNavController(view)
-                        navigation.navigate(R.id.trackTripFragment)
+                        navigation
+                            ?.navigate(R.id.action_listCarsFragment_to_trackTripFragment)
                     }
                 }
             }
@@ -144,5 +149,6 @@ class ListCarsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        navigation = null
     }
 }

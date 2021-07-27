@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -69,29 +70,31 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                 }
             }
 
+            val optionsSlideInLeft = NavOptions.Builder()
+                .setEnterAnim(R.anim.custom_slide_in_left)
+                .setPopExitAnim(R.anim.custom_fade_out)
+                .build()
+
+            val optionsSlideInRight = NavOptions.Builder()
+                .setEnterAnim(R.anim.custom_slide_in_right)
+                .setPopExitAnim(R.anim.custom_fade_out)
+                .build()
+
             bottomNavigationBar.setOnItemSelectedListener { menuItem ->
-                if (NavigationUI.onNavDestinationSelected(menuItem, navController)) {
-                    true
-                } else {
-                    when (menuItem.itemId) {
-                        R.id.trackTrip -> {
-                            navController.navigate(R.id.bottomSheetDialogConfCar)
-//                            if (FragmentsHelper.getChosenCarIdAnyway(applicationContext) == -1) {
-//                                Toast.makeText(
-//                                    this@MainActivity,
-//                                    "Need chose a car",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                                bottomNavigationBar.selectedItemId = R.id.listCarsFragment
-//                                false
-//                            } else {
-//                                navController.navigate(R.id.trackTripFragment)
-//                                false
-//                            }
-                            false
-                        }
-                        else -> false
+                when (menuItem.itemId) {
+                    R.id.listCarsFragment -> {
+                        navController.navigate(R.id.listCarsFragment, null, optionsSlideInRight)
+                        true
                     }
+                    R.id.trackTrip -> {
+                        navController.navigate(R.id.bottomSheetDialogConfCar)
+                        true
+                    }
+                    R.id.listRoutesFragment -> {
+                        navController.navigate(R.id.listRoutesFragment, null, optionsSlideInLeft)
+                        true
+                    }
+                    else -> true
                 }
             }
         }
