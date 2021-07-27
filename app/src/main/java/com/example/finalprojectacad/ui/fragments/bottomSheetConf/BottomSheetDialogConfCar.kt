@@ -71,7 +71,7 @@ class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
 
                 buttonChangeCarBottomDialog.setOnClickListener {
                     sharedViewModel.confirmChosenCarFlag = true
-                    navigation?.popBackStack()
+                    navigation?.navigate(R.id.listCarsFragment)
                 }
             }
         }

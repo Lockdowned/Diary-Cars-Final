@@ -121,7 +121,7 @@ class AddCarFragment : Fragment() {
                     autoCompleteTextBrandNewCar.setAdapter(autoCompleteSetAdapter(brandListName))
                 })
 
-            autoCompleteTextBrandNewCar.threshold = 2 // how much need letters to saw hints
+            autoCompleteTextBrandNewCar.threshold = 2 // how much letters need to saw hints
 
             autoCompleteTextBrandNewCar.setOnItemClickListener { _, _, _, _ ->
                 activity?.hideKeyboard(view)
