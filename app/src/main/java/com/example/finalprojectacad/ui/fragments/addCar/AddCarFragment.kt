@@ -86,7 +86,7 @@ class AddCarFragment : Fragment() {
                             resources.getString(R.string.this_brand_already_exist),
                             Toast.LENGTH_SHORT
                         )
-                            .show()
+                             .show()
                     } else {
                         addBrandInDbDialog(brandText)
                     }
