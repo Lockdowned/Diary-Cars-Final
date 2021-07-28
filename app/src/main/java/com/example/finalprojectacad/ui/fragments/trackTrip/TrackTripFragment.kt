@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.databinding.FragmentTrackTripBinding
 import com.example.finalprojectacad.other.Constants.ACTION_PAUSE_SERVICE
@@ -309,12 +310,12 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         this.isTracking = isTracking
         binding?.apply {
             if (!isTracking && isServiceStopped) {
-                buttonStartPause.text = "Start"
+                buttonStartPause.text = resources.getString(R.string.start)
                 buttonStopTracking.isInvisible = true
             } else if (!isTracking) {
-                buttonStartPause.text = "Resume"
+                buttonStartPause.text = resources.getString(R.string.resume)
             } else {
-                buttonStartPause.text = "Pause"
+                buttonStartPause.text = resources.getString(R.string.pause)
                 buttonStopTracking.isInvisible = false
             }
         }
@@ -378,12 +379,20 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         val distance = accurateDistance.roundToInt()
         val avgSpeed = calculateAvgSpeed(accurateDistance)
         binding?.apply {
-            textViewDistanceDriving.text = "distance: $distance m"
+            var frontText = resources.getString(R.string.distance)
+            var behindText = resources.getString(R.string.m_meter)
+            val wholeDistanceText = "$frontText $distance $behindText"
+            textViewDistanceDriving.text = wholeDistanceText
+            frontText = resources.getString(R.string.avg_speed)
+            behindText = resources.getString(R.string.km_per_hour)
+
             if (avgSpeed.isNaN()) {
-                textViewAverageSpeed.text = "avg speed: 0 km/h"
+                val wholeAvgSpeedText = "$frontText 0 $behindText"
+                textViewAverageSpeed.text = wholeAvgSpeedText
                 return
             }
-            textViewAverageSpeed.text = "avg speed: $avgSpeed km/h"
+            val wholeAvgSpeedText = "$frontText $avgSpeed $behindText"
+            textViewAverageSpeed.text = wholeAvgSpeedText
         }
     }
 
@@ -401,7 +410,8 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
     private fun showDurationTime(durationTime: Long) {
         val formattedTime = RouteUtils.getFormattedTime(durationTime)
-        binding?.textViewDurationDriving?.text = "duration $formattedTime"
+        binding?.textViewDurationDriving?.text =
+            resources.getString(R.string.duration).plus(" $formattedTime")
     }
 
     private fun moveCameraToLastPoint() {

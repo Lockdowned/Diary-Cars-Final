@@ -74,10 +74,18 @@ class AddCarFragment : Fragment() {
                 lifecycleScope.launch {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
                     if (brandText.isEmpty()) {
-                        Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            context,
+                            resources.getString(R.string.please_fill_brand_text),
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     } else if (brandAlreadyExistInDb(brandText, brandListName)) {
-                        Toast.makeText(context, "This brand already exist", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            context,
+                            resources.getString(R.string.this_brand_already_exist),
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     } else {
                         addBrandInDbDialog(brandText)
@@ -90,13 +98,13 @@ class AddCarFragment : Fragment() {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
                     val modelText = textInputLayoutModelNewCar.editText?.text.toString()
                     if (modelText.isEmpty()) {
-                        Toast.makeText(context, "Please fill model text field", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, resources.getString(R.string.please_fill_model_text_field), Toast.LENGTH_SHORT)
                             .show()
                     } else if (brandText.isEmpty()) {
-                        Toast.makeText(context, "Please fill brand text field", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, resources.getString(R.string.please_fill_brand_text), Toast.LENGTH_SHORT)
                             .show()
                     } else if (!brandAlreadyExistInDb(brandText, brandListName)) {
-                        Toast.makeText(context, "At the begin add brand name", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, resources.getString(R.string.at_the_begin_add_brand_name), Toast.LENGTH_SHORT)
                             .show()
                     } else {
                         addModelInDbDialog(modelText, brandText, brandList)
@@ -179,8 +187,8 @@ class AddCarFragment : Fragment() {
             }
 
             buttonSaveNewCar.setOnClickListener {
-                if (!textInputLayoutBrandNewCar.editText!!.text.equals("")
-                    && !textInputLayoutModelNewCar.editText!!.text.equals("")
+                if (!textInputLayoutBrandNewCar.editText!!.text.isNullOrEmpty()
+                    && !textInputLayoutModelNewCar.editText!!.text.isNullOrEmpty()
                 ) {
                     collectAndInsertCar()
                     val navigation = Navigation.findNavController(view)
@@ -188,7 +196,7 @@ class AddCarFragment : Fragment() {
                 } else {
                     Snackbar.make(
                         view,
-                        "You should fill brand and model fields",
+                        resources.getString(R.string.you_should_fill_brand_and_model),
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
@@ -213,13 +221,16 @@ class AddCarFragment : Fragment() {
     private fun addBrandInDbDialog(brandName: String) {
         val dialog = AlertDialog.Builder(context)
         dialog.run {
-            setMessage("Insert this brand: $brandName in database?")
-            setPositiveButton("Yes") { _, _ ->
+            val frontMessage = resources.getString(R.string.insert_this_brand)
+            val behindMessage = resources.getString(R.string.in_database)
+            val wholeMessage = "$frontMessage $brandName $behindMessage"
+            setMessage(wholeMessage)
+            setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
                 Log.d(TAG, "addBrandInDBDialog: ")
                 val newBrandRoom = BrandRoom(brandName)
                 newViewModel.insertNewBrand(newBrandRoom)
             }
-            setNegativeButton("No") { _, _ -> }
+            setNegativeButton(resources.getString(R.string.no)) { _, _ -> }
         }
         val alertDialog = dialog.create()
         alertDialog.show()
@@ -232,8 +243,11 @@ class AddCarFragment : Fragment() {
     ) {
         val dialog = AlertDialog.Builder(context)
         dialog.run {
-            setMessage("Insert this brand: $modelName in database?")
-            setPositiveButton("Yes") { _, _ ->
+            val frontMessage = resources.getString(R.string.insert_this_model)
+            val behindMessage = resources.getString(R.string.in_database)
+            val wholeMessage = "$frontMessage $modelName $behindMessage"
+            setMessage(wholeMessage)
+            setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
                 Log.d(TAG, "addBrandInDBDialog: ")
                 var brandId: Int? = null
                 for (brand in listBrandRoom) {
@@ -247,7 +261,7 @@ class AddCarFragment : Fragment() {
                     Log.d(TAG, "addModelInDbDialog: new model insert in db model: $newModelRoom")
                 }
             }
-            setNegativeButton("No") { _, _ -> }
+            setNegativeButton(resources.getString(R.string.no)) { _, _ -> }
         }
         val alertDialog = dialog.create()
         alertDialog.show()
@@ -348,7 +362,7 @@ class AddCarFragment : Fragment() {
     @DelicateCoroutinesApi
     private fun copyToScopeStorageImg(carListSize: Int) {
         GlobalScope.launch(Dispatchers.IO) {
-            withTimeoutOrNull(MINIMAL_LIFETIME_COROUTINE){
+            withTimeoutOrNull(MINIMAL_LIFETIME_COROUTINE) {
                 val insertedImg = SaveImgToScopedStorage
                     .copyToScopeStorageImg(
                         choseImgUri, carListSize, (activity as MainActivity).applicationContext

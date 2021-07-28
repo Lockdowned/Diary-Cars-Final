@@ -1,7 +1,6 @@
 package com.example.finalprojectacad.ui.fragments.listCars
 
 import android.content.Context
-import android.graphics.Color
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -40,17 +39,22 @@ class CarsListAdaptor(
                 textViewBrand.text = brandAndModelText
                 var specificationText = ""
                 if (carItem.transmissionName.isNotEmpty()) {
-                    specificationText += "transmission: ${carItem.transmissionName}\n"
+                    specificationText +=
+                        "${context!!.resources.getString(R.string.transmission)}: " +
+                                "${carItem.transmissionName}\n"
                 }
                 if (carItem.year != -1) {
-                    specificationText += "year: ${carItem.year}\n"
+                    specificationText +=
+                        "${context!!.resources.getString(R.string.year)}: ${carItem.year}\n"
                 }
 
                 if (carItem.engine.isNotEmpty()) {
-                    specificationText += "engine: ${carItem.engine}\n"
+                    specificationText +=
+                        "${context!!.resources.getString(R.string.engine)}: ${carItem.engine}\n"
                 }
                 if (carItem.mileage != -1) {
-                    specificationText += "mileage: ${carItem.mileage}"
+                    specificationText +=
+                        "${context!!.resources.getString(R.string.mileage)}: ${carItem.mileage}"
                 }
                 textViewSpecification.text = specificationText
                 localCoroutineScope.launch {

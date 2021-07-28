@@ -16,7 +16,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:maxLines="1"
-        android:text="Routes of all cars"
+        android:text="@string/routes_of_all_cars"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/imageButtonListTrackClearChosenCar"
         app:layout_constraintStart_toEndOf="@+id/spinnerRouteSortType"
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Sort by:"
+        android:text="@string/sort_by"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

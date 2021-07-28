@@ -93,14 +93,14 @@ class ProfileSettingsFragment : Fragment() {
                 Log.d(TAG, "resetPassword: ${Thread.currentThread().name}")
                 Toast.makeText(
                     context,
-                    "Request to change password already send in your email",
+                    resources.getString(R.string.request_to_change_password_already_send_in_your_email),
                     Toast.LENGTH_LONG
                 ).show()
             }
         }.addOnCanceledListener {
             Toast.makeText(
                 context,
-                "Not valid email address or missing internet connection",
+                resources.getString(R.string.not_valid_email_address_or_missing_internet_connection),
                 Toast.LENGTH_LONG
             ).show()
         }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.databinding.FragmentListTracksBinding
@@ -56,7 +57,7 @@ class ListRoutesFragment : Fragment() {
                     null,
                     requireActivity().applicationContext
                 )
-                textViewChosenCar.text = "Routes of all cars"
+                textViewChosenCar.text = resources.getString(R.string.routes_of_all_cars)
             }
 
             recyclerViewListRoutes.adapter = routeListAdaptor

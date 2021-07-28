@@ -23,7 +23,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -83,7 +82,7 @@ class RegistrationFragment : Fragment() {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
                             context,
-                            "You have successfully registered",
+                            resources.getString(R.string.you_have_successfully_registered),
                             Toast.LENGTH_SHORT
                         ).show()
                         startAndTuningSynchronization()
@@ -92,7 +91,11 @@ class RegistrationFragment : Fragment() {
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Log.e(TAG, "registerNewUser: ${e.message}")
-                        Toast.makeText(context, "Missing internet connection", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            context,
+                            resources.getString(R.string.missing_internet_connection),
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     }
                 }
@@ -110,7 +113,7 @@ class RegistrationFragment : Fragment() {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
                             context,
-                            "You have been successfully authorized",
+                            resources.getString(R.string.you_have_been_successfully_authorized),
                             Toast.LENGTH_SHORT
                         ).show()
                         startAndTuningSynchronization()
@@ -119,7 +122,8 @@ class RegistrationFragment : Fragment() {
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
-                            context, "No such user or missing internet connection",
+                            context,
+                            resources.getString(R.string.no_such_user_or_missing_internet_connection),
                             Toast.LENGTH_SHORT
                         ).show()
                         Log.e(TAG, "registerNewUser: ${e.message}")
@@ -131,26 +135,46 @@ class RegistrationFragment : Fragment() {
 
     private fun inspectInputFields(emailText: String, passwordText: String): Boolean {
         if (emailText.isEmpty()) {
-            Toast.makeText(context, "Pleas fill email field", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                resources.getString(R.string.please_fill_email_field),
+                Toast.LENGTH_SHORT
+            ).show()
             return false
         }
         if (passwordText.isEmpty()) {
-            Toast.makeText(context, "Pleas fill password field", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                resources.getString(R.string.pleas_fill_password_field),
+                Toast.LENGTH_SHORT
+            ).show()
             return false
         }
         if (passwordText.length < 6) {
-            Toast.makeText(context, "Password must contains at least 6 symbols", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                context,
+                resources.getString(R.string.password_must_contains_at_least_6_symbols),
+                Toast.LENGTH_SHORT
+            )
                 .show()
             return false
         }
         if (emailText.length > 5) {
             val isCorrectEmail = FragmentsHelper.checkCorrectEmail(emailText)
             if (!isCorrectEmail) {
-                Toast.makeText(context, "Pleas write correct email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    resources.getString(R.string.pleas_write_correct_email),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             return isCorrectEmail
         } else {
-            Toast.makeText(context, "Pleas write correct email", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                resources.getString(R.string.pleas_write_correct_email),
+                Toast.LENGTH_SHORT
+            ).show()
         }
         return false
     }
@@ -181,7 +205,7 @@ class RegistrationFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         context,
-                        "You have been successfully authorized",
+                        resources.getString(R.string.you_have_been_successfully_authorized),
                         Toast.LENGTH_SHORT
                     ).show()
                     startAndTuningSynchronization()
@@ -192,7 +216,8 @@ class RegistrationFragment : Fragment() {
                     Log.d(TAG, "googleAuthForFirebase: ${e.message}")
                     Toast.makeText(
                         requireContext(),
-                        "Missing internet connection", Toast.LENGTH_SHORT
+                        resources.getString(R.string.missing_internet_connection),
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }

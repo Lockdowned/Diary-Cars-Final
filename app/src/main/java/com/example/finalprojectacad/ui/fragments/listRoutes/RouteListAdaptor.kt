@@ -1,11 +1,13 @@
 package com.example.finalprojectacad.ui.fragments.listRoutes
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalprojectacad.R
 import com.example.finalprojectacad.data.localDB.entity.CarRoom
 import com.example.finalprojectacad.data.localDB.entity.RouteRoom
 import com.example.finalprojectacad.databinding.ItemRvListTracksBinding
@@ -19,29 +21,40 @@ class RouteListAdaptor(
     private val sharedViewModel: SharedViewModel
 ) : ListAdapter<RouteRoom, RouteListAdaptor.RoutesListHolder>(RouteComparator()) {
 
+    private var context: Context? = null
 
     inner class RoutesListHolder(private val routeItemBinding: ItemRvListTracksBinding) :
         RecyclerView.ViewHolder(routeItemBinding.root) {
         fun bind(routeItem: RouteRoom) {
             routeItemBinding.apply {
-                val formatterStartTime =
-                    SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                val formattedStartTime = formatterStartTime.format(routeItem.startDriveTime)
-                textViewStartDrivingTimeRv.text = "Start time: \n ${formattedStartTime}"
-                var car: CarRoom? = sharedViewModel.getChosenCar()
-                if (car == null) {
-                    car = viewModel.listAllCars.find { it.carId == routeItem.carId }
-                }
-                car?.let {
-                    textViewChosenVehicleRv.text = "${it.brandName} ${it.modelName}"
-                }
-                textViewDroveDistanceRv.text = "distance: ${routeItem.distance} metres"
-                val formattedDurationTime = RouteUtils.getFormattedTime(routeItem.duration)
-                textViewDurationDrivingRv.text = "duration: ${formattedDurationTime}"
-                textViewAvgSpeedRv.text = "avg speed: ${routeItem.avgSpeed} km/h"
-                textViewMaxSpeedRv.text = "max speed: ${routeItem.maxSpeed} km/h"
-                if (routeItem.imgRoute.isNotEmpty()) {
-                    imageViewRouteImg.setImageURI(routeItem.imgRoute.toUri())
+                context?.let { context ->
+                    val formatterStartTime =
+                        SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                    val formattedStartTime = formatterStartTime.format(routeItem.startDriveTime)
+                    textViewStartDrivingTimeRv.text =
+                        context.resources.getString(R.string.start_time)
+                            .plus(" \n $formattedStartTime")
+                    var car: CarRoom? = sharedViewModel.getChosenCar()
+                    if (car == null) {
+                        car = viewModel.listAllCars.find { it.carId == routeItem.carId }
+                    }
+                    car?.let {
+                        textViewChosenVehicleRv.text = "${it.brandName} ${it.modelName}"
+                    }
+                    textViewDroveDistanceRv.text = context.resources.getString(R.string.distance)
+                        .plus(": ${routeItem.distance} ")
+                        .plus(context.resources.getString(R.string.metres))
+                    val formattedDurationTime = RouteUtils.getFormattedTime(routeItem.duration)
+                    textViewDurationDrivingRv.text = context.resources.getString(R.string.duration)
+                        .plus(": $formattedDurationTime")
+                    var frontText = context.resources.getString(R.string.avg_speed)
+                    val behindText = context.getString(R.string.km_per_hour)
+                    textViewAvgSpeedRv.text = "$frontText ${routeItem.avgSpeed} $behindText"
+                    frontText = context.resources.getString(R.string.max_speed)
+                    textViewMaxSpeedRv.text = "$frontText ${routeItem.maxSpeed} $behindText"
+                    if (routeItem.imgRoute.isNotEmpty()) {
+                        imageViewRouteImg.setImageURI(routeItem.imgRoute.toUri())
+                    }
                 }
             }
         }
@@ -59,7 +72,8 @@ class RouteListAdaptor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoutesListHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
+        context = parent.context
+        val layoutInflater = LayoutInflater.from(context)
         val routeItemBinding = ItemRvListTracksBinding.inflate(layoutInflater, parent, false)
         return RoutesListHolder(routeItemBinding)
     }
