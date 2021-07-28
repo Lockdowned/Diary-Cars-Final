@@ -9,11 +9,11 @@
     <string name="please_fill_model_text_field">Please fill model text field</string>
     <string name="at_the_begin_add_brand_name">At the begin add brand name</string>
     <string name="you_should_fill_brand_and_model">You should fill brand and model fields</string>
-    <string name="insert_this_brand">Insert this brand:</string>
+    <string name="insert_this_brand">Insert this brand</string>
     <string name="in_database">in database?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="insert_this_model">Insert this model:</string>
+    <string name="insert_this_model">Insert this model</string>
 
     //listRoutesFragment
     <string name="routes_of_all_cars">Routes of all cars</string>
@@ -46,10 +46,6 @@
     <string name="start_time">Start time:</string>
     <string name="metres">metres</string>
     <string name="max_speed">max speed:</string>
-
-    //carsListAdaptor
-
-
 
 
     //layout

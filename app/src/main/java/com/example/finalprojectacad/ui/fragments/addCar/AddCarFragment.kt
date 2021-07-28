@@ -221,7 +221,7 @@ class AddCarFragment : Fragment() {
     private fun addBrandInDbDialog(brandName: String) {
         val dialog = AlertDialog.Builder(context)
         dialog.run {
-            val frontMessage = resources.getString(R.string.insert_this_brand)
+            val frontMessage = resources.getString(R.string.insert_this_brand).plus(":")
             val behindMessage = resources.getString(R.string.in_database)
             val wholeMessage = "$frontMessage $brandName $behindMessage"
             setMessage(wholeMessage)
@@ -243,7 +243,7 @@ class AddCarFragment : Fragment() {
     ) {
         val dialog = AlertDialog.Builder(context)
         dialog.run {
-            val frontMessage = resources.getString(R.string.insert_this_model)
+            val frontMessage = resources.getString(R.string.insert_this_model).plus(":")
             val behindMessage = resources.getString(R.string.in_database)
             val wholeMessage = "$frontMessage $modelName $behindMessage"
             setMessage(wholeMessage)
