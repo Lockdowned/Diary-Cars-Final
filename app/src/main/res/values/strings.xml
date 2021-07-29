@@ -36,16 +36,16 @@
     <string name="start">Start</string>
     <string name="resume">Resume</string>
     <string name="pause">Pause</string>
-    <string name="distance">distance:</string>
+    <string name="distance">distance</string>
     <string name="m_meter">m</string>
-    <string name="avg_speed">avg speed:</string>
+    <string name="avg_speed">avg speed</string>
     <string name="km_per_hour">km/h</string>
     <string name="duration">duration</string>
 
     //routeListAdaptor
-    <string name="start_time">Start time:</string>
+    <string name="start_time">Start time</string>
     <string name="metres">metres</string>
-    <string name="max_speed">max speed:</string>
+    <string name="max_speed">max speed</string>
 
 
     //layout

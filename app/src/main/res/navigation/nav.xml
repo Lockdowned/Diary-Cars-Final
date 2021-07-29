@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/listCarsFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.listCars.ListCarsFragment"
+        android:name="com.beta.finalprojectacad.ui.fragments.listCars.ListCarsFragment"
         android:label="fragment_list_cars"
         tools:layout="@layout/fragment_list_cars" >
         <action
@@ -44,32 +44,32 @@
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.registrationUser.RegistrationFragment"
+        android:name="com.beta.finalprojectacad.ui.fragments.registrationUser.RegistrationFragment"
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration" />
     <fragment
         android:id="@+id/listRoutesFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.listRoutes.ListRoutesFragment"
+        android:name="com.beta.finalprojectacad.ui.fragments.listRoutes.ListRoutesFragment"
         android:label="fragment_list_tracks"
         tools:layout="@layout/fragment_list_tracks"/>
     <fragment
         android:id="@+id/trackTripFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.trackTrip.TrackTripFragment"
+        android:name="com.beta.finalprojectacad.ui.fragments.trackTrip.TrackTripFragment"
         android:label="fragment_track_trip"
         tools:layout="@layout/fragment_track_trip" />
     <fragment
         android:id="@+id/profileSetingsFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.profileSettings.ProfileSettingsFragment"
+        android:name="com.beta.finalprojectacad.ui.fragments.profileSettings.ProfileSettingsFragment"
         android:label="fragment_profile_setings"
         tools:layout="@layout/fragment_profile_setings" />
     <fragment
         android:id="@+id/addCarFragment"
-        android:name="com.example.finalprojectacad.ui.fragments.addCar.AddCarFragment"
+        android:name="com.beta.finalprojectacad.ui.fragments.addCar.AddCarFragment"
         android:label="fragment_add_car"
         tools:layout="@layout/fragment_add_car" />
     <dialog
         android:id="@+id/bottomSheetDialogConfCar"
-        android:name="com.example.finalprojectacad.ui.fragments.bottomSheetConf.BottomSheetDialogConfCar"
+        android:name="com.beta.finalprojectacad.ui.fragments.bottomSheetConf.BottomSheetDialogConfCar"
         android:label="BottomSheetDialogConfCar"
         tools:layout="@layout/bottom_sheet_dialog_conf_car">
         <action

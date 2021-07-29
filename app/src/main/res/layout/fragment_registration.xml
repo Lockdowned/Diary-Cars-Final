@@ -38,7 +38,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/password"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +108,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/password"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -134,6 +134,7 @@
         android:scaleType="center"
         android:src="@drawable/ic_login_foreground"
         app:layout_constraintStart_toEndOf="@+id/editTextAuthorizationPassword"
-        app:layout_constraintTop_toTopOf="@+id/editTextAuthorizationPassword" />
+        app:layout_constraintTop_toTopOf="@+id/editTextAuthorizationPassword"
+        android:contentDescription="@string/authorization" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

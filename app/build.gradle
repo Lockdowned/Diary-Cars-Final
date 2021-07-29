@@ -13,7 +13,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.finalprojectacad"
+        applicationId "com.beta.finalprojectacad"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -38,6 +38,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
     }
 }
 
