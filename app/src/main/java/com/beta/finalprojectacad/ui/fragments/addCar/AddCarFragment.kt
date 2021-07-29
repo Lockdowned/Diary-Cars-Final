@@ -32,6 +32,7 @@ import com.beta.finalprojectacad.ui.activity.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import java.util.*
 
 private const val TAG = "AddCarFragment"
 
@@ -179,7 +180,8 @@ class AddCarFragment : Fragment() {
                     }
                 })
 
-            autoCompleteTextTransmissionNewCar.setAdapter(autoCompleteSetAdapter(transmissionList))
+            val a = (resources.getStringArray(R.array.car_transmission_type)).toList()
+            autoCompleteTextTransmissionNewCar.setAdapter(autoCompleteSetAdapter(a))
 
             constrainAddFragment.setOnClickListener {
                 activity?.hideKeyboard(view)

@@ -94,4 +94,10 @@
         <item>terrain</item>
         <item>hybrid</item>
     </string-array>
+
+    <string-array name="car_transmission_type">
+        <item>stick</item>
+        <item>auto</item>
+        <item>hybrid</item>
+    </string-array>
 </resources>

@@ -3,94 +3,100 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     //addCarFragment
-    <string name="please_fill_brand_text">Please fill brand text field</string>
-    <string name="this_brand_already_exist">Please fill brand text field</string>
-    <string name="please_fill_model_text_field">Please fill model text field</string>
-    <string name="at_the_begin_add_brand_name">At the begin add brand name</string>
-    <string name="you_should_fill_brand_and_model">You should fill brand and model fields</string>
-    <string name="insert_this_brand">Insert this brand</string>
-    <string name="in_database">in database?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="insert_this_model">Insert this model</string>
+    <string name="please_fill_brand_text">Пожалуйста, заполните текстовое поле бренда</string>
+    <string name="this_brand_already_exist">Пожалуйста, заполните текстовое поле бренда</string>
+    <string name="please_fill_model_text_field">Пожалуйста, заполните текстовое поле модели</string>
+    <string name="at_the_begin_add_brand_name">Для начала добавьте название бренда</string>
+    <string name="you_should_fill_brand_and_model">Вы должны заполнить поля бренда и модели</string>
+    <string name="insert_this_brand">Сохранить этот бренд</string>
+    <string name="in_database">в базе данных?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="insert_this_model">Сохранить эту модель</string>
 
     //listRoutesFragment
-    <string name="routes_of_all_cars">Routes of all cars</string>
+    <string name="routes_of_all_cars">Все маршруты</string>
 
     //profileSettingFragment
-    <string name="request_to_change_password_already_send_in_your_email">Request to change password already send in your email</string>
-    <string name="not_valid_email_address_or_missing_internet_connection">Not valid email address or missing internet connection</string>
+    <string name="request_to_change_password_already_send_in_your_email">Запрос на смену пароля уже отправлен на вашу электронную почту</string>
+    <string name="not_valid_email_address_or_missing_internet_connection">Недействительный адрес электронной почты или отсутствует подключение к Интернету</string>
 
     //registrationFragment
-    <string name="you_have_successfully_registered">You have successfully registered</string>
-    <string name="missing_internet_connection">Missing internet connection</string>
-    <string name="you_have_been_successfully_authorized">You have been successfully authorized</string>
-    <string name="no_such_user_or_missing_internet_connection">No such user or missing internet connection</string>
-    <string name="please_fill_email_field">Please fill email field</string>
-    <string name="pleas_fill_password_field">Pleas fill password field</string>
-    <string name="password_must_contains_at_least_6_symbols">Password must contains at least 6 symbols</string>
-    <string name="pleas_write_correct_email">Pleas write correct email</string>
+    <string name="you_have_successfully_registered">Вы успешно зарегистрировались</string>
+    <string name="missing_internet_connection">Отсутствует подключение к Интернету</string>
+    <string name="you_have_been_successfully_authorized">Вы успешно авторизованы</string>
+    <string name="no_such_user_or_missing_internet_connection">Нет такого пользователя или отсутствует подключение к Интернету</string>
+    <string name="please_fill_email_field">Пожалуйста, заполните поле электронной почты</string>
+    <string name="pleas_fill_password_field">Пожалуйста, заполните поле пароля</string>
+    <string name="password_must_contains_at_least_6_symbols">Пароль должен содержать не менее 6 символов</string>
+    <string name="pleas_write_correct_email">Пожалуйста, напишите правильный адрес электронной почты</string>
 
     //trackTripFragment
-    <string name="start">Start</string>
-    <string name="resume">Resume</string>
-    <string name="pause">Pause</string>
-    <string name="distance">distance</string>
-    <string name="m_meter">m</string>
-    <string name="avg_speed">avg speed</string>
-    <string name="km_per_hour">km/h</string>
-    <string name="duration">duration</string>
+    <string name="start">Начать</string>
+    <string name="resume">Продолжить</string>
+    <string name="pause">Пауза</string>
+    <string name="distance">расстояние</string>
+    <string name="m_meter">м</string>
+    <string name="avg_speed">ср скорость</string>
+    <string name="km_per_hour">км/ч</string>
+    <string name="duration">продолжительность</string>
 
     //routeListAdaptor
-    <string name="start_time">Start time</string>
-    <string name="metres">metres</string>
-    <string name="max_speed">max speed</string>
+    <string name="start_time">Время начала</string>
+    <string name="metres">метры</string>
+    <string name="max_speed">макс скорость</string>
 
 
     //layout
-    <string name="need_choose_a_car">Need choose a car</string>
-    <string name="change_car">Change car</string>
-    <string name="confirm_car">Confirm Car</string>
-    <string name="save">Save</string>
-    <string name="brand">Brand</string>
-    <string name="model">Model</string>
-    <string name="engine">Engine</string>
-    <string name="transmission">Transmission</string>
-    <string name="year">Year</string>
-    <string name="mileage">Mileage</string>
+    <string name="need_choose_a_car">Нужно выбрать машину</string>
+    <string name="change_car">Сменить машину</string>
+    <string name="confirm_car">Подтвердить</string>
+    <string name="save">Сохранить</string>
+    <string name="brand">Бренд</string>
+    <string name="model">Модель</string>
+    <string name="engine">Двигатель</string>
+    <string name="transmission">Коробка передач</string>
+    <string name="year">Год</string>
+    <string name="mileage">Пробег</string>
     <string name="search">Поиск</string>
-    <string name="filter">Filter</string>
-    <string name="sort_by">Sort by:</string>
-    <string name="logout">Logout</string>
-    <string name="reset_password">Reset password</string>
-    <string name="setting">Setting</string>
-    <string name="synchronize_to_do">synchronize(to do)</string>
+    <string name="filter">Фильтр</string>
+    <string name="sort_by">Сортировать по:</string>
+    <string name="logout">Выйти</string>
+    <string name="reset_password">Сбросить пароль</string>
+    <string name="setting">Настройки</string>
+    <string name="synchronize_to_do">Синхронизация(to do)</string>
     <string name="to_do">to do</string>
-    <string name="permissions">Permissions</string>
-    <string name="authorization">Authorization</string>
-    <string name="or">OR</string>
-    <string name="register_new_user">Register new user</string>
-    <string name="login">Login</string>
-    <string name="password">password</string>
-    <string name="register">Register</string>
-    <string name="stop">Stop</string>
-    <string name="delete">delete</string>
-    <string name="brand_and_model">Brand and model</string>
-    <string name="specification">Specification:</string>
+    <string name="permissions">Разрешения</string>
+    <string name="authorization">Авторизация</string>
+    <string name="or">Или</string>
+    <string name="register_new_user">Зарегистрировать нового пользователя</string>
+    <string name="login">Авторизоваться</string>
+    <string name="password">пароль</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="stop">Стоп</string>
+    <string name="delete">удалить</string>
+    <string name="brand_and_model">Бренд и модель</string>
+    <string name="specification">Технические характеристики:</string>
 
 
     <string-array name="sort_filter_routes">
-        <item>Date</item>
-        <item>Distance</item>
-        <item>Duration</item>
-        <item>Avg speed</item>
-        <item>Max speed</item>
+        <item>Дата</item>
+        <item>Расстояние</item>
+        <item>Продолжительность</item>
+        <item>Ср скорость</item>
+        <item>Макс скорость</item>
     </string-array>
 
     <string-array name="map_type_presentation">
-        <item>road</item>
-        <item>satellite</item>
-        <item>terrain</item>
-        <item>hybrid</item>
+        <item>дорога</item>
+        <item>спутник</item>
+        <item>земля</item>
+        <item>смешанный</item>
+    </string-array>
+
+    <string-array name="car_transmission_type">
+        <item>ручная</item>
+        <item>автомат</item>
+        <item>электро</item>
     </string-array>
 </resources>
