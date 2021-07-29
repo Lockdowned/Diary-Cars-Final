@@ -11,12 +11,12 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.databinding.ItemRvListCarsBinding
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper
 import com.beta.finalprojectacad.ui.SharedViewModel
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
 
 private const val TAG = "CarsListAdaptor"
@@ -71,6 +71,7 @@ class CarsListAdaptor(
                         } else {
                             withContext(Dispatchers.Main) {
                                 Glide.with(carItemBinding.root.context).load(findImgRoom.imgCar)
+                                    .error(R.drawable.default_car)
                                     .into(imageViewCar)
                             }
                         }

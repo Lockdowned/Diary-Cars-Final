@@ -18,9 +18,6 @@ class PopulateDatabase() {
         transmissionList.forEach {
             carDao.insertTransmission(it)
         }
-        carsList.forEach {
-            carDao.insertCar(it)
-        }
     }
 
     val brandList = listOf<BrandRoom>(
@@ -121,16 +118,5 @@ class PopulateDatabase() {
         TransmissionRoom("stick"),
         TransmissionRoom("auto"),
         TransmissionRoom("hybrid")
-    )
-
-    val carsList = listOf<CarRoom>(
-        CarRoom(
-            "Nissan",
-            "Zxb-34",
-            "stick",
-            "3Litres",
-            year = 5,
-            mileage = 325
-        )
     )
 }
