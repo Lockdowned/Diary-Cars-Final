@@ -16,6 +16,13 @@
     //mb not necessary
 <!--    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />-->
 
+    //for enable or disable gps without system dialog
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+
 
     <application
         android:name="com.beta.finalprojectacad.BaseApplication"

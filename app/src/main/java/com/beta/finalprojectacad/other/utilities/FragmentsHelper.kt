@@ -2,7 +2,9 @@ package com.beta.finalprojectacad.other.utilities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.LocationManager
 import android.util.Log
+import androidx.core.location.LocationManagerCompat
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.beta.finalprojectacad.data.localDB.entity.CarRoom
@@ -12,6 +14,11 @@ import java.util.regex.Pattern
 private const val TAG = "FragmentsHelper"
 
 object FragmentsHelper {
+
+    fun isLocationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return LocationManagerCompat.isLocationEnabled(locationManager)
+    }
 
     fun starWorkManagerSynchronization(applicationContext: Context) {
         val workManager = WorkManager.getInstance(applicationContext)

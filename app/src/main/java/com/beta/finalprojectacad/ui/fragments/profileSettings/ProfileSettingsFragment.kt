@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +16,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import com.bumptech.glide.Glide
 import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.databinding.FragmentProfileSetingsBinding
+import com.beta.finalprojectacad.other.utilities.FragmentsHelper.isLocationEnabled
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,10 +77,24 @@ class ProfileSettingsFragment : Fragment() {
             savedUserAvatar?.let { imgUri ->
                 Log.d(TAG, "onViewCreated: imgUri: ${imgUri.path}")
                 Log.d(TAG, "onViewCreated: imgUri: ${imgUri}")
-                val a = Glide.with(view).load(imgUri).error(R.drawable.default_user_img)
+                Glide.with(view).load(imgUri).error(R.drawable.default_user_img)
                     .into(imageViewUserAvatar)
             }
+
+            switchGPSActivated.setOnCheckedChangeListener { _, _ ->
+                Intent(ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${requireActivity().packageName}")).apply {
+                    addCategory(Intent.CATEGORY_DEFAULT)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(this)
+                }
+                
+            }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding?.switchGPSActivated?.isChecked = isLocationEnabled(requireContext())
     }
 
     override fun onDestroyView() {

@@ -1,9 +1,11 @@
 package com.beta.finalprojectacad.ui.fragments.bottomSheetConf
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -15,6 +17,7 @@ import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.databinding.BottomSheetDialogConfCarBinding
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper
 import com.beta.finalprojectacad.ui.SharedViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +41,8 @@ class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adoptazeForLandscapeOrientation(view)
 
         lifecycleScope.launch(Dispatchers.Main) {
             val navigation = requireActivity().supportFragmentManager
@@ -77,6 +82,18 @@ class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
             }
         }
 
+    }
+
+    private fun adoptazeForLandscapeOrientation(view: View) {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            view.viewTreeObserver.removeOnGlobalLayoutListener { this }
+            val dialog = dialog
+            val bottomSheet =
+                dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            val behavior = BottomSheetBehavior.from(bottomSheet!!)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.peekHeight = 0
+        }
     }
 
     private fun showCarImg(chosenCar: CarRoom) {
