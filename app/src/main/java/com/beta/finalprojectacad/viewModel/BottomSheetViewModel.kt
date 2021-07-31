@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BottomSheetViewModel
 @Inject constructor(
-    private val mainRepository: MainRepository
+    mainRepository: MainRepository
 ) : ViewModel() {
 
     val allImagesLiveData: LiveData<List<ImageCarRoom>> = mainRepository.getAllImages().asLiveData()

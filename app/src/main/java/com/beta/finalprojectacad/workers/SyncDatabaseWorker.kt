@@ -16,8 +16,8 @@ class SyncDatabaseWorker
 @AssistedInject constructor(
     @Assisted ctx: Context,
     @Assisted params: WorkerParameters,
-    val firebaseRequests: FirebaseRequests,
-    val mainRepository: MainRepository
+    private val firebaseRequests: FirebaseRequests,
+    private val mainRepository: MainRepository
 ) : CoroutineWorker(ctx, params) {
 
 

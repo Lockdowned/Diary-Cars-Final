@@ -16,10 +16,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ListRoutesViewModel
 @Inject constructor(
-    private val mainRepository: MainRepository
+    mainRepository: MainRepository
 ) : ViewModel() {
 
-    var listAllCars: List<CarRoom> = listOf()
+    var listAllCars: List<CarRoom>? = null
     val allCarsLiveData: LiveData<List<CarRoom>> = mainRepository.getAllCars().asLiveData()
 
 

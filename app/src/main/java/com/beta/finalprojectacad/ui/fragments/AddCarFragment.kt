@@ -43,8 +43,8 @@ class AddCarFragment : Fragment() {
     private val newViewModel: AddCarViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    var choseImgUri: Uri? = null
-    var carToEdit: CarRoom? = null
+    private var choseImgUri: Uri? = null
+    private var carToEdit: CarRoom? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +55,7 @@ class AddCarFragment : Fragment() {
         return binding!!.root
     }
 
+    @DelicateCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -166,7 +167,6 @@ class AddCarFragment : Fragment() {
                     modelsRoom.forEach {
                         modelsName.add(it.modelName)
                     }
-                    newViewModel.setAllModels(modelsName)
                 })
 
             autoCompleteTextModelNewCar.setAdapter(autoCompleteSetAdapter(allModelsName))
@@ -184,10 +184,10 @@ class AddCarFragment : Fragment() {
             val transmissionList = mutableListOf<String>()
 
             newViewModel.allTransmissionsLiveData.observe(
-                viewLifecycleOwner, Observer {
+                viewLifecycleOwner, Observer { list ->
                     if (transmissionList.isEmpty()) {
-                        it.forEach {
-                            transmissionList.add(it.transmissionName)
+                        list.forEach { transmissionRoom ->
+                            transmissionList.add(transmissionRoom.transmissionName)
                         }
                     }
                 })
@@ -293,6 +293,7 @@ class AddCarFragment : Fragment() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    @DelicateCoroutinesApi
     private fun collectAndInsertCar() {
         copyToScopeStorageImg(newViewModel.listAllCars.size)
         val car = CarRoom()

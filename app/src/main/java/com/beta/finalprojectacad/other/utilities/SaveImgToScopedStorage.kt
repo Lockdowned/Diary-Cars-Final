@@ -19,7 +19,6 @@ object SaveImgToScopedStorage {
         carListSize: Int,
         appContext: Context
     ): ImageCarRoom? {
-        var imgRoom: ImageCarRoom? = null
         var flagSuccessSave: Boolean
         choseImgUri?.let {
             val currentIdCars = carListSize + 1
@@ -28,12 +27,11 @@ object SaveImgToScopedStorage {
                 val listScopeStorageImg = openSavedImg(appContext)
                 val lastSavedImg = listScopeStorageImg.last() // mb need find by name file
 
-                imgRoom = ImageCarRoom(
+                return ImageCarRoom(
                     lastSavedImg.toString(),
                     System.currentTimeMillis(),
                     currentIdCars
                 )
-                return imgRoom
             }
         }
         return null

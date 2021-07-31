@@ -3,15 +3,12 @@ package com.beta.finalprojectacad.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beta.finalprojectacad.data.localDB.entity.CarRoom
-import com.beta.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel
-@Inject constructor(
-    private val mainRepository: MainRepository
-) : ViewModel() {
+@Inject constructor() : ViewModel() {
 
     var listAllCars: List<CarRoom> = listOf()
 

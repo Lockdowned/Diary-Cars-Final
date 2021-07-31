@@ -43,12 +43,11 @@ class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adoptazeForLandscapeOrientation(view)
+        adaptationForLandscapeOrientation(view)
 
         lifecycleScope.launch(Dispatchers.Main) {
             val navigation = requireActivity().supportFragmentManager
                 .findFragmentById(R.id.mainNavFragment)?.findNavController()
-//        val navigation = Navigation.findNavController(view) //why didn't find navigation
             var chosenCar = sharedViewModel.getChosenCar()
             if (chosenCar == null) {
                 val sharedPrefCarId = FragmentsHelper.getChosenCarIdAnyway(requireContext())
@@ -85,9 +84,9 @@ class BottomSheetDialogConfCar : BottomSheetDialogFragment() {
 
     }
 
-    private fun adoptazeForLandscapeOrientation(view: View) {
+    private fun adaptationForLandscapeOrientation(view: View) {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            view.viewTreeObserver.removeOnGlobalLayoutListener { this }
+            view.viewTreeObserver.removeOnGlobalLayoutListener { activity }
             val dialog = dialog
             val bottomSheet =
                 dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)

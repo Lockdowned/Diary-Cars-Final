@@ -12,8 +12,9 @@ import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.data.localDB.entity.RouteRoom
 import com.beta.finalprojectacad.databinding.ItemRvListTracksBinding
 import com.beta.finalprojectacad.other.utilities.RouteUtils
-import com.beta.finalprojectacad.viewModel.SharedViewModel
 import com.beta.finalprojectacad.viewModel.ListRoutesViewModel
+import com.beta.finalprojectacad.viewModel.SharedViewModel
+import com.bumptech.glide.Glide
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -32,28 +33,33 @@ class RouteListAdaptor(
                     val formatterStartTime =
                         SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
                     val formattedStartTime = formatterStartTime.format(routeItem.startDriveTime)
-                    textViewStartDrivingTimeRv.text =
-                        context.resources.getString(R.string.start_time).plus(":")
-                            .plus(" \n $formattedStartTime")
+                    textViewStartDrivingTimeRv.text = context.resources
+                        .getString(R.string.start_time).plus(": \n $formattedStartTime")
                     var car: CarRoom? = sharedViewModel.getChosenCar()
                     if (car == null) {
-                        car = viewModel.listAllCars.find { it.carId == routeItem.carId }
+                        car = viewModel.listAllCars?.find { it.carId == routeItem.carId }
                     }
                     car?.let {
-                        textViewChosenVehicleRv.text = "${it.brandName} ${it.modelName}"
+                        val chosenCarText = "${it.brandName} ${it.modelName}"
+                        textViewChosenVehicleRv.text = chosenCarText //later to do correct string with placeholder
                     }
                     textViewDroveDistanceRv.text = context.resources.getString(R.string.distance)
-                        .plus(": ${routeItem.distance} ")
-                        .plus(context.resources.getString(R.string.metres))
+                        .plus(
+                            ": ${routeItem.distance} " +
+                                    context.resources.getString(R.string.metres)
+                        )
                     val formattedDurationTime = RouteUtils.getFormattedTime(routeItem.duration)
                     textViewDurationDrivingRv.text = context.resources.getString(R.string.duration)
                         .plus(": $formattedDurationTime")
                     var frontText = context.resources.getString(R.string.avg_speed)
                     val behindText = context.getString(R.string.km_per_hour)
-                    textViewAvgSpeedRv.text = "$frontText ${routeItem.avgSpeed} $behindText"
+                    val avgSpeedText = "$frontText ${routeItem.avgSpeed} $behindText"
+                    textViewAvgSpeedRv.text = avgSpeedText //later to do correct string with placeholder
                     frontText = context.resources.getString(R.string.max_speed).plus(":")
-                    textViewMaxSpeedRv.text = "$frontText ${routeItem.maxSpeed} $behindText"
+                    val maxSpeedText = "$frontText ${routeItem.maxSpeed} $behindText"
+                    textViewMaxSpeedRv.text = maxSpeedText //later to do correct string with placeholder
                     if (routeItem.imgRoute.isNotEmpty()) {
+                        Glide.with(root).load(routeItem.imgRoute).into(imageViewRouteImg)
                         imageViewRouteImg.setImageURI(routeItem.imgRoute.toUri())
                     }
                 }
@@ -69,7 +75,6 @@ class RouteListAdaptor(
         override fun areContentsTheSame(oldItem: RouteRoom, newItem: RouteRoom): Boolean {
             return oldItem.duration == newItem.duration
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoutesListHolder {
@@ -80,7 +85,6 @@ class RouteListAdaptor(
     }
 
     override fun onBindViewHolder(holder: RoutesListHolder, position: Int) {
-        val itemRoute = getItem(position)
-        holder.bind(itemRoute)
+        holder.bind(getItem(position))
     }
 }

@@ -72,6 +72,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         return binding!!.root
     }
 
+    @DelicateCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -121,7 +122,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync {
             googleMap = it
-            addAllPolylines()
+            addAllPolyline()
         }
         mapView.getMapAsync(this) //call onMapReady
 
@@ -138,9 +139,9 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
         val compassIn = findCompass()
         val layoutParams = compassIn.layoutParams as RelativeLayout.LayoutParams
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-        layoutParams.setMargins(8, 150, 8, 8);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+        layoutParams.setMargins(8, 150, 8, 8)
     }
 
     override fun onStart() {
@@ -443,7 +444,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun addAllPolylines() {
+    private fun addAllPolyline() {
         for (polyline in polylinesList) {
             val polylineOptions = PolylineOptions()
                 .color(Color.BLUE)

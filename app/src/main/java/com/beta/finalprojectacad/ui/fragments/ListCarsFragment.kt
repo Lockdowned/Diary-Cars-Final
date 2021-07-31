@@ -88,10 +88,10 @@ class ListCarsFragment : Fragment() {
             rvListCars.layoutManager = LinearLayoutManager(context)
         }
 
-        initializeObservers(view)
+        initializeObservers()
     }
 
-    private fun initializeObservers(view: View) {
+    private fun initializeObservers() {
         viewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer { list ->
                 viewModel.listAllCars = list

@@ -76,7 +76,7 @@ class ProfileSettingsFragment : Fragment() {
             val savedUserAvatar = auth.currentUser?.photoUrl
             savedUserAvatar?.let { imgUri ->
                 Log.d(TAG, "onViewCreated: imgUri: ${imgUri.path}")
-                Log.d(TAG, "onViewCreated: imgUri: ${imgUri}")
+                Log.d(TAG, "onViewCreated: imgUri: $imgUri")
                 Glide.with(view).load(imgUri).error(R.drawable.default_user_img)
                     .into(imageViewUserAvatar)
             }

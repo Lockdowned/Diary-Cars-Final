@@ -24,12 +24,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class ListRoutesFragment : Fragment() {
 
     private var binding: FragmentListTracksBinding? = null
-    private val newViewModel: ListRoutesViewModel by activityViewModels()
+    private val viewModel: ListRoutesViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     private var chosenCar: CarRoom? = null
     private var routeListAdaptor: RouteListAdaptor? = null
-
     private var routeSortedList: List<RouteRoom>? = null
 
     override fun onCreateView(
@@ -44,11 +43,11 @@ class ListRoutesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        routeListAdaptor = newViewModel.getRoutesRVAdaptor()
+        routeListAdaptor = viewModel.getRoutesRVAdaptor()
 
         if (routeListAdaptor == null) {
-            routeListAdaptor = RouteListAdaptor(newViewModel, sharedViewModel)
-            newViewModel.setRoutesRVAdaptor(routeListAdaptor!!)
+            routeListAdaptor = RouteListAdaptor(viewModel, sharedViewModel)
+            viewModel.setRoutesRVAdaptor(routeListAdaptor!!)
         }
 
         binding?.apply {
@@ -67,10 +66,11 @@ class ListRoutesFragment : Fragment() {
 
             chosenCar = sharedViewModel.getChosenCar()
             if (chosenCar != null) {
-                textViewChosenCar.text = "${chosenCar?.brandName} ${chosenCar?.modelName}"
+                val chosenCarText = "${chosenCar?.brandName} ${chosenCar?.modelName}"
+                textViewChosenCar.text = chosenCarText//later to do correct string with placeholder
             }
 
-            when (newViewModel.routeSortType) {
+            when (viewModel.routeSortType) {
                 RouteSortType.DATE -> spinnerRouteSortType.setSelection(0)
                 RouteSortType.DISTANCE -> spinnerRouteSortType.setSelection(1)
                 RouteSortType.DURATION -> spinnerRouteSortType.setSelection(2)
@@ -86,11 +86,11 @@ class ListRoutesFragment : Fragment() {
                         id: Long
                     ) {
                         when (position) {
-                            0 -> newViewModel.sortRoutes(RouteSortType.DATE)
-                            1 -> newViewModel.sortRoutes(RouteSortType.DISTANCE)
-                            2 -> newViewModel.sortRoutes(RouteSortType.DURATION)
-                            3 -> newViewModel.sortRoutes(RouteSortType.AVG_SPEED)
-                            4 -> newViewModel.sortRoutes(RouteSortType.MAX_SPEED)
+                            0 -> viewModel.sortRoutes(RouteSortType.DATE)
+                            1 -> viewModel.sortRoutes(RouteSortType.DISTANCE)
+                            2 -> viewModel.sortRoutes(RouteSortType.DURATION)
+                            3 -> viewModel.sortRoutes(RouteSortType.AVG_SPEED)
+                            4 -> viewModel.sortRoutes(RouteSortType.MAX_SPEED)
                         }
                     }
 
@@ -99,13 +99,13 @@ class ListRoutesFragment : Fragment() {
                 }
         }
 
-        newViewModel.allCarsLiveData.observe(
+        viewModel.allCarsLiveData.observe(
             viewLifecycleOwner, Observer {
-                newViewModel.listAllCars = it
+                viewModel.listAllCars = it
             }
         )
 
-        newViewModel.routesSorted.observe(
+        viewModel.routesSorted.observe(
             viewLifecycleOwner, Observer {
                 routeSortedList = it
                 setCorrectRouteInAdaptor(sharedViewModel.getChosenCar())

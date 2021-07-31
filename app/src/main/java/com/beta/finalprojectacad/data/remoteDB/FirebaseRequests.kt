@@ -30,11 +30,11 @@ class FirebaseRequests(
         return@let Firebase.firestore.collection("Cars user: ${firebaseUser.uid}")
     }
 
-    var userDataCarImg: CollectionReference? = auth.currentUser?.let { firebaseUser ->
+    private var userDataCarImg: CollectionReference? = auth.currentUser?.let { firebaseUser ->
         return@let Firebase.firestore.collection("Images user: ${firebaseUser.uid}")
     }
 
-    var userDataCarImgStorage: StorageReference? = auth.currentUser?.let { firebaseUser ->
+    private var userDataCarImgStorage: StorageReference? = auth.currentUser?.let { firebaseUser ->
         return@let Firebase.storage.reference.child("Images user: ${firebaseUser.uid}")
     }
 
@@ -42,7 +42,7 @@ class FirebaseRequests(
         return@let Firebase.firestore.collection("Routes user: ${firebaseUser.uid}")
     }
 
-    var userDataRouteImgStorage: StorageReference? = auth.currentUser?.let { firebaseUser ->
+    private var userDataRouteImgStorage: StorageReference? = auth.currentUser?.let { firebaseUser ->
         return@let Firebase.storage.reference.child("Images routes user: ${firebaseUser.uid}")
     }
 
@@ -101,17 +101,17 @@ class FirebaseRequests(
         }
     }
 
-    suspend fun updateRoute(route: RouteRoom) = coroutineScope {
-        launch {
-            userDataRoutes?.let { routesUser ->
-                val necessaryDoc = routesUser.whereEqualTo("routeId", route.routeId)
-                    .get().await()
-                if (necessaryDoc.documents.isNotEmpty()) {
-                    routesUser.document(necessaryDoc.first().id).set(route)
-                }
-            }
-        }
-    }
+//    suspend fun updateRoute(route: RouteRoom) = coroutineScope { //TODO will need later
+//        launch {
+//            userDataRoutes?.let { routesUser ->
+//                val necessaryDoc = routesUser.whereEqualTo("routeId", route.routeId)
+//                    .get().await()
+//                if (necessaryDoc.documents.isNotEmpty()) {
+//                    routesUser.document(necessaryDoc.first().id).set(route)
+//                }
+//            }
+//        }
+//    }
 
 
     suspend fun updateCarImg(img: ImageCarRoom) = coroutineScope {

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,11 +15,13 @@ import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.databinding.ItemRvListCarsBinding
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper
-import com.beta.finalprojectacad.viewModel.SharedViewModel
 import com.beta.finalprojectacad.viewModel.ListCarsViewModel
+import com.beta.finalprojectacad.viewModel.SharedViewModel
 import com.bumptech.glide.Glide
 import com.github.satoshun.coroutine.autodispose.view.autoDisposeScope
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "CarsListAdaptor"
 
@@ -29,9 +30,9 @@ class CarsListAdaptor(
     private val sharedViewModel: SharedViewModel
 ) : ListAdapter<CarRoom, CarsListAdaptor.CarsListHolder>(CarsComparator()) {
 
-    var context: Context? = null
-    var chosenCar: CarRoom? = null
-    var previousCarView: View? = null
+    private var context: Context? = null
+    private var chosenCar: CarRoom? = null
+    private var previousCarView: View? = null
 
     inner class CarsListHolder(private val carItemBinding: ItemRvListCarsBinding) :
         RecyclerView.ViewHolder(carItemBinding.root) {
@@ -41,15 +42,15 @@ class CarsListAdaptor(
                 var specificationText = ""
                 specificationText = fillSpecificationText(carItem, specificationText)
                 val findImgRoom = viewModel.listAllImages.find { imageCarRoom ->
-                        imageCarRoom.id == carItem.carId
-                    }
+                    imageCarRoom.id == carItem.carId
+                }
                 Log.d(TAG, "bind: findImgRoom: ${findImgRoom.toString()} ")
                 withContext(Dispatchers.Main) {
                     textViewBrand.text = brandAndModelText
                     textViewSpecification.text = specificationText
                     if (findImgRoom == null) {
                         val defaultCarDrawable =
-                            AppCompatResources.getDrawable(context!!, R.drawable.default_car);
+                            AppCompatResources.getDrawable(context!!, R.drawable.default_car)
                         imageViewCar.setImageDrawable(defaultCarDrawable)
                     } else {
                         Glide.with(carItemBinding.root.context).load(findImgRoom.imgCar)
@@ -69,11 +70,11 @@ class CarsListAdaptor(
     }
 
     override fun onBindViewHolder(holder: CarsListHolder, position: Int) {
-        holder.itemView.autoDisposeScope.launch(Dispatchers.Default){
+        holder.itemView.autoDisposeScope.launch(Dispatchers.Default) {
             holder.apply {
                 val car = getItem(position)
                 bind(car)
-                choosingCar(car, holder)
+                choosingCar(car)
             }
         }
     }
@@ -104,9 +105,8 @@ class CarsListAdaptor(
         return correctText
     }
 
-     private suspend fun CarsListHolder.choosingCar(
-        car: CarRoom?,
-        holder: CarsListHolder
+    private suspend fun CarsListHolder.choosingCar(
+        car: CarRoom?
     ) {
         val typedValuePrimaryColour = TypedValue()
         val typedValueColorSecondary = TypedValue()
@@ -115,16 +115,9 @@ class CarsListAdaptor(
         theme?.resolveAttribute(R.attr.colorSecondary, typedValueColorSecondary, true)
         val primaryColour = typedValuePrimaryColour.data
         val secondaryColour = typedValueColorSecondary.data
-//        sharedViewModel.getChosenCar()?.let {
-//            if (it == car) {
-//                holder.itemView.setBackgroundColor(secondaryColour)
-//                chosenCar = it
-//                previousCarView = holder.itemView
-//            }
-//        }
-         withContext(Dispatchers.Main) {
-             changeColorPreviousSelectedCar(car, secondaryColour, primaryColour)
-         }
+        withContext(Dispatchers.Main) {
+            changeColorPreviousSelectedCar(car, secondaryColour, primaryColour)
+        }
     }
 
     private fun CarsListHolder.changeColorPreviousSelectedCar(

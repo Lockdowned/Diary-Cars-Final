@@ -27,11 +27,6 @@ class AddCarViewModel
         mainRepository.getAllTransmissions().asLiveData() // mb remove later this room table
 
 
-    lateinit var allModelsNameBeforeChange: List<String>
-    fun setAllModels(allModelsName: List<String>) {
-        allModelsNameBeforeChange = allModelsName
-    }
-
     /*
 change mutableListNameModels in adapter autoCompleteSetAdapter depended on brand text
  */

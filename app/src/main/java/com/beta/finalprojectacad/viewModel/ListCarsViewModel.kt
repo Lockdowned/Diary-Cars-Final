@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ListCarsViewModel
 @Inject constructor(
-    private val mainRepository: MainRepository
+    mainRepository: MainRepository
 ) : ViewModel() {
 
     var listAllCars: List<CarRoom> = listOf()

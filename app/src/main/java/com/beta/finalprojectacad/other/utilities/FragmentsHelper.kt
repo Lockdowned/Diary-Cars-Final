@@ -18,8 +18,6 @@ import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import java.util.regex.Pattern
 
-private const val TAG = "FragmentsHelper"
-
 object FragmentsHelper {
 
     fun showLocationPrompt(activity: Activity) {
@@ -27,11 +25,12 @@ object FragmentsHelper {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
-        val result: Task<LocationSettingsResponse> = LocationServices.getSettingsClient(activity).checkLocationSettings(builder.build())
+        val result: Task<LocationSettingsResponse> =
+            LocationServices.getSettingsClient(activity).checkLocationSettings(builder.build())
 
         result.addOnCompleteListener { task ->
             try {
-                val response = task.getResult(ApiException::class.java)
+                task.getResult(ApiException::class.java)
                 // All location settings are satisfied. The client can initialize location
                 // requests here.
             } catch (exception: ApiException) {
@@ -39,7 +38,8 @@ object FragmentsHelper {
                     LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
                         try {
                             // Cast to a resolvable exception.
-                            val resolvable: ResolvableApiException = exception as ResolvableApiException
+                            val resolvable: ResolvableApiException =
+                                exception as ResolvableApiException
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
                             resolvable.startResolutionForResult(
@@ -92,7 +92,7 @@ object FragmentsHelper {
         val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
 
-        editor.apply() {
+        editor.apply {
             putInt("chosenCarId", carIdToSave)
             apply()
         }

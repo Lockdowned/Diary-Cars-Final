@@ -118,8 +118,7 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
         when {
             result.anyPermanentlyDenied() -> Log.d(TAG, "onPermissionsResult: Denied")
             result.anyShouldShowRationale() -> Log.d(
-                TAG,
-                "onPermissionsResult: result.anyShouldShowRationale()"
+                TAG, "onPermissionsResult: result.anyShouldShowRationale()"
             )
             result.allGranted() -> Log.d(TAG, "onPermissionsResult: all Allow")
         }

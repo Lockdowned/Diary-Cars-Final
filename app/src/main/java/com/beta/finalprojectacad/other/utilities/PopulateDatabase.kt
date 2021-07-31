@@ -2,11 +2,10 @@ package com.beta.finalprojectacad.other.utilities
 
 import com.beta.finalprojectacad.data.localDB.dao.CarDao
 import com.beta.finalprojectacad.data.localDB.entity.BrandRoom
-import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.data.localDB.entity.ModelRoom
 import com.beta.finalprojectacad.data.localDB.entity.TransmissionRoom
 
-class PopulateDatabase() {
+class PopulateDatabase {
 
     suspend fun insertDB(carDao: CarDao) {
         brandList.forEach {
@@ -20,7 +19,7 @@ class PopulateDatabase() {
         }
     }
 
-    val brandList = listOf<BrandRoom>(
+    private val brandList = listOf<BrandRoom>(
         BrandRoom("Abarth"),
         BrandRoom("Alfa Romeo"),
         BrandRoom("Aston Martin"),
@@ -87,7 +86,7 @@ class PopulateDatabase() {
         BrandRoom("Volvo"),
     )
 
-    val modelsList = listOf<ModelRoom>(
+    private val modelsList = listOf<ModelRoom>(
         ModelRoom(
             "A3",
             4
@@ -114,7 +113,7 @@ class PopulateDatabase() {
         )
     )
 
-    val transmissionList = listOf<TransmissionRoom>(
+    private val transmissionList = listOf<TransmissionRoom>(
         TransmissionRoom("stick"),
         TransmissionRoom("auto"),
         TransmissionRoom("hybrid")
