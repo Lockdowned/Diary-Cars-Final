@@ -78,6 +78,7 @@
     <string name="delete">delete</string>
     <string name="brand_and_model">Brand and model</string>
     <string name="specification">Specification:</string>
+    <string name="gps_status">GPS status</string>
 
 
     <string-array name="sort_filter_routes">

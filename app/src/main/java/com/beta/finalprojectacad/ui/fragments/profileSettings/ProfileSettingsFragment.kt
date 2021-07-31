@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -81,13 +80,15 @@ class ProfileSettingsFragment : Fragment() {
                     .into(imageViewUserAvatar)
             }
 
+            binding?.switchGPSActivated?.isChecked = isLocationEnabled(requireContext())
+
             switchGPSActivated.setOnCheckedChangeListener { _, _ ->
-                Intent(ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${requireActivity().packageName}")).apply {
-                    addCategory(Intent.CATEGORY_DEFAULT)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(this)
-                }
-                
+                binding?.switchGPSActivated?.isChecked = isLocationEnabled(requireContext())
+            }
+
+            switchGPSActivated.setOnClickListener {
+                val viewIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(viewIntent)
             }
         }
     }

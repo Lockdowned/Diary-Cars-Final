@@ -6,7 +6,7 @@
     android:id="@+id/frameLayout5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.TrackTripFragment">
+    tools:context=".ui.fragments.trackTrip.TrackTripFragment">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/fragmentTrackTrip"
@@ -96,12 +96,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Spinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/spinnerMapTypePresentation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="?attr/colorAccent"
+            android:backgroundTint="?attr/colorOnSecondary"
             android:entries="@array/map_type_presentation"
+            android:theme="@style/Spinner"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
