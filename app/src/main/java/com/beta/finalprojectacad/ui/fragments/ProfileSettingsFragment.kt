@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.profileSettings
+package com.beta.finalprojectacad.ui.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -18,6 +18,7 @@ import androidx.navigation.Navigation
 import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.databinding.FragmentProfileSetingsBinding
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper.isLocationEnabled
+import com.beta.finalprojectacad.viewModel.UserSettingViewModel
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest

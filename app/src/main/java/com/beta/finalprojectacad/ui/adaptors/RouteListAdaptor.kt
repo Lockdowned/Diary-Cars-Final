@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.listRoutes
+package com.beta.finalprojectacad.ui.adaptors
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -12,7 +12,8 @@ import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.data.localDB.entity.RouteRoom
 import com.beta.finalprojectacad.databinding.ItemRvListTracksBinding
 import com.beta.finalprojectacad.other.utilities.RouteUtils
-import com.beta.finalprojectacad.ui.SharedViewModel
+import com.beta.finalprojectacad.viewModel.SharedViewModel
+import com.beta.finalprojectacad.viewModel.ListRoutesViewModel
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 

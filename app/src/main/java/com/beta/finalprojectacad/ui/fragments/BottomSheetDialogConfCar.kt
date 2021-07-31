@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.bottomSheetConf
+package com.beta.finalprojectacad.ui.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -16,7 +16,8 @@ import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.databinding.BottomSheetDialogConfCarBinding
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper
-import com.beta.finalprojectacad.ui.SharedViewModel
+import com.beta.finalprojectacad.viewModel.SharedViewModel
+import com.beta.finalprojectacad.viewModel.BottomSheetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint

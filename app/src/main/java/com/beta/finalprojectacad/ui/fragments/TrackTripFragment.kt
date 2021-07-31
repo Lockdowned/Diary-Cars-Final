@@ -1,21 +1,15 @@
-package com.beta.finalprojectacad.ui.fragments.trackTrip
+package com.beta.finalprojectacad.ui.fragments
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.IntentSender
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.RelativeLayout
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -30,31 +24,25 @@ import com.beta.finalprojectacad.other.Constants.ACTION_STOP_SERVICE
 import com.beta.finalprojectacad.other.Constants.DEFAULT_ZOOM_LEVEL
 import com.beta.finalprojectacad.other.Constants.MAP_SCALE_WEIGHT
 import com.beta.finalprojectacad.other.Constants.MAX_LIFETIME_COROUTINE
-import com.beta.finalprojectacad.other.utilities.FragmentsHelper
+import com.beta.finalprojectacad.other.utilities.FragmentsHelper.getChosenCarIdAnyway
+import com.beta.finalprojectacad.other.utilities.FragmentsHelper.showLocationPrompt
 import com.beta.finalprojectacad.other.utilities.RouteUtils
 import com.beta.finalprojectacad.other.utilities.SaveImgToScopedStorage
 import com.beta.finalprojectacad.services.Polyline
 import com.beta.finalprojectacad.services.TrackingService
 import com.beta.finalprojectacad.ui.activity.MainActivity
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.beta.finalprojectacad.viewModel.TrackTripViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.roundToInt
-
 
 private const val TAG = "TrackTripFragment"
 
@@ -91,7 +79,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
             allRoutesList = list
         })
 
-        carId = viewModel.getChosenCarIdAnyway(requireActivity().applicationContext)
+        carId = getChosenCarIdAnyway(requireActivity().applicationContext)
         Log.d(TAG, "onViewCreated: carId: $carId")
 
         binding?.apply {
@@ -139,7 +127,7 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
 
         initializeObservers()
 
-        showLocationPrompt()
+        showLocationPrompt(requireActivity())
     }
 
     override fun onMapReady(gMap: GoogleMap) {
@@ -185,66 +173,14 @@ class TrackTripFragment : Fragment(), OnMapReadyCallback {
         mapView.onLowMemory()
     }
 
+    @DelicateCoroutinesApi
     private fun stopTracking() {
         sendCommandToService(ACTION_STOP_SERVICE)
         zoomToSeeWholeTrack()
         saveRouteInDb()
     }
 
-    private fun showLocationPrompt() {
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-
-        val result: Task<LocationSettingsResponse> = LocationServices.getSettingsClient(activity).checkLocationSettings(builder.build())
-
-        result.addOnCompleteListener { task ->
-            try {
-                val response = task.getResult(ApiException::class.java)
-                // All location settings are satisfied. The client can initialize location
-                // requests here.
-            } catch (exception: ApiException) {
-                when (exception.statusCode) {
-                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
-                        try {
-                            // Cast to a resolvable exception.
-                            val resolvable: ResolvableApiException = exception as ResolvableApiException
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            resolvable.startResolutionForResult(
-                                activity, LocationRequest.PRIORITY_HIGH_ACCURACY
-                            )
-                        } catch (e: IntentSender.SendIntentException) {
-                            // Ignore the error.
-                        } catch (e: ClassCastException) {
-                            // Ignore, should be an impossible error.
-                        }
-                    }
-                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                        // Location settings are not satisfied. But could be fixed by showing the
-                        // user a dialog.
-
-                        // Location settings are not satisfied. However, we have no way to fix the
-                        // settings so we won't show the dialog.
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            LocationRequest.PRIORITY_HIGH_ACCURACY -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.e( TAG,"GPS On")
-                } else {
-                    Log.e(TAG,"GPS Off")
-                }
-            }
-        }
-    }
-
+    @DelicateCoroutinesApi
     private fun saveRouteInDb() {
         GlobalScope.launch(Dispatchers.IO) {
 

@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.listRoutes
+package com.beta.finalprojectacad.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -8,10 +8,10 @@ import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.data.localDB.entity.RouteRoom
 import com.beta.finalprojectacad.other.enums.RouteSortType
 import com.beta.finalprojectacad.repositories.MainRepository
+import com.beta.finalprojectacad.ui.adaptors.RouteListAdaptor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-private const val TAG = "ListRoutesViewModel"
 
 @HiltViewModel
 class ListRoutesViewModel

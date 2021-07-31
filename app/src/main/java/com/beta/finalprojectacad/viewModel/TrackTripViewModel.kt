@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.trackTrip
+package com.beta.finalprojectacad.viewModel
 
 import android.content.Context
 import android.util.Log
@@ -13,8 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "TrackTripViewModel"
-
 @HiltViewModel
 class TrackTripViewModel
 @Inject constructor(
@@ -23,14 +21,6 @@ class TrackTripViewModel
 
 
     val allRoutesLiveData: LiveData<List<RouteRoom>> = mainRepository.getAllRoutes().asLiveData()
-
-
-    fun getChosenCarIdAnyway(appContext: Context): Int { //remove from viewModel(because have context)
-        val sharedPref = appContext.getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        val loadedCarId = sharedPref.getInt("chosenCarId", -1)
-        Log.d(TAG, "getChosenCarIdAnyway: $loadedCarId")
-        return loadedCarId
-    }
 
     fun insertNewRoute(route: RouteRoom) {
         viewModelScope.launch(Dispatchers.IO) {

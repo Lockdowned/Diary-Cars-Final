@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.bottomSheetConf
+package com.beta.finalprojectacad.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

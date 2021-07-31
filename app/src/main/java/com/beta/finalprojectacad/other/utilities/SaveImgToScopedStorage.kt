@@ -95,6 +95,5 @@ object SaveImgToScopedStorage {
             listUri.add(realAbsolutePath.toUri())
         }
         return listUri
-
     }
 }

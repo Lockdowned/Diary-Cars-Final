@@ -7,12 +7,12 @@ object RemoteSynchronizeUtils {
 
     fun checkLoginUser(auth: FirebaseAuth): Boolean {
         val user = auth.currentUser
-        if (user == null) {
+        return if (user == null) {
             Log.d("Fire", "not login user")
-            return false
+            false
         } else {
             Log.d("Fire", "login user: ${user.metadata}")
-            return true
+            true
         }
     }
 }

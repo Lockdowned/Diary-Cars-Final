@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.registrationUser
+package com.beta.finalprojectacad.ui.fragments
 
 import android.app.Activity
 import android.os.Bundle
@@ -17,6 +17,7 @@ import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.databinding.FragmentRegistrationBinding
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper
 import com.beta.finalprojectacad.other.utilities.RemoteSynchronizeUtils
+import com.beta.finalprojectacad.viewModel.UserRegistrationViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

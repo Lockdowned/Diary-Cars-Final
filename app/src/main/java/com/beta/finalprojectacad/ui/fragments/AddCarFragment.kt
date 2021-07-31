@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.addCar
+package com.beta.finalprojectacad.ui.fragments
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -19,7 +19,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import com.bumptech.glide.Glide
 import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.data.localDB.entity.BrandRoom
 import com.beta.finalprojectacad.data.localDB.entity.CarRoom
@@ -27,12 +26,13 @@ import com.beta.finalprojectacad.data.localDB.entity.ModelRoom
 import com.beta.finalprojectacad.databinding.FragmentAddCarBinding
 import com.beta.finalprojectacad.other.Constants.MINIMAL_LIFETIME_COROUTINE
 import com.beta.finalprojectacad.other.utilities.SaveImgToScopedStorage
-import com.beta.finalprojectacad.ui.SharedViewModel
 import com.beta.finalprojectacad.ui.activity.MainActivity
+import com.beta.finalprojectacad.viewModel.AddCarViewModel
+import com.beta.finalprojectacad.viewModel.SharedViewModel
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import java.util.*
 
 private const val TAG = "AddCarFragment"
 
@@ -87,7 +87,7 @@ class AddCarFragment : Fragment() {
                             resources.getString(R.string.this_brand_already_exist),
                             Toast.LENGTH_SHORT
                         )
-                             .show()
+                            .show()
                     } else {
                         addBrandInDbDialog(brandText)
                     }
@@ -99,13 +99,25 @@ class AddCarFragment : Fragment() {
                     val brandText = textInputLayoutBrandNewCar.editText?.text.toString()
                     val modelText = textInputLayoutModelNewCar.editText?.text.toString()
                     if (modelText.isEmpty()) {
-                        Toast.makeText(context, resources.getString(R.string.please_fill_model_text_field), Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            context,
+                            resources.getString(R.string.please_fill_model_text_field),
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     } else if (brandText.isEmpty()) {
-                        Toast.makeText(context, resources.getString(R.string.please_fill_brand_text), Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            context,
+                            resources.getString(R.string.please_fill_brand_text),
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     } else if (!brandAlreadyExistInDb(brandText, brandListName)) {
-                        Toast.makeText(context, resources.getString(R.string.at_the_begin_add_brand_name), Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            context,
+                            resources.getString(R.string.at_the_begin_add_brand_name),
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     } else {
                         addModelInDbDialog(modelText, brandText, brandList)

@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.listCars
+package com.beta.finalprojectacad.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +16,9 @@ import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.databinding.FragmentListCarsBinding
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper
 import com.beta.finalprojectacad.other.utilities.RemoteSynchronizeUtils
-import com.beta.finalprojectacad.ui.SharedViewModel
+import com.beta.finalprojectacad.ui.adaptors.CarsListAdaptor
+import com.beta.finalprojectacad.viewModel.ListCarsViewModel
+import com.beta.finalprojectacad.viewModel.SharedViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -71,7 +73,7 @@ class ListCarsFragment : Fragment() {
 
             imageButtonToAuthorizationOrSettings.setOnClickListener {
                 if (RemoteSynchronizeUtils.checkLoginUser(auth)) {
-                    navigation?.navigate(R.id.action_listCarsFragment_to_profileSetingsFragment)
+                    navigation?.navigate(R.id.action_listCarsFragment_to_profileSettingsFragment)
                 } else {
                     navigation?.navigate(R.id.action_listCarsFragment_to_registrationFragment)
                 }

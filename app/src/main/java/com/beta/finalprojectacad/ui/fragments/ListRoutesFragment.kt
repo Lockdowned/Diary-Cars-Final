@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.listRoutes
+package com.beta.finalprojectacad.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,7 +15,9 @@ import com.beta.finalprojectacad.data.localDB.entity.RouteRoom
 import com.beta.finalprojectacad.databinding.FragmentListTracksBinding
 import com.beta.finalprojectacad.other.enums.RouteSortType
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper
-import com.beta.finalprojectacad.ui.SharedViewModel
+import com.beta.finalprojectacad.viewModel.SharedViewModel
+import com.beta.finalprojectacad.ui.adaptors.RouteListAdaptor
+import com.beta.finalprojectacad.viewModel.ListRoutesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

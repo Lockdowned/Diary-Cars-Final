@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui
+package com.beta.finalprojectacad.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -6,8 +6,6 @@ import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-
-private const val TAG = "SharedViewModel"
 
 @HiltViewModel
 class SharedViewModel

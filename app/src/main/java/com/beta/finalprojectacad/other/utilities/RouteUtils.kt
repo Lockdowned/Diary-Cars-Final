@@ -21,6 +21,5 @@ object RouteUtils {
                 "${if (minutes < 10) "0" else ""}$minutes:" +
                 "${if (seconds < 10) "0" else ""}$seconds:" +
                 "${if (millisecond < 10) "0" else ""}$millisecond"
-
     }
 }

@@ -96,6 +96,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
     //firebase coroutine
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
+    //RecyclerView coroutine scope
+    implementation 'com.github.satoshun.coroutine.autodispose:autodispose:0.3.1'
 
     //FireBase
     implementation platform('com.google.firebase:firebase-bom:27.1.0')

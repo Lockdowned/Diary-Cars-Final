@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.listCars
+package com.beta.finalprojectacad.ui.adaptors
 
 import android.content.Context
 import android.util.Log
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,8 +16,10 @@ import com.beta.finalprojectacad.R
 import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.databinding.ItemRvListCarsBinding
 import com.beta.finalprojectacad.other.utilities.FragmentsHelper
-import com.beta.finalprojectacad.ui.SharedViewModel
+import com.beta.finalprojectacad.viewModel.SharedViewModel
+import com.beta.finalprojectacad.viewModel.ListCarsViewModel
 import com.bumptech.glide.Glide
+import com.github.satoshun.coroutine.autodispose.view.autoDisposeScope
 import kotlinx.coroutines.*
 
 private const val TAG = "CarsListAdaptor"
@@ -29,52 +32,29 @@ class CarsListAdaptor(
     var context: Context? = null
     var chosenCar: CarRoom? = null
     var previousCarView: View? = null
-    val localCoroutineScope = CoroutineScope(Job() + Dispatchers.Default)
 
     inner class CarsListHolder(private val carItemBinding: ItemRvListCarsBinding) :
         RecyclerView.ViewHolder(carItemBinding.root) {
-        fun bind(carItem: CarRoom) {
+        suspend fun bind(carItem: CarRoom) {
             carItemBinding.apply {
                 val brandAndModelText = "${carItem.brandName} ${carItem.modelName}"
-                textViewBrand.text = brandAndModelText
                 var specificationText = ""
-                if (carItem.transmissionName.isNotEmpty()) {
-                    specificationText +=
-                        "${context!!.resources.getString(R.string.transmission)}: " +
-                                "${carItem.transmissionName}\n"
-                }
-                if (carItem.year != -1) {
-                    specificationText +=
-                        "${context!!.resources.getString(R.string.year)}: ${carItem.year}\n"
-                }
-
-                if (carItem.engine.isNotEmpty()) {
-                    specificationText +=
-                        "${context!!.resources.getString(R.string.engine)}: ${carItem.engine}\n"
-                }
-                if (carItem.mileage != -1) {
-                    specificationText +=
-                        "${context!!.resources.getString(R.string.mileage)}: ${carItem.mileage}"
-                }
-                textViewSpecification.text = specificationText
-                localCoroutineScope.launch {
-                    val findImgRoom =
-                        viewModel.listAllImages.find { imageCarRoom ->
-                            imageCarRoom.id == carItem.carId
-                        }
-                    Log.d(TAG, "bind: findImgRoom: ${findImgRoom.toString()} ")
-                    withContext(Dispatchers.Main) {
-                        if (findImgRoom == null) {
-                            val defaultCarDrawable =
-                                AppCompatResources.getDrawable(context!!, R.drawable.default_car);
-                            imageViewCar.setImageDrawable(defaultCarDrawable)
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                Glide.with(carItemBinding.root.context).load(findImgRoom.imgCar)
-                                    .error(R.drawable.default_car)
-                                    .into(imageViewCar)
-                            }
-                        }
+                specificationText = fillSpecificationText(carItem, specificationText)
+                val findImgRoom = viewModel.listAllImages.find { imageCarRoom ->
+                        imageCarRoom.id == carItem.carId
+                    }
+                Log.d(TAG, "bind: findImgRoom: ${findImgRoom.toString()} ")
+                withContext(Dispatchers.Main) {
+                    textViewBrand.text = brandAndModelText
+                    textViewSpecification.text = specificationText
+                    if (findImgRoom == null) {
+                        val defaultCarDrawable =
+                            AppCompatResources.getDrawable(context!!, R.drawable.default_car);
+                        imageViewCar.setImageDrawable(defaultCarDrawable)
+                    } else {
+                        Glide.with(carItemBinding.root.context).load(findImgRoom.imgCar)
+                            .error(R.drawable.default_car)
+                            .into(imageViewCar)
                     }
                 }
             }
@@ -89,15 +69,42 @@ class CarsListAdaptor(
     }
 
     override fun onBindViewHolder(holder: CarsListHolder, position: Int) {
-        holder.apply {
-            val car = getItem(position)
-            bind(car)
-            choosingCar(car, holder)
+        holder.itemView.autoDisposeScope.launch(Dispatchers.Default){
+            holder.apply {
+                val car = getItem(position)
+                bind(car)
+                choosingCar(car, holder)
+            }
         }
-
     }
 
-    private fun CarsListHolder.choosingCar(
+    private fun fillSpecificationText(
+        carItem: CarRoom,
+        specificationText: String
+    ): String {
+        var correctText = specificationText
+        if (carItem.transmissionName.isNotEmpty()) {
+            correctText +=
+                "${context!!.resources.getString(R.string.transmission)}: " +
+                        "${carItem.transmissionName}\n"
+        }
+        if (carItem.year != -1) {
+            correctText +=
+                "${context!!.resources.getString(R.string.year)}: ${carItem.year}\n"
+        }
+
+        if (carItem.engine.isNotEmpty()) {
+            correctText +=
+                "${context!!.resources.getString(R.string.engine)}: ${carItem.engine}\n"
+        }
+        if (carItem.mileage != -1) {
+            correctText +=
+                "${context!!.resources.getString(R.string.mileage)}: ${carItem.mileage}"
+        }
+        return correctText
+    }
+
+     private suspend fun CarsListHolder.choosingCar(
         car: CarRoom?,
         holder: CarsListHolder
     ) {
@@ -115,6 +122,16 @@ class CarsListAdaptor(
 //                previousCarView = holder.itemView
 //            }
 //        }
+         withContext(Dispatchers.Main) {
+             changeColorPreviousSelectedCar(car, secondaryColour, primaryColour)
+         }
+    }
+
+    private fun CarsListHolder.changeColorPreviousSelectedCar(
+        car: CarRoom?,
+        secondaryColour: Int,
+        primaryColour: Int
+    ) {
         itemView.setOnClickListener { view ->
             if (sharedViewModel.confirmChosenCarFlag) {
                 viewModel.confirmCarLiveData.value = car

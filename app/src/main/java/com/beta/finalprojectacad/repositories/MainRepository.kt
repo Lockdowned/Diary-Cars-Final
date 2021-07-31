@@ -50,8 +50,6 @@ class MainRepository
 
     fun getAllModels() = carDao.getAllModels()
 
-    fun getModelsByBrand(brandId: Int) = carDao.getModelsByBrand(brandId)
-
     fun getAllTransmissions() = carDao.getAllTransmissions()
 
     fun getAllRoutes() = routeDao.getAllRoutes()

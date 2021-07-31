@@ -1,4 +1,4 @@
-package com.beta.finalprojectacad.ui.fragments.listCars
+package com.beta.finalprojectacad.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import com.beta.finalprojectacad.data.localDB.entity.CarRoom
 import com.beta.finalprojectacad.data.localDB.entity.ImageCarRoom
 import com.beta.finalprojectacad.repositories.MainRepository
+import com.beta.finalprojectacad.ui.adaptors.CarsListAdaptor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -24,4 +24,7 @@ object Constants {
     const val MINIMAL_LIFETIME_COROUTINE = 5000L
     const val MAX_LIFETIME_COROUTINE  = 100000L
 
+    const val EMAIL_REGEX_CHECK = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
+            "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
+
 }

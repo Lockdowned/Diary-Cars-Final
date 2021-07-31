@@ -45,7 +45,7 @@ class SyncDatabasesClass(
 
     private suspend fun syncRoute() {
         var routeRoomList = mainRepository.getAllRoutesOnce()
-        var fireStoreRoutesList = firebaseRequests.getAllRoutes()
+        val fireStoreRoutesList = firebaseRequests.getAllRoutes()
 
         if (fireStoreRoutesList.isEmpty()) {
             for (localRoute in routeRoomList) {
@@ -92,11 +92,11 @@ class SyncDatabasesClass(
                                     "subscribeToFireStoreCar: triggered snapshot upper launch"
                                 )
                                 Log.d(TAG, "subscribeToFireStoreCar: triggered snapshot")
-                                var carRoomList = mainRepository.getAllCarsOnce()
-                                var fireStoreCarList = firebaseRequests.getAllCars()
+                                val carRoomList = mainRepository.getAllCarsOnce()
+                                val fireStoreCarList = firebaseRequests.getAllCars()
 
-                                var carImgList = mainRepository.getAllImgOnce()
-                                var fireStoreCarImgList = firebaseRequests.getAllCarImg()
+                                val carImgList = mainRepository.getAllImgOnce()
+                                val fireStoreCarImgList = firebaseRequests.getAllCarImg()
 
                                 for (remoteCar in fireStoreCarList) {
                                     iteratingRemoteListCars(
@@ -133,7 +133,7 @@ class SyncDatabasesClass(
                             delay(DELAY_TIME_FOR_SUCCESS_SYNCHRONIZATION)
                             value?.let {
                                 var routeRoomList = mainRepository.getAllRoutesOnce()
-                                var updatedFireStoreRouteList = firebaseRequests.getAllRoutes()
+                                val updatedFireStoreRouteList = firebaseRequests.getAllRoutes()
 
                                 for (routeRemote in updatedFireStoreRouteList) {
                                     val matchCar =
@@ -173,7 +173,7 @@ class SyncDatabasesClass(
     ) {
         val matchCar = carRoomList.find { it.carId == remoteCar.carId }
 
-        var requireImgCar: ImageCarRoom?
+        val requireImgCar: ImageCarRoom?
 
         if (matchCar == null) {
             mainRepository.insertRoomCar(remoteCar)
@@ -189,8 +189,8 @@ class SyncDatabasesClass(
                 requireImgCar = fireStoreCarImgList.find { it.id == remoteCar.carId }
                 requireImgCar?.let { imgCar ->
                     val requireCompareImg = carImgList.find { it.id == imgCar.id }
-                    if (requireCompareImg != null && requireCompareImg.timestamp < requireImgCar!!.timestamp) {
-                        mainRepository.updateRoomCarImg(requireImgCar!!)
+                    if (requireCompareImg != null && requireCompareImg.timestamp < requireImgCar.timestamp) {
+                        mainRepository.updateRoomCarImg(requireImgCar)
                     }
                 }
             }
