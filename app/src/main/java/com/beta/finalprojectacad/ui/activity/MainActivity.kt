@@ -78,9 +78,14 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                 .build()
 
             bottomNavigationBar.setOnItemSelectedListener { menuItem ->
+                val currentVisibleFragment = navController.currentDestination?.id
+                val pressedButtonNavigationBar = menuItem.itemId
                 when (menuItem.itemId) {
                     R.id.listCarsFragment -> {
-                        navController.navigate(R.id.listCarsFragment, null, optionsSlideInRight)
+                        if (pressedButtonNavigationBar != currentVisibleFragment) {
+                            navController
+                                .navigate(R.id.listCarsFragment, null, optionsSlideInRight)
+                        }
                         true
                     }
                     R.id.trackTrip -> {
@@ -88,7 +93,10 @@ class MainActivity : AppCompatActivity(), PermissionRequest.Listener {
                         true
                     }
                     R.id.listRoutesFragment -> {
-                        navController.navigate(R.id.listRoutesFragment, null, optionsSlideInLeft)
+                        if (pressedButtonNavigationBar != currentVisibleFragment) {
+                            navController
+                                .navigate(R.id.listRoutesFragment, null, optionsSlideInLeft)
+                        }
                         true
                     }
                     else -> true
